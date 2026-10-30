@@ -1,3 +1,27 @@
-status=executed tier=confirmacao (arquivo: /home/linkou/agent-workspaces/Connect-Barber/README.md)
-stdout:
-{"content":"# CONNECT BARBER\n\nPrimeira etapa visual da plataforma CONNECT BARBER: landing page premium e responsiva, inspirada na estrutura de experiência da referência Barbearia Corleone, com identidade visual própria.\n\n## Executar localmente\n\n```bash\nnpm install\nnpm run dev\n```\n\n## Build\n\n```bash\nnpm run build\nnpm run preview\n```\n\n## Escopo desta etapa\n\n- Hero editorial e apresentação da marca.\n- Catálogo visual de serviços.\n- Busca demonstrativa por cidade/bairro/CEP e solicitação de geolocalização.\n- Seções de descoberta de barbearias, avaliações e CTA.\n- Menu mobile, modal de busca e layout responsivo.\n\nA busca ainda é demonstrativa: mapa real, cadastro de estabelecimentos, avaliações verificadas, agenda e arquitetura multi-tenant serão implementados nas próximas etapas. As fotografias são imagens remotas de demonstração.","encoding":"utf-8","truncated":false}
+# CONNECT BARBER
+
+Primeira etapa visual da plataforma CONNECT BARBER: landing page premium e responsiva, inspirada na estrutura de experiência da referência Barbearia Corleone, com identidade visual própria.
+
+## Executar localmente
+
+```bash
+npm install
+npm run dev
+```
+
+## Build
+
+```bash
+npm run build
+npm run preview
+```
+
+## Escopo desta etapa
+
+- Hero editorial e apresentação da marca.
+- Catálogo visual de serviços.
+- Busca demonstrativa por cidade/bairro/CEP e solicitação de geolocalização.
+- Seções de descoberta de barbearias, avaliações e CTA.
+- Menu mobile, modal de busca e layout responsivo.
+
+A busca ainda é demonstrativa: mapa real, cadastro de estabelecimentos, avaliações verificadas, agenda e arquitetura multi-tenant serão implementados nas próximas etapas. As fotografias são imagens remotas de demonstração.
