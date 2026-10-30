@@ -10,7 +10,7 @@ Etapa 1: reconstrução fiel do visual do site da Barbearia Corleone (Oswald + I
 index.html            página completa (HTML + CSS + JS em um arquivo, padrão Criazzo)
 assets/img/
   banner.webp         banner oficial (logo horizontal)
-  banner-dark.webp    banner em versão escura, para fundo claro (seção Agende)
+  simbolo-dark.webp   símbolo em versão escura, para fundo claro (seção Agende)
   simbolo.webp        símbolo oficial (tesoura + bigode)
   favicon.png         ícone da aba
   fotos/              fotos de demonstração (Unsplash, licença livre para uso comercial)

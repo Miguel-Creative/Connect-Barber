@@ -167,7 +167,8 @@ button, input, select, textarea { font: inherit; }
   padding-right: max(var(--gutter), env(safe-area-inset-right, 0px));
   height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 24px;
 }
-.header-logo img { height: 46px; width: auto; }
+.header-logo img { height: 52px; width: auto; }
+@media (max-width: 520px) { .header-logo img { height: 44px; } }
 .nav-links { display: flex; gap: 34px; }
 .nav-links a {
   font-family: var(--font-display); font-weight: 400;
@@ -340,7 +341,7 @@ button, input, select, textarea { font: inherit; }
 .agende-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: clamp(40px, 6vw, 96px); align-items: center; }
 .agende-content { min-width: 0; }
 .agende-logo { display: flex; justify-content: center; }
-.agende-logo img { width: clamp(260px, 30vw, 420px); height: auto; }
+.agende-logo img { width: clamp(220px, 24vw, 320px); height: auto; }
 .agende h2 { font-size: clamp(32px, 4vw, 52px); margin-bottom: 22px; }
 .agende .body-copy { margin-bottom: 8px; }
 .store-buttons { display: flex; gap: 16px; flex-wrap: wrap; }
@@ -351,7 +352,7 @@ button, input, select, textarea { font: inherit; }
 .agende-hint { margin: 26px 0 0; font-size: 12px; color: #8b8880; }
 @media (max-width: 900px) {
   .agende-grid { grid-template-columns: 1fr; }
-  .agende-logo img { width: clamp(240px, 64vw, 360px); }
+  .agende-logo img { width: clamp(200px, 46vw, 280px); }
 }
 
 /* --------------------------------------------------------------------------
@@ -557,7 +558,7 @@ button, input, select, textarea { font: inherit; }
 <header class="site-header" id="siteHeader">
   <div class="header-inner">
     <a class="header-logo" href="#inicio" aria-label="Connect Barber, início">
-      <img src="assets/img/simbolo.webp" alt="Connect Barber" width="520" height="582">
+      <img src="assets/img/banner.webp" alt="Connect Barber" width="1000" height="363">
     </a>
     <nav aria-label="Principal">
       <ul class="nav-links" id="navLinks"></ul>
@@ -639,7 +640,7 @@ button, input, select, textarea { font: inherit; }
 <section class="section agende on-paper" id="agende">
   <div class="wrap agende-grid">
     <div class="agende-logo reveal">
-      <img src="assets/img/banner-dark.webp" alt="Connect Barber" width="1000" height="363">
+      <img src="assets/img/simbolo-dark.webp" alt="Connect Barber" width="640" height="716">
     </div>
     <div class="agende-content">
       <p class="kicker reveal" data-kicker="booking.kicker"></p>
