@@ -5,1101 +5,1226 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Connect Barber</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Connect Barber: barba na navalha, toalhas quentes e agendamento online. Uma barbearia clássica conectada ao seu tempo.">
+<meta name="description" content="Connect Barber: encontre barbearias perto de você, compare avaliações, preços e horários e agende online.">
 <meta name="theme-color" content="#0b0b0b">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Connect Barber">
-<meta property="og:description" content="Barba na navalha, toalhas quentes e agendamento online.">
+<meta property="og:title" content="Connect Barber · barbearias perto de você">
+<meta property="og:description" content="Compare avaliações, preços e horários e agende online.">
 <meta property="og:image" content="assets/img/banner.png">
 <link rel="icon" type="image/png" href="assets/img/favicon.png">
-<link rel="apple-touch-icon" href="assets/img/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Inter:wght@400;500;600&family=Marcellus&family=Jost:wght@300;400&display=swap">
 <style>
 /* ==========================================================================
-   CONNECT BARBER · site do tenant · v2
-   Reconstrução fiel do visual da Barbearia Corleone: Oswald + Inter, preto
-   profundo, off-white institucional, barra bicolor de barber pole (vermelho
-   e azul), fotos em tela cheia e painéis 7/5. Única exceção: a seção
-   "Trabalhe Conosco" mantém o cromo e a tipografia da v1, a pedido.
-   Todo o conteúdo vem do bloco JSON #tenant no fim da página.
+   CONNECT BARBER · app do cliente
+   Mesmo sistema visual do template (Oswald + Inter, preto e off-white,
+   barra de barber pole vermelha e azul). Assinatura: a rede animada no topo,
+   barbearias como nós que se ligam por pulsos vermelhos e azuis.
    ========================================================================== */
 :root {
-  --ink: #0b0b0b;
-  --ink-2: #121212;
-  --ink-3: #1a1a1a;
-  --paper: #f4f2ee;
-  --paper-2: #eae7e1;
-  --red: #ED1B2E;
-  --blue: #0077B2;
-  --gray: #585858;
-  --white: #ffffff;
-  --text-dim: #b9b6b1;
-  --text-faint: #7c7a76;
-  --hair: rgba(255,255,255,.10);
-  --hair-dark: rgba(0,0,0,.12);
-
+  --ink: #0b0b0b; --ink-2: #121212; --ink-3: #1a1a1a; --ink-4: #232323;
+  --paper: #f4f2ee; --paper-2: #eae7e1;
+  --red: #ED1B2E; --blue: #0077B2; --blue-2: #2a9fe0; --gray: #585858;
+  --white: #ffffff; --text-dim: #b9b6b1; --text-faint: #8a877f;
+  --ok: #34c77b;
+  --hair: rgba(255,255,255,.10); --hair-2: rgba(255,255,255,.18); --hair-dark: rgba(0,0,0,.12);
   --font-display: "Oswald", "Arial Narrow", sans-serif;
   --font-body: "Inter", -apple-system, "Segoe UI", sans-serif;
-
-  /* só para a seção Trabalhe Conosco (mantida da v1) */
-  --cb-display: "Marcellus", "Optima", "Palatino Linotype", Georgia, serif;
-  --cb-body: "Jost", "Futura", "Century Gothic", sans-serif;
+  --cb-display: "Marcellus", "Optima", Georgia, serif;
+  --cb-body: "Jost", "Futura", sans-serif;
   --metal: linear-gradient(90deg, #4c5057 0%, #e8eaed 20%, #9ca1a8 38%, #fafbfb 56%, #7b8088 76%, #d6d9dd 100%);
-
   --w: 1280px;
-  --gutter: clamp(24px, 4vw, 56px);
-  --rhythm: clamp(96px, 12vw, 150px);
+  --gutter: clamp(20px, 4vw, 56px);
+  --rhythm: clamp(88px, 11vw, 140px);
   --ease: cubic-bezier(.22, 1, .36, 1);
+  --header: 76px;
   color-scheme: dark;
 }
-
 * { box-sizing: border-box; margin: 0; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
-body {
-  font-family: var(--font-body);
-  font-size: 15px;
-  background: var(--ink);
-  color: var(--white);
-  line-height: 1.75;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-  overflow-x: clip;
-}
-body::before {
-  content: ""; position: fixed; inset: 0 0 auto; z-index: 100;
-  height: env(safe-area-inset-top, 0px); background: var(--ink);
-}
+html.locked { overflow: hidden; }
+body { font-family: var(--font-body); font-size: 15px; line-height: 1.7; background: var(--ink); color: var(--white); -webkit-font-smoothing: antialiased; overflow-x: clip; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; z-index: 100; height: env(safe-area-inset-top, 0px); background: var(--ink); }
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
 ul { list-style: none; padding: 0; }
-button, input, select, textarea { font: inherit; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
 ::selection { background: var(--red); color: var(--white); }
 :focus-visible { outline: 2px solid var(--white); outline-offset: 3px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.ico { width: 18px; height: 18px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 
-.wrap {
-  max-width: calc(var(--w) + 2 * var(--gutter));
-  margin: 0 auto;
-  padding-left: max(var(--gutter), env(safe-area-inset-left, 0px));
-  padding-right: max(var(--gutter), env(safe-area-inset-right, 0px));
-}
-
-/* --------------------------------------------------------------------------
-   Barra bicolor (barber pole) e marca de poste ao lado dos títulos
-   -------------------------------------------------------------------------- */
+.wrap { max-width: calc(var(--w) + 2 * var(--gutter)); margin: 0 auto; padding-left: max(var(--gutter), env(safe-area-inset-left, 0px)); padding-right: max(var(--gutter), env(safe-area-inset-right, 0px)); }
 .brand-bar { display: flex; height: 4px; }
 .brand-bar::before { content: ""; flex: 0 0 38%; background: var(--red); }
 .brand-bar::after { content: ""; flex: 1; background: var(--blue); }
 .brand-bar-fixed { position: fixed; top: env(safe-area-inset-top, 0px); left: 0; right: 0; z-index: 90; }
-.pole-mark { width: 18px; height: 26px; flex: none; }
 
-/* --------------------------------------------------------------------------
-   Tipografia
-   -------------------------------------------------------------------------- */
-.display {
-  font-family: var(--font-display);
-  font-weight: 500;
-  text-transform: uppercase;
-  line-height: 1.02;
-  letter-spacing: .01em;
-}
-.kicker {
-  display: flex; align-items: center; gap: 14px;
-  font-family: var(--font-display); font-weight: 400;
-  font-size: 11px; letter-spacing: .38em; text-transform: uppercase;
-  color: var(--text-faint);
-  margin-bottom: 28px;
-}
+.display { font-family: var(--font-display); font-weight: 500; text-transform: uppercase; line-height: 1.02; letter-spacing: .01em; text-wrap: balance; }
+.kicker { display: flex; align-items: center; gap: 14px; font-family: var(--font-display); font-size: 11px; letter-spacing: .38em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 22px; }
 .kicker::after { content: ""; height: 1px; width: 56px; background: var(--hair); }
 .on-paper .kicker::after { background: var(--hair-dark); }
-
-.body-copy { color: var(--text-dim); max-width: 52ch; }
-.body-copy strong { color: var(--white); font-weight: 500; }
+.pole-mark { width: 18px; height: 26px; flex: none; }
+.body-copy { color: var(--text-dim); max-width: 56ch; }
 .on-paper .body-copy { color: var(--gray); }
-.on-paper .body-copy strong { color: var(--ink); }
 
-/* --------------------------------------------------------------------------
-   Botões
-   -------------------------------------------------------------------------- */
-.btn {
-  position: relative;
-  display: inline-flex; align-items: center; justify-content: center; gap: 12px;
-  padding: 17px 34px;
-  font-family: var(--font-display); font-weight: 500;
-  font-size: 12px; letter-spacing: .22em; text-transform: uppercase;
-  border: 1px solid transparent;
-  cursor: pointer;
-  transition: background .35s var(--ease), color .35s var(--ease), border-color .35s var(--ease);
-}
-.btn .arrow { transition: transform .35s var(--ease); }
-.btn:hover .arrow { transform: translateX(5px); }
-.btn-solid { background: var(--white); color: var(--ink); }
-.btn-solid:hover { background: var(--red); color: var(--white); }
-.btn-ghost { background: rgba(10,10,10,.45); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); color: var(--white); border-color: rgba(255,255,255,.45); }
-.btn-ghost:hover { border-color: var(--white); background: rgba(10,10,10,.65); }
-.btn-ghost-dark { background: transparent; color: var(--ink); border-color: rgba(0,0,0,.4); }
-.btn-ghost-dark:hover { background: var(--ink); color: var(--white); }
+/* ---------- botões ---------- */
+.btn { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 0 28px; font-family: var(--font-display); font-weight: 500; font-size: 12px; letter-spacing: .22em; text-transform: uppercase; border: 1px solid transparent; background: none; transition: background .3s var(--ease), color .3s var(--ease), border-color .3s var(--ease), opacity .2s; white-space: nowrap; touch-action: manipulation; }
+.btn .arrow { transition: transform .3s var(--ease); }
+.btn:hover .arrow { transform: translateX(4px); }
+.btn:disabled, .btn[aria-disabled="true"] { opacity: .4; cursor: not-allowed; }
 .btn-red { background: var(--red); color: var(--white); }
-.btn-red:hover { background: var(--white); color: var(--ink); }
+.btn-red:hover:not(:disabled) { background: var(--white); color: var(--ink); }
 .btn-blue { background: var(--blue); color: var(--white); }
 .btn-blue:hover { background: #005d8c; }
-.btn-whats { background: #000000; color: var(--white); }
-.btn-whats:hover { background: #262626; }
+.btn-solid { background: var(--white); color: var(--ink); }
+.btn-solid:hover { background: var(--red); color: var(--white); }
+.btn-ghost { color: var(--white); border-color: rgba(255,255,255,.4); background: rgba(10,10,10,.4); }
+.btn-ghost:hover { border-color: var(--white); background: rgba(10,10,10,.7); }
+.btn-ghost-dark { color: var(--ink); border-color: rgba(0,0,0,.35); }
+.btn-ghost-dark:hover { background: var(--ink); color: var(--white); }
+.btn-sm { min-height: 40px; padding: 0 18px; font-size: 11px; letter-spacing: .18em; }
+.btn.loading { pointer-events: none; opacity: .7; }
+.btn.loading::after { content: ""; width: 14px; height: 14px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spin .7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.link { border-bottom: 1px solid rgba(255,255,255,.35); padding-bottom: 2px; transition: border-color .3s, color .3s; }
+.link:hover { color: var(--white); border-color: var(--red); }
 
-/* --------------------------------------------------------------------------
-   Header
-   -------------------------------------------------------------------------- */
-.site-header {
-  position: fixed; top: calc(4px + env(safe-area-inset-top, 0px)); left: 0; right: 0; z-index: 80;
-  transition: background .45s var(--ease), border-color .45s var(--ease);
-  border-bottom: 1px solid transparent;
-  background: linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,0));
-}
-.site-header.scrolled {
-  background: rgba(9,9,9,.94);
-  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-  border-bottom-color: var(--hair);
-}
-.header-inner {
-  max-width: calc(var(--w) + 2 * var(--gutter)); margin: 0 auto;
-  padding-left: max(var(--gutter), env(safe-area-inset-left, 0px));
-  padding-right: max(var(--gutter), env(safe-area-inset-right, 0px));
-  height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 24px;
-}
-.header-logo img { height: 52px; width: auto; }
-@media (max-width: 520px) { .header-logo img { height: 44px; } }
-.nav-links { display: flex; gap: 34px; }
-.nav-links a {
-  font-family: var(--font-display); font-weight: 400;
-  font-size: 11px; letter-spacing: .26em; text-transform: uppercase;
-  color: #d9d6d1; padding: 6px 0; position: relative;
-}
-.nav-links a::after {
-  content: ""; position: absolute; left: 0; bottom: 0; width: 100%; height: 1px;
-  background: var(--red); transform: scaleX(0); transform-origin: right;
-  transition: transform .4s var(--ease);
-}
+/* ---------- header ---------- */
+.site-header { position: fixed; top: calc(4px + env(safe-area-inset-top, 0px)); left: 0; right: 0; z-index: 80; border-bottom: 1px solid transparent; background: linear-gradient(180deg, rgba(0,0,0,.6), rgba(0,0,0,0)); transition: background .4s var(--ease), border-color .4s var(--ease); }
+.site-header.scrolled { background: rgba(9,9,9,.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom-color: var(--hair); }
+.header-inner { max-width: calc(var(--w) + 2 * var(--gutter)); margin: 0 auto; padding-left: max(var(--gutter), env(safe-area-inset-left, 0px)); padding-right: max(var(--gutter), env(safe-area-inset-right, 0px)); height: var(--header); display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.header-logo img { height: 50px; width: auto; }
+.nav-links { display: flex; gap: 30px; }
+.nav-links a { position: relative; padding: 6px 0; font-family: var(--font-display); font-size: 11px; letter-spacing: .26em; text-transform: uppercase; color: #d9d6d1; }
+.nav-links a::after { content: ""; position: absolute; left: 0; bottom: 0; width: 100%; height: 1px; background: var(--red); transform: scaleX(0); transform-origin: right; transition: transform .4s var(--ease); }
 .nav-links a:hover, .nav-links a.active { color: var(--white); }
 .nav-links a:hover::after, .nav-links a.active::after { transform: scaleX(1); transform-origin: left; }
-.header-cta { display: flex; align-items: center; gap: 20px; }
-.header-cta .btn { padding: 12px 22px; }
-.menu-toggle { display: none; flex-direction: column; gap: 6px; background: none; border: none; cursor: pointer; padding: 6px; }
+.nav-links .nav-mobile-only { display: none; }
+.header-cta { display: flex; align-items: center; gap: 12px; }
+.my-btn { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; border: 1px solid var(--hair-2); background: rgba(10,10,10,.45); font-family: var(--font-display); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; }
+.my-btn:hover { border-color: var(--white); }
+.my-btn .count { min-width: 20px; height: 20px; padding: 0 6px; border-radius: 10px; background: var(--red); font: 600 11px/20px var(--font-body); letter-spacing: 0; text-align: center; }
+.my-btn .count:empty { display: none; }
+.menu-toggle { display: none; flex-direction: column; justify-content: center; gap: 6px; width: 44px; height: 44px; background: none; border: 0; padding: 9px; }
 .menu-toggle span { width: 26px; height: 1px; background: var(--white); transition: transform .3s var(--ease), opacity .3s; }
 .menu-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
 .menu-toggle.open span:nth-child(2) { opacity: 0; }
 .menu-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-@media (max-width: 1020px) {
-  .nav-links {
-    position: fixed; inset: calc(80px + env(safe-area-inset-top, 0px)) 0 auto 0;
-    background: rgba(9,9,9,.98); flex-direction: column; gap: 0;
-    padding: 12px max(var(--gutter), env(safe-area-inset-right, 0px)) 28px max(var(--gutter), env(safe-area-inset-left, 0px));
-    border-bottom: 1px solid var(--hair); display: none;
-  }
+@media (max-width: 1080px) {
+  .nav-links { position: fixed; inset: calc(80px + env(safe-area-inset-top, 0px)) 0 auto 0; background: rgba(9,9,9,.98); flex-direction: column; gap: 0; padding: 12px max(var(--gutter), env(safe-area-inset-right, 0px)) 28px max(var(--gutter), env(safe-area-inset-left, 0px)); border-bottom: 1px solid var(--hair); display: none; }
   .nav-links.open { display: flex; }
   .nav-links a { display: block; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,.06); }
+  .nav-links a::after { display: none; }
+  .nav-links .nav-mobile-only { display: block; }
   .menu-toggle { display: flex; }
   .header-cta .btn { display: none; }
 }
+@media (max-width: 560px) { .my-btn .label { display: none; } .header-logo img { height: 42px; } }
 
-/* --------------------------------------------------------------------------
-   Hero (foto da fachada em tela cheia)
-   -------------------------------------------------------------------------- */
-.hero {
-  position: relative; min-height: 100svh;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  text-align: center; overflow: hidden; isolation: isolate;
-  padding: 120px 0 110px;
-  background-color: var(--ink);
-  background-image: var(--img);
-  background-size: cover; background-position: center 40%;
-}
-.hero::before {
-  content: ""; position: absolute; inset: 0; z-index: -1;
-  background: linear-gradient(180deg, rgba(5,5,5,.62) 0%, rgba(5,5,5,.38) 45%, rgba(5,5,5,.82) 100%);
-}
-.hero-title { font-size: clamp(32px, 6.4vw, 84px); max-width: 24ch; margin: 0 auto 40px; text-shadow: 0 6px 40px rgba(0,0,0,.5); }
-.hero-actions { display: flex; gap: 18px; flex-wrap: wrap; justify-content: center; }
-.hero-foot {
-  position: absolute; left: 0; right: 0; bottom: 0;
-  display: flex; align-items: flex-end; justify-content: space-between;
-  padding: 0 max(var(--gutter), env(safe-area-inset-right, 0px)) 30px max(var(--gutter), env(safe-area-inset-left, 0px));
-  font-family: var(--font-display); font-size: 10px; letter-spacing: .3em; text-transform: uppercase;
-  color: rgba(255,255,255,.55);
-}
+/* ---------- hero: rede animada ---------- */
+.hero { position: relative; isolation: isolate; overflow: hidden; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: calc(var(--header) + 56px) 0 120px; }
+.hero-bg { position: absolute; inset: 0; z-index: -3; background: #050505 url("assets/img/capas/rede.webp") center 40% / cover no-repeat; }
+.hero-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(5,5,5,.82) 0%, rgba(5,5,5,.62) 45%, rgba(5,5,5,.94) 100%); }
+.hero-gl { position: absolute; inset: 0; z-index: -2; mix-blend-mode: screen; }
+.hero-gl canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.hero-gl pre { position: absolute; left: 16px; bottom: 16px; z-index: 3; max-width: 60ch; padding: 10px 12px; background: #300; color: #fbb; font: 11px/1.4 monospace; white-space: pre-wrap; text-align: left; }
+.hero .kicker { justify-content: center; }
+.hero .kicker::before { content: ""; height: 1px; width: 56px; background: var(--hair); }
+.hero-title { font-size: clamp(36px, 6.6vw, 92px); max-width: 15ch; margin: 0 auto 22px; text-shadow: 0 6px 40px rgba(0,0,0,.6); }
+.hero-title em { font-style: normal; color: var(--red); }
+.hero-sub { color: #d7d4ce; font-size: clamp(15px, 1.4vw, 17px); max-width: 54ch; margin: 0 auto 36px; }
+
+.finder { width: min(100%, 980px); margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr) auto; text-align: left; background: rgba(10,10,10,.72); border: 1px solid var(--hair-2); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.finder-field { padding: 14px 20px 12px; min-width: 0; }
+.finder-field + .finder-field { border-left: 1px solid var(--hair); }
+.finder-field label { display: block; font-family: var(--font-display); font-size: 10px; letter-spacing: .3em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 4px; }
+.f-row { display: flex; align-items: center; gap: 10px; }
+.f-row .ico { color: var(--red); }
+.finder input, .finder select { width: 100%; min-width: 0; background: transparent; border: 0; outline: none; font-size: 16px; padding: 6px 0; color: var(--white); }
+.finder input::placeholder { color: #8f8c86; }
+.finder select { appearance: none; -webkit-appearance: none; cursor: pointer; }
+.finder select option { background: var(--ink-2); }
+.f-gps { flex: none; display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 12px; background: rgba(0,119,178,.18); border: 1px solid rgba(42,159,224,.5); color: #cfeaff; font-family: var(--font-display); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; }
+.f-gps:hover { background: var(--blue); color: var(--white); }
+.finder-go { min-height: 100%; padding: 0 30px; }
+.finder-quick { margin-top: 18px; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 10px; font-size: 13px; color: var(--text-dim); }
+.finder-quick button { background: none; border: 0; border-bottom: 1px solid rgba(255,255,255,.3); padding: 2px 0; color: var(--white); }
+.finder-quick button:hover { border-color: var(--red); }
+.hero-foot { position: absolute; left: 0; right: 0; bottom: 0; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 max(var(--gutter), env(safe-area-inset-right, 0px)) 28px max(var(--gutter), env(safe-area-inset-left, 0px)); font-family: var(--font-display); font-size: 10px; letter-spacing: .3em; text-transform: uppercase; color: rgba(255,255,255,.55); }
 .hero-scroll { display: flex; flex-direction: column; align-items: center; gap: 12px; }
-.hero-scroll::after {
-  content: ""; width: 1px; height: 52px;
-  background: linear-gradient(180deg, rgba(255,255,255,.7), rgba(255,255,255,0));
-  animation: scrollHint 2.4s var(--ease) infinite;
-}
-@keyframes scrollHint {
-  0% { transform: scaleY(0); transform-origin: top; }
-  45% { transform: scaleY(1); transform-origin: top; }
-  55% { transform: scaleY(1); transform-origin: bottom; }
-  100% { transform: scaleY(0); transform-origin: bottom; }
-}
-@media (max-width: 720px) {
-  .hero { background-image: var(--img-m, var(--img)); background-position: center; }
+.hero-scroll::after { content: ""; width: 1px; height: 46px; background: linear-gradient(180deg, rgba(255,255,255,.7), rgba(255,255,255,0)); animation: scrollHint 2.4s var(--ease) infinite; }
+@keyframes scrollHint { 0% { transform: scaleY(0); transform-origin: top; } 45% { transform: scaleY(1); transform-origin: top; } 55% { transform: scaleY(1); transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
+@media (max-width: 860px) {
+  .finder { grid-template-columns: 1fr; }
+  .finder-field + .finder-field { border-left: 0; border-top: 1px solid var(--hair); }
+  .finder-go { min-height: 54px; }
+  .f-gps span { display: none; }
+  .f-gps { width: 44px; height: 44px; padding: 0; justify-content: center; }
   .hero-foot { justify-content: center; }
-  .hero-foot .hero-foot-side { display: none; }
+  .hero-foot .side { display: none; }
 }
 
-/* --------------------------------------------------------------------------
-   Faixa de promoção
-   -------------------------------------------------------------------------- */
-.promo-bar { border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); background: var(--ink-2); }
-.promo-inner {
-  max-width: calc(var(--w) + 2 * var(--gutter)); margin: 0 auto;
-  padding: 18px max(var(--gutter), env(safe-area-inset-right, 0px)) 18px max(var(--gutter), env(safe-area-inset-left, 0px));
-  display: flex; align-items: center; justify-content: center; gap: 16px; text-align: center;
-  font-family: var(--font-display); font-size: 12px; letter-spacing: .24em; text-transform: uppercase;
-  color: var(--text-dim); transition: color .3s;
-}
-.promo-inner:hover { color: var(--white); }
-.promo-inner strong { color: var(--red); font-weight: 500; }
+/* ---------- aviso de localização ---------- */
+.locsheet { position: fixed; z-index: 85; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); translate: -50% 0; width: min(560px, calc(100vw - 24px)); background: var(--paper); color: var(--ink); padding: 22px 24px 22px; display: grid; grid-template-columns: auto 1fr; gap: 6px 18px; box-shadow: 0 30px 70px -20px rgba(0,0,0,.8); border-top: 4px solid var(--red); animation: sheetIn .45s var(--ease) both; }
+.locsheet[hidden] { display: none; }
+.locsheet .pin-ico { grid-row: span 2; width: 48px; height: 48px; display: grid; place-items: center; background: var(--ink); color: var(--white); }
+.locsheet .pin-ico .ico { width: 24px; height: 24px; color: var(--red); }
+.locsheet h3 { font-family: var(--font-display); font-weight: 500; font-size: 20px; text-transform: uppercase; line-height: 1.15; padding-right: 30px; }
+.locsheet p { font-size: 14px; color: var(--gray); line-height: 1.55; }
+.locsheet .actions { grid-column: 1 / -1; display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+.locsheet .x { position: absolute; top: 8px; right: 8px; width: 40px; height: 40px; display: grid; place-items: center; background: none; border: 0; color: var(--gray); }
+.locsheet .x:hover { color: var(--ink); }
+@keyframes sheetIn { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+@media (max-width: 520px) { .locsheet { grid-template-columns: 1fr; } .locsheet .pin-ico { display: none; } .locsheet .actions .btn { flex: 1 1 100%; } }
 
-/* --------------------------------------------------------------------------
-   Letreiro contínuo
-   -------------------------------------------------------------------------- */
+/* ---------- explorar: lista + mapa ---------- */
+.explore { position: relative; padding-top: var(--rhythm); border-top: 1px solid var(--hair); }
+.explore-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 18px 40px; }
+.explore-head h2 { font-size: clamp(30px, 4vw, 54px); }
+.explore-head h2 span { color: var(--red); }
+.explore-sub { color: var(--text-dim); margin-top: 12px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; }
+.explore-sub button { background: none; border: 0; padding: 0; color: #cfeaff; border-bottom: 1px solid rgba(42,159,224,.5); font-size: 14px; }
+.demo-note { margin-top: 12px; font-size: 12.5px; color: var(--text-faint); display: flex; gap: 8px; align-items: center; }
+.demo-note::before { content: "DEMO"; font: 600 10px/1 var(--font-display); letter-spacing: .2em; padding: 4px 6px; background: var(--ink-4); color: #d9d6d1; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.tb-field { display: flex; align-items: center; gap: 10px; min-height: 46px; padding: 0 14px; border: 1px solid var(--hair-2); background: var(--ink-2); }
+.tb-field input, .tb-field select { background: transparent; border: 0; outline: none; font-size: 15px; min-width: 0; }
+.tb-field select { appearance: none; -webkit-appearance: none; cursor: pointer; padding-right: 14px; background: linear-gradient(45deg, transparent 50%, #9a978f 50%) right 2px center / 6px 6px no-repeat; }
+.tb-field select option { background: var(--ink-2); }
+.tb-field:focus-within { border-color: var(--white); }
+.tb-field .ico { color: var(--text-faint); }
+.tb-search { flex: 1 1 260px; }
+.tb-search input { width: 100%; }
+.tb-label { font-family: var(--font-display); font-size: 10px; letter-spacing: .26em; text-transform: uppercase; color: var(--text-faint); }
+.chips { display: flex; gap: 8px; overflow-x: auto; padding: 16px 0 2px; scrollbar-width: none; }
+.chips::-webkit-scrollbar { display: none; }
+.chip { flex: none; display: inline-flex; align-items: center; gap: 8px; min-height: 38px; padding: 0 16px; border: 1px solid var(--hair-2); background: transparent; font-family: var(--font-display); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: #d9d6d1; transition: background .2s, border-color .2s, color .2s; }
+.chip:hover { border-color: var(--white); color: var(--white); }
+.chip[aria-pressed="true"] { background: var(--red); border-color: var(--red); color: var(--white); }
+.chip .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); }
+.chip-sep { flex: none; width: 1px; background: var(--hair); margin: 6px 4px; }
+
+.explore-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); margin-top: 26px; border-top: 1px solid var(--hair); }
+.results-col { min-width: 0; padding: 26px 26px 96px max(var(--gutter), env(safe-area-inset-left, 0px)); }
+.results-count { font-family: var(--font-display); font-size: 11px; letter-spacing: .26em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 16px; }
+.results { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-content: start; }
+.map-col { position: sticky; top: calc(var(--header) + 4px); height: calc(100svh - var(--header) - 4px); border-left: 1px solid var(--hair); isolation: isolate; z-index: 0; }
+.map { position: absolute; inset: 0; background: #151515; }
+.map .leaflet-tile-pane { filter: invert(1) hue-rotate(185deg) brightness(.92) contrast(.86) saturate(.35); }
+.map.map-notiles, .map.map-off { background-color: #141414; background-image: linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px), linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px); background-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px; }
+.map.map-notiles::after, .map.map-off::after { content: "Prévia sem ruas: no site publicado o mapa da cidade aparece aqui."; position: absolute; z-index: 450; left: 12px; bottom: 26px; max-width: 280px; padding: 8px 12px; background: rgba(11,11,11,.85); border: 1px solid var(--hair); font-size: 12px; color: var(--text-dim); pointer-events: none; }
+.map-tools { position: absolute; z-index: 500; top: 12px; right: 12px; display: flex; flex-direction: column; gap: 8px; }
+.map-tool { width: 44px; height: 44px; display: grid; place-items: center; background: var(--ink); border: 1px solid var(--hair-2); color: var(--white); }
+.map-tool:hover { background: var(--blue); }
+.map-card { position: absolute; z-index: 550; left: 12px; right: 12px; bottom: 30px; max-width: 460px; display: grid; grid-template-columns: 120px minmax(0, 1fr); background: var(--ink); border: 1px solid var(--hair-2); box-shadow: 0 30px 60px -20px rgba(0,0,0,.9); animation: sheetIn .3s var(--ease) both; }
+.map-card[hidden] { display: none; }
+.map-card .mc-img { background: var(--ink-3) center / cover; min-height: 132px; }
+.map-card .mc-body { padding: 14px 16px; min-width: 0; }
+.map-card h3 { font-family: var(--font-display); font-weight: 500; font-size: 18px; text-transform: uppercase; line-height: 1.15; padding-right: 26px; }
+.map-card .mc-meta { font-size: 12.5px; color: var(--text-dim); margin: 4px 0 10px; }
+.map-card .mc-actions { display: flex; gap: 8px; }
+.map-card .x { position: absolute; top: 4px; right: 4px; width: 36px; height: 36px; display: grid; place-items: center; background: none; border: 0; color: var(--text-dim); }
+
+/* pinos do mapa */
+.pin { position: relative; width: 46px; height: 52px; display: grid; place-items: start center; filter: drop-shadow(0 8px 10px rgba(0,0,0,.6)); transition: transform .2s var(--ease); transform-origin: 50% 100%; }
+.pin::before { content: ""; position: absolute; top: 0; left: 3px; width: 40px; height: 40px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: var(--ink); border: 2px solid var(--red); }
+.pin b { position: relative; margin-top: 10px; font: 600 12px/1 var(--font-display); letter-spacing: .02em; color: var(--white); }
+.pin.closed::before { border-color: #6f6c66; }
+.pin.on { transform: scale(1.22); z-index: 1000; }
+.pin.on::before { background: var(--red); }
+.me-dot { width: 22px; height: 22px; border-radius: 50%; background: var(--blue-2); border: 3px solid var(--white); box-shadow: 0 0 0 0 rgba(42,159,224,.6); animation: mePulse 2s infinite; }
+@keyframes mePulse { 70% { box-shadow: 0 0 0 18px rgba(42,159,224,0); } 100% { box-shadow: 0 0 0 0 rgba(42,159,224,0); } }
+
+/* cartão de barbearia */
+.shop-card { position: relative; display: flex; flex-direction: column; background: var(--ink-2); border: 1px solid var(--hair); transition: border-color .25s, transform .25s var(--ease); min-width: 0; }
+.shop-card:hover, .shop-card.on { border-color: rgba(237,27,46,.75); }
+.sc-media { position: relative; display: block; aspect-ratio: 16 / 10; background: var(--ink-3) center / cover; overflow: hidden; }
+.sc-media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.35) 0%, rgba(0,0,0,0) 35%, rgba(0,0,0,.55) 100%); }
+.sc-status { position: absolute; z-index: 1; top: 10px; left: 10px; display: inline-flex; align-items: center; gap: 6px; padding: 5px 9px; background: rgba(11,11,11,.82); font-size: 11.5px; font-weight: 500; }
+.sc-status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #77746e; }
+.sc-status.open::before { background: var(--ok); }
+.sc-dist { position: absolute; z-index: 1; top: 10px; right: 10px; padding: 5px 9px; background: var(--white); color: var(--ink); font: 600 11px/1.2 var(--font-display); letter-spacing: .08em; }
+.sc-body { position: relative; padding: 34px 18px 18px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
+.sc-logo { position: absolute; top: -30px; left: 16px; width: 56px; height: 56px; border-radius: 50%; object-fit: cover; background: var(--ink); border: 2px solid var(--ink-2); }
+.sc-name { font-family: var(--font-display); font-weight: 500; font-size: 20px; text-transform: uppercase; line-height: 1.12; letter-spacing: .01em; }
+.sc-name a:hover { color: #ffd2d6; }
+.sc-rating { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-dim); }
+.sc-rating b { color: var(--white); }
+.sc-addr { font-size: 13px; color: var(--text-dim); }
+.sc-tags { font-family: var(--font-display); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--text-faint); }
+.sc-foot { margin-top: auto; padding-top: 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; border-top: 1px solid var(--hair); }
+.sc-price { font-size: 12.5px; color: var(--text-dim); }
+.sc-price b { display: block; font: 500 18px/1.1 var(--font-display); color: var(--white); letter-spacing: .02em; }
+.stars { position: relative; display: inline-block; font-size: 13px; line-height: 1; letter-spacing: 2px; color: #3d3b38; white-space: nowrap; }
+.stars::before { content: "★★★★★"; }
+.stars i { position: absolute; inset: 0 auto 0 0; overflow: hidden; color: var(--red); font-style: normal; }
+.stars i::before { content: "★★★★★"; }
+.empty { grid-column: 1 / -1; padding: 40px 28px; border: 1px dashed var(--hair-2); text-align: center; color: var(--text-dim); }
+.empty h3 { font-family: var(--font-display); font-weight: 500; font-size: 22px; text-transform: uppercase; color: var(--white); margin-bottom: 8px; }
+.empty .btn { margin-top: 18px; }
+.skeleton { background: linear-gradient(90deg, var(--ink-2) 0%, var(--ink-3) 50%, var(--ink-2) 100%); background-size: 200% 100%; animation: shimmer 1.2s linear infinite; min-height: 330px; border: 1px solid var(--hair); }
+@keyframes shimmer { to { background-position: -200% 0; } }
+@media (max-width: 1240px) { .results { grid-template-columns: 1fr; } .shop-card { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); } .sc-media { aspect-ratio: auto; min-height: 100%; } .sc-body { padding-top: 18px; } .sc-logo { position: static; width: 44px; height: 44px; margin-bottom: 6px; } }
+@media (max-width: 900px) {
+  .explore-grid { grid-template-columns: 1fr; }
+  .map-col { position: relative; top: 0; height: clamp(320px, 62vw, 460px); border-left: 0; order: -1; border-bottom: 1px solid var(--hair); }
+  .results-col { padding: 22px max(var(--gutter), env(safe-area-inset-right, 0px)) 72px max(var(--gutter), env(safe-area-inset-left, 0px)); }
+}
+@media (max-width: 560px) { .shop-card { display: flex; } .sc-media { aspect-ratio: 16 / 10; min-height: 0; } .sc-logo { position: absolute; width: 52px; height: 52px; } .sc-body { padding-top: 32px; } }
+
+/* ---------- letreiro ---------- */
 .marquee { overflow: hidden; border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); padding: 22px 0; background: var(--ink); }
-.marquee-track { display: flex; width: max-content; animation: marquee 38s linear infinite; }
-.marquee span {
-  font-family: var(--font-display); font-weight: 400; font-size: 13px; letter-spacing: .42em; text-transform: uppercase;
-  color: var(--text-faint); padding: 0 34px; white-space: nowrap;
-}
-.marquee span i { font-style: normal; color: var(--red); padding-right: 68px; }
-@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.marquee-track { display: flex; width: max-content; animation: marquee 40s linear infinite; }
+.marquee span { font-family: var(--font-display); font-size: 13px; letter-spacing: .42em; text-transform: uppercase; color: var(--text-faint); padding: 0 34px; white-space: nowrap; }
+.marquee span i { font-style: normal; color: var(--red); padding-left: 68px; }
+@keyframes marquee { to { transform: translateX(-50%); } }
 
-/* --------------------------------------------------------------------------
-   Painéis editoriais (foto 7 colunas + texto 5 colunas)
-   -------------------------------------------------------------------------- */
-.panel { display: grid; grid-template-columns: repeat(12, 1fr); align-items: stretch; min-height: 640px; }
-.panel-media { grid-column: 1 / 8; position: relative; overflow: hidden; min-height: 380px; background: var(--ink-2); }
-.panel-media .media-img {
-  position: absolute; inset: 0;
-  background-image: var(--img); background-size: cover; background-position: var(--pos, center);
-  transform: scale(1.001); transition: transform 1.4s var(--ease);
-}
-.panel:hover .media-img { transform: scale(1.045); }
-.panel-media::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, rgba(0,0,0,0) 60%, rgba(11,11,11,.32) 100%); }
-.panel-body {
-  grid-column: 8 / 13; min-width: 0;
-  display: flex; flex-direction: column; justify-content: center;
-  padding: clamp(56px, 7vw, 110px) clamp(32px, 5vw, 90px);
-  background: var(--ink);
-}
-.panel-body .body-copy + .body-copy { margin-top: 0; }
-.panel.flip .panel-media { grid-column: 6 / 13; order: 2; }
-.panel.flip .panel-media::after { background: linear-gradient(270deg, rgba(0,0,0,0) 60%, rgba(11,11,11,.32) 100%); }
-.panel.flip .panel-body { grid-column: 1 / 6; order: 1; }
-.panel h2 { font-size: clamp(34px, 4.2vw, 56px); margin-bottom: 26px; }
-.panel .panel-cta { margin-top: 38px; display: flex; gap: 16px; flex-wrap: wrap; }
-@media (max-width: 900px) {
-  .panel, .panel.flip { display: flex; flex-direction: column; }
-  .panel-media { min-height: 62vw; order: -1 !important; }
-  .panel-body { padding: 56px max(var(--gutter), env(safe-area-inset-right, 0px)) 72px max(var(--gutter), env(safe-area-inset-left, 0px)); }
-}
+/* ---------- como funciona ---------- */
+.section { padding-block: var(--rhythm); }
+.paper { background: var(--paper); color: var(--ink); }
+.how-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px 60px; align-items: end; }
+.how-head h2 { font-size: clamp(32px, 4.2vw, 56px); }
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); border-left: 1px solid var(--hair-dark); margin-top: 56px; }
+.step { border-right: 1px solid var(--hair-dark); border-top: 1px solid var(--hair-dark); border-bottom: 1px solid var(--hair-dark); padding: 40px 32px 44px; transition: background .4s var(--ease); }
+.step:hover { background: var(--paper-2); }
+.step .n { display: block; font: 500 54px/1 var(--font-display); color: var(--red); margin-bottom: 26px; }
+.step:nth-child(2) .n { color: var(--blue); }
+.step h3 { font-family: var(--font-display); font-weight: 500; font-size: 20px; text-transform: uppercase; letter-spacing: .03em; margin-bottom: 10px; }
+.step p { font-size: 14.5px; color: var(--gray); }
+@media (max-width: 860px) { .how-head { grid-template-columns: 1fr; } .steps { grid-template-columns: 1fr; } }
 
-/* --------------------------------------------------------------------------
-   Nossos serviços
-   -------------------------------------------------------------------------- */
-.services-photo {
-  position: relative; isolation: isolate; overflow: hidden;
-  min-height: clamp(240px, 32vw, 400px);
-  background-image: var(--img); background-size: cover; background-position: center 55%;
-}
-.services-photo::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(5,5,5,0) 55%, rgba(5,5,5,.88) 100%); }
-.services-photo-caption {
-  position: absolute; left: 0; right: 0; bottom: 0;
-  padding: 0 max(var(--gutter), env(safe-area-inset-right, 0px)) 22px max(var(--gutter), env(safe-area-inset-left, 0px));
-  font-family: var(--font-display); font-size: 10px; letter-spacing: .3em; text-transform: uppercase;
-  color: rgba(255,255,255,.75);
-}
-.services-wrap { padding-block: var(--rhythm); }
-.services-wrap h2 { font-size: clamp(30px, 3.4vw, 46px); margin-bottom: 22px; }
-.services-wrap .body-copy { margin-bottom: 8px; }
-.services-grid { display: grid; grid-template-columns: repeat(4, 1fr); border-left: 1px solid var(--hair); margin-top: 52px; }
-.service-cat { border-right: 1px solid var(--hair); border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); padding: 34px 28px; min-width: 0; }
-.service-cat h3 { font-family: var(--font-display); font-weight: 500; font-size: 14px; letter-spacing: .1em; text-transform: uppercase; color: var(--red); margin-bottom: 22px; }
-.service-list li { margin-bottom: 18px; }
-.service-list li:last-child { margin-bottom: 0; }
-.service-line { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
-.service-name { font-size: 14px; color: var(--white); }
-.service-duration { font-family: var(--font-display); font-size: 10px; letter-spacing: .1em; color: var(--text-faint); white-space: nowrap; }
-.service-duration b { font-weight: 500; color: #d9d6d1; margin-left: 8px; }
-.service-detail { margin-top: 6px; font-size: 12px; line-height: 1.6; color: var(--text-dim); }
-@media (max-width: 1100px) { .services-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 560px) { .services-grid { grid-template-columns: 1fr; } }
-
-/* --------------------------------------------------------------------------
-   Seções e Agende (fundo institucional claro)
-   -------------------------------------------------------------------------- */
-.section { padding: var(--rhythm) 0; }
-.section.paper { background: var(--paper); color: var(--ink); }
-.agende { position: relative; background: var(--paper); color: var(--ink); border-top: 1px solid var(--hair-dark); }
-.agende-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: clamp(40px, 6vw, 96px); align-items: center; }
-.agende-content { min-width: 0; }
-.agende-logo { display: flex; justify-content: center; }
-.agende-logo img { width: clamp(220px, 24vw, 320px); height: auto; }
-.agende h2 { font-size: clamp(32px, 4vw, 52px); margin-bottom: 22px; }
-.agende .body-copy { margin-bottom: 8px; }
-.store-buttons { display: flex; gap: 16px; flex-wrap: wrap; }
-.channel-label { font-family: var(--font-display); font-size: 10px; letter-spacing: .34em; text-transform: uppercase; color: #8b8880; margin: 40px 0 14px; }
-.agende-phones { margin: 22px 0 0; font-size: 14px; color: var(--gray); }
-.agende-phones a { color: var(--ink); border-bottom: 1px solid rgba(0,0,0,.35); padding-bottom: 2px; white-space: nowrap; transition: color .3s, border-color .3s; }
-.agende-phones a:hover { color: var(--red); border-color: var(--red); }
-.agende-hint { margin: 26px 0 0; font-size: 12px; color: #8b8880; }
-@media (max-width: 900px) {
-  .agende-grid { grid-template-columns: 1fr; }
-  .agende-logo img { width: clamp(200px, 46vw, 280px); }
-}
-
-/* --------------------------------------------------------------------------
-   Instagram: celular com o perfil + colagem de fotos à direita
-   -------------------------------------------------------------------------- */
-.insta-hero {
-  position: relative; isolation: isolate; overflow: hidden;
-  min-height: clamp(560px, 62vw, 720px);
-  display: flex; align-items: center;
-  border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair);
-  background: radial-gradient(60% 80% at 40% 60%, #1a1714 0%, var(--ink) 70%);
-  color: var(--white);
-}
-.insta-collage {
-  position: absolute; z-index: 0; top: 0; bottom: 0; right: 0; width: 42%;
-  display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(4, 1fr); gap: 4px;
-}
-.insta-collage span { background-image: var(--img); background-size: cover; background-position: center; filter: saturate(.9) brightness(.9); }
-.insta-collage span:nth-child(1) { grid-column: span 2; }
-.insta-collage span:nth-child(6) { grid-row: span 2; }
-.insta-collage span:nth-child(8) { grid-column: span 2; }
-.insta-phone {
-  position: absolute; z-index: 1; left: 34%; top: 7%;
-  width: clamp(280px, 27vw, 390px); aspect-ratio: 9 / 19.2;
-  border-radius: 52px; padding: 12px;
-  background: linear-gradient(150deg, #3b3b3d, #0d0d0e 35%, #1c1c1e 70%, #434345);
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,.22), 0 50px 90px -30px rgba(0,0,0,.95), -30px 30px 80px rgba(0,0,0,.6);
-  transform: rotate(-7deg);
-}
-.phone-screen { position: relative; height: 100%; border-radius: 42px; overflow: hidden; background: #000; padding: 14px 16px 0; display: flex; flex-direction: column; gap: 12px; font-family: var(--font-body); }
-.phone-status { display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 600; padding: 2px 10px 0; }
-.phone-status i { width: 90px; height: 24px; border-radius: 14px; background: #000; box-shadow: 0 0 0 1px #1d1d1f; }
-.phone-status b { font-weight: 600; letter-spacing: .04em; font-size: 10px; }
-.ig-top { display: flex; align-items: center; justify-content: space-between; font-size: 14px; font-weight: 600; }
-.ig-top span { display: inline-flex; align-items: center; gap: 6px; }
-.ig-top span::after { content: ""; width: 10px; height: 10px; border-radius: 50%; background: #3897f0; }
-.ig-profile { display: flex; align-items: center; gap: 16px; }
-.ig-avatar { width: 66px; height: 66px; border-radius: 50%; flex: none; padding: 3px; background: conic-gradient(var(--red) 0 38%, #fff 38% 50%, var(--blue) 50% 88%, #fff 88%); }
-.ig-avatar span { display: grid; place-items: center; width: 100%; height: 100%; border-radius: 50%; background: #0b0b0b; border: 2px solid #000; }
-.ig-avatar img { width: 62%; }
-.ig-name { font-size: 13px; font-weight: 600; line-height: 1.3; }
-.ig-bio { font-size: 11px; color: #a8a8a8; line-height: 1.4; }
-.ig-tabs { display: flex; justify-content: space-around; padding: 8px 0 6px; border-top: 1px solid #262626; }
-.ig-tabs svg { width: 18px; height: 18px; fill: none; stroke: #f2f2f2; stroke-width: 1.6; }
-.ig-tabs svg:not(:first-child) { stroke: #8e8e8e; }
-.ig-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin: 0 -16px; }
-.ig-grid span { aspect-ratio: 1; background-image: var(--img); background-size: cover; background-position: center; }
-.insta-hero-copy { position: relative; z-index: 2; margin-left: max(clamp(24px, 4vw, 72px), env(safe-area-inset-left, 0px)); width: min(340px, 26vw); min-width: 240px; }
-.insta-hero-copy h2 { font-size: clamp(24px, 2.4vw, 38px); margin-bottom: 16px; }
-.insta-hero-line { color: #cfccc7; font-size: 15px; margin-bottom: 30px; }
-.insta-handle { display: inline-block; font-family: var(--font-display); font-size: 13px; letter-spacing: .3em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 12px; transition: color .3s; }
-.insta-handle:hover { color: var(--white); }
-@media (max-width: 1080px) {
-  .insta-hero { align-items: flex-end; min-height: max(124vw, 680px); }
-  .insta-collage { width: 100%; opacity: .5; grid-template-rows: repeat(5, 1fr); }
-  .insta-phone { left: 50%; top: 3%; width: min(60vw, 330px); transform: translateX(-50%) rotate(-6deg); }
-  .insta-hero::after { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, rgba(5,5,5,0) 38%, rgba(5,5,5,.9) 70%); pointer-events: none; }
-  .insta-hero-copy { padding-bottom: 56px; width: auto; max-width: 420px; margin-right: max(var(--gutter), env(safe-area-inset-right, 0px)); }
-}
-
-/* --------------------------------------------------------------------------
-   Trabalhe conosco: mantida exatamente como na v1 (cromo + Marcellus/Jost)
-   -------------------------------------------------------------------------- */
-.recruit { position: relative; overflow: hidden; background: #111214; border-bottom: 1px solid var(--hair); padding: clamp(88px, 12vw, 150px) 0; }
-.recruit-sash { position: absolute; left: -8%; right: -8%; top: 36%; transform: rotate(-8deg); z-index: 0; pointer-events: none; }
+/* ---------- para barbearias (seção cromada mantida) ---------- */
+.recruit { position: relative; overflow: hidden; background: #111214; border-bottom: 1px solid var(--hair); padding-block: clamp(88px, 12vw, 150px); }
+.recruit-sash { position: absolute; left: -8%; right: -8%; top: 30%; transform: rotate(-8deg); z-index: 0; pointer-events: none; }
 .sash { display: block; height: clamp(26px, 3.4vw, 44px); }
 .sash-a { background: var(--metal); background-size: 200% 100%; animation: metalSlide 12s linear infinite; opacity: .9; }
 .sash-b { margin-top: clamp(10px, 1.4vw, 18px); transform: translateX(clamp(30px, 4vw, 64px)); background: linear-gradient(90deg, #1c1d20, #4a4e54 30%, #2a2c30 60%, #5a5e65 85%, #1c1d20); }
 @keyframes metalSlide { to { background-position: -200% 0; } }
-.recruit-inner { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 48px; align-items: center; }
-.recruit .display { font-family: var(--cb-display); font-weight: 400; line-height: 1.06; letter-spacing: .015em; text-wrap: balance; }
+.recruit-inner { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 48px 64px; align-items: center; }
+.recruit .display { font-family: var(--cb-display); font-weight: 400; line-height: 1.06; letter-spacing: .015em; }
 .recruit h2 { font-size: clamp(30px, 3.6vw, 48px); margin-bottom: 20px; }
 .recruit .body-copy { font-family: var(--cb-body); font-weight: 300; font-size: 16.5px; line-height: 1.7; color: #b3b7bd; text-shadow: 0 2px 14px rgba(0,0,0,.9); }
-.recruit-logo { width: clamp(300px, 36vw, 470px); height: auto; margin-bottom: 30px; filter: drop-shadow(0 16px 30px rgba(0,0,0,.8)); }
-.recruit .badge {
-  display: inline-block; margin-bottom: 26px; padding: 9px 16px;
-  font-family: var(--cb-display); font-size: 10px; line-height: 1.7; letter-spacing: .34em; text-transform: uppercase;
-  background: #18191c; border-left: 3px solid #d9dce0;
-}
-.recruit .btn { font-family: var(--cb-display); font-weight: 400; min-height: 52px; padding: 0 32px; background: rgba(10,10,11,.45); border-color: rgba(255,255,255,.4); }
-.recruit .btn:hover { border-color: var(--white); background: rgba(10,10,11,.7); }
-@media (max-width: 860px) { .recruit-inner { grid-template-columns: 1fr; } }
+.recruit-logo { width: clamp(280px, 34vw, 450px); height: auto; margin-bottom: 30px; filter: drop-shadow(0 16px 30px rgba(0,0,0,.8)); }
+.recruit .badge { display: inline-block; margin-bottom: 26px; padding: 9px 16px; font-family: var(--cb-display); font-size: 10px; line-height: 1.7; letter-spacing: .34em; text-transform: uppercase; background: #18191c; border-left: 3px solid #d9dce0; }
+.recruit .btn { font-family: var(--cb-display); font-weight: 400; min-height: 52px; padding: 0 30px; }
+.recruit .btn-ghost { background: rgba(10,10,11,.55); }
+.perks { display: grid; gap: 12px; }
+.perk { display: grid; grid-template-columns: 44px 1fr; gap: 14px; align-items: start; padding: 16px 18px; background: rgba(17,18,20,.86); border: 1px solid var(--hair); backdrop-filter: blur(4px); }
+.perk .ico { width: 22px; height: 22px; margin: 4px auto 0; color: #e8eaed; }
+.perk b { display: block; font-family: var(--cb-display); font-weight: 400; font-size: 15px; letter-spacing: .06em; text-transform: uppercase; }
+.perk span { font-family: var(--cb-body); font-weight: 300; font-size: 14.5px; color: #b3b7bd; }
+.recruit-cta { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 30px; }
+@media (max-width: 900px) { .recruit-inner { grid-template-columns: 1fr; } }
 
-/* --------------------------------------------------------------------------
-   Unidades
-   -------------------------------------------------------------------------- */
-.units-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 56px; }
-.units-head h2 { font-size: clamp(34px, 4.2vw, 56px); }
-.units-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
-.unit {
-  position: relative; overflow: hidden; isolation: isolate; min-width: 0;
-  background: var(--ink-2); min-height: 520px;
-  display: flex; flex-direction: column; justify-content: flex-end;
-  padding: 30px 26px; border: 1px solid var(--hair);
-}
-.unit .unit-photo { position: absolute; inset: 0; z-index: -2; background-image: var(--img); background-size: cover; background-position: center; transition: transform 1.2s var(--ease); }
-.unit:hover .unit-photo { transform: scale(1.06); }
-.unit::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(5,5,5,.05) 30%, rgba(5,5,5,.92) 100%); }
-.unit .unit-city { font-family: var(--font-display); font-size: 10px; letter-spacing: .32em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 8px; }
-.unit h3 { font-family: var(--font-display); font-weight: 500; font-size: 24px; text-transform: uppercase; letter-spacing: .02em; margin-bottom: 14px; line-height: 1.15; }
-.unit .meta { font-size: 12.5px; color: var(--text-dim); line-height: 1.7; margin-bottom: 6px; }
-.unit .meta.hours { color: var(--text-faint); font-size: 11.5px; margin-bottom: 20px; }
-.unit .unit-links { display: flex; gap: 18px; flex-wrap: wrap; }
-.unit .unit-links a {
-  font-family: var(--font-display); font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--white);
-  border-bottom: 1px solid rgba(255,255,255,.4); padding-bottom: 3px; transition: border-color .3s, color .3s;
-}
-.unit .unit-links a:hover { color: var(--red); border-color: var(--red); }
-@media (max-width: 1100px) { .units-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 620px) { .units-grid { grid-template-columns: 1fr; } .unit { min-height: 420px; } }
-
-/* --------------------------------------------------------------------------
-   Avaliações (fundo claro)
-   -------------------------------------------------------------------------- */
-.reviews { border-top: 1px solid var(--hair-dark); }
-.reviews h2 { font-size: clamp(34px, 4.2vw, 56px); }
-.reviews-grid { display: grid; grid-template-columns: repeat(4, 1fr); border-left: 1px solid var(--hair-dark); margin-top: 52px; }
-.review { border-right: 1px solid var(--hair-dark); border-top: 1px solid var(--hair-dark); border-bottom: 1px solid var(--hair-dark); padding: 40px 28px; transition: background .4s var(--ease); min-width: 0; }
-.review:hover { background: var(--paper-2); }
-.review .stars { color: var(--red); letter-spacing: 4px; font-size: 15px; margin-bottom: 14px; }
-.review .quote { font-size: 14px; line-height: 1.7; color: #2c2c2c; margin-bottom: 18px; }
-.review .who { font-family: var(--font-display); font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 14px; }
-.review a { font-family: var(--font-display); font-size: 10.5px; letter-spacing: .24em; text-transform: uppercase; color: var(--gray); border-bottom: 1px solid rgba(0,0,0,.3); padding-bottom: 3px; }
-.review a:hover { color: var(--ink); border-color: var(--ink); }
-.reviews-note { margin-top: 22px; font-size: 12px; color: #8b8880; }
-@media (max-width: 900px) { .reviews-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 560px) { .reviews-grid { grid-template-columns: 1fr; } }
-
-/* --------------------------------------------------------------------------
-   Contato
-   -------------------------------------------------------------------------- */
-.contact-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: clamp(48px, 7vw, 110px); }
-.contact-grid > * { min-width: 0; }
-.contact-grid h2 { font-size: clamp(32px, 4vw, 52px); margin-bottom: 22px; }
-.field { margin-bottom: 26px; }
-.field label { display: block; font-family: var(--font-display); font-size: 10px; letter-spacing: .3em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 10px; }
-.field input, .field textarea, .field select {
-  width: 100%; background: transparent; border: 0; border-bottom: 1px solid rgba(255,255,255,.25); border-radius: 0;
-  color: var(--white); font-family: var(--font-body); font-size: 16px; padding: 8px 0 14px; outline: none; transition: border-color .3s;
-}
-.field select { appearance: none; -webkit-appearance: none; cursor: pointer; }
-.field select option { background: var(--ink-2); color: var(--white); }
-.field input:focus, .field textarea:focus, .field select:focus { border-bottom-color: var(--red); }
-.field textarea { resize: vertical; min-height: 110px; }
-.field.invalid input, .field.invalid textarea { border-bottom-color: var(--red); }
-.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
-.contact-form .btn { margin-top: 14px; }
-.form-status { margin-top: 18px; font-size: 14px; color: var(--text-dim); min-height: 1.5em; }
-.form-status.err { color: #ff8f99; }
-@media (max-width: 860px) { .contact-grid { grid-template-columns: 1fr; } }
-
-/* --------------------------------------------------------------------------
-   Rodapé
-   -------------------------------------------------------------------------- */
-.site-footer { border-top: 1px solid var(--hair); background: #070707; padding-top: 84px; }
-.footer-grid { display: grid; grid-template-columns: 1.3fr 1fr 1fr 1fr; gap: 40px; padding-bottom: 64px; }
-.footer-brand img { height: 84px; width: auto; margin-bottom: 24px; }
-.footer-brand p { color: var(--text-faint); font-size: 13px; max-width: 30ch; }
-.footer-col h4 { font-family: var(--font-display); font-weight: 500; font-size: 11px; letter-spacing: .3em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 22px; }
-.footer-col a { display: block; font-size: 13.5px; color: #c9c6c1; padding: 5px 0; transition: color .3s; }
-.footer-col a:hover { color: var(--white); }
-.footer-col a.hl { color: var(--red); }
-.footer-legal { border-top: 1px solid var(--hair); padding-block: 26px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 11px; color: #6d6b67; }
-.footer-legal .since { font-family: var(--font-display); letter-spacing: .3em; text-transform: uppercase; font-size: 10px; }
+/* ---------- rodapé ---------- */
+.site-footer { border-top: 1px solid var(--hair); background: #070707; padding-top: 80px; }
+.footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 40px; padding-bottom: 60px; }
+.footer-brand img { width: 220px; height: auto; margin-bottom: 22px; }
+.footer-brand p { color: var(--text-faint); font-size: 13.5px; max-width: 34ch; }
+.footer-col h4 { font-family: var(--font-display); font-weight: 500; font-size: 11px; letter-spacing: .3em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 20px; }
+.footer-col a, .footer-col button { display: block; background: none; border: 0; padding: 5px 0; font-size: 13.5px; color: #c9c6c1; text-align: left; }
+.footer-col a:hover, .footer-col button:hover { color: var(--white); }
+.footer-legal { border-top: 1px solid var(--hair); padding-block: 24px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-size: 11.5px; color: #6d6b67; }
 @media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 560px) { .footer-grid { grid-template-columns: 1fr; } }
 
-/* --------------------------------------------------------------------------
-   WhatsApp flutuante e aviso de demonstração
-   -------------------------------------------------------------------------- */
-.whatsapp-float {
-  position: fixed; z-index: 70;
-  bottom: calc(26px + env(safe-area-inset-bottom, 0px)); right: calc(26px + env(safe-area-inset-right, 0px));
-  width: 54px; height: 54px; border-radius: 50%; background: #1fbd59;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 10px 30px rgba(0,0,0,.45); transition: transform .35s var(--ease);
-}
-.whatsapp-float:hover { transform: translateY(-4px); }
-.whatsapp-float svg { width: 26px; height: 26px; fill: var(--white); }
-.toast {
-  position: fixed; z-index: 95; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px));
-  translate: -50% 0; width: max-content; max-width: calc(100vw - 32px);
-  background: var(--paper); color: var(--ink); padding: 14px 20px; font-size: 14px; border-left: 3px solid var(--red);
-  box-shadow: 0 20px 40px -10px rgba(0,0,0,.6);
+/* ---------- página da barbearia ---------- */
+.shopview { position: fixed; inset: 0; z-index: 120; background: var(--ink); display: flex; flex-direction: column; animation: viewIn .35s var(--ease) both; }
+.shopview[hidden] { display: none; }
+@keyframes viewIn { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: none; } }
+.sv-bar { flex: none; display: flex; align-items: center; gap: 14px; height: 64px; padding: env(safe-area-inset-top, 0px) max(var(--gutter), env(safe-area-inset-right, 0px)) 0 max(var(--gutter), env(safe-area-inset-left, 0px)); box-sizing: content-box; border-bottom: 1px solid var(--hair); background: #090909; }
+.sv-back { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 12px 0 0; background: none; border: 0; font-family: var(--font-display); font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: #d9d6d1; }
+.sv-back:hover { color: var(--white); }
+.sv-bar-name { flex: 1; min-width: 0; font-family: var(--font-display); font-size: 15px; text-transform: uppercase; letter-spacing: .04em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0; transition: opacity .3s; }
+.sv-bar.named .sv-bar-name { opacity: 1; }
+.sv-scroll { flex: 1; overflow-y: auto; overscroll-behavior: contain; padding-bottom: env(safe-area-inset-bottom, 0px); }
+.sv-hero { position: relative; isolation: isolate; min-height: clamp(420px, 62vh, 620px); display: flex; align-items: flex-end; padding: 60px 0 44px; background: var(--ink-3) center / cover; }
+.sv-hero::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(5,5,5,.25) 0%, rgba(5,5,5,.55) 45%, rgba(11,11,11,1) 100%); }
+.sv-head { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 22px 26px; align-items: end; }
+.sv-logo { width: clamp(84px, 9vw, 120px); height: clamp(84px, 9vw, 120px); border-radius: 50%; object-fit: cover; border: 3px solid var(--ink); background: var(--ink); }
+.sv-head h1 { font-size: clamp(34px, 5.4vw, 72px); }
+.sv-tagline { color: #d7d4ce; font-size: 16px; margin-top: 6px; }
+.sv-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; margin-top: 14px; font-size: 14px; color: var(--text-dim); }
+.sv-meta b { color: var(--white); }
+.pill { display: inline-flex; align-items: center; gap: 7px; padding: 4px 10px; background: rgba(11,11,11,.8); border: 1px solid var(--hair); font-size: 12.5px; color: var(--white); }
+.pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #77746e; }
+.pill.open::before { background: var(--ok); }
+.sv-actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 12px; margin-top: 6px; }
+.sv-thumbs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin-top: 6px; }
+.sv-thumbs button { aspect-ratio: 16 / 10; border: 2px solid transparent; background: var(--ink-3) center / cover; padding: 0; opacity: .75; transition: opacity .2s, border-color .2s; }
+.sv-thumbs button:hover, .sv-thumbs button.on { opacity: 1; border-color: var(--red); }
+.sv-body { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 48px; padding-block: 44px 90px; }
+.sv-sec + .sv-sec { margin-top: 54px; }
+.sv-sec h2 { font-size: clamp(24px, 2.6vw, 34px); margin-bottom: 18px; }
+.svc-group { margin-bottom: 22px; }
+.svc-group h3 { font-family: var(--font-display); font-weight: 500; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--red); padding-bottom: 8px; border-bottom: 1px solid var(--hair); }
+.svc-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 8px 18px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--hair); }
+.svc-row .nm { font-size: 15px; }
+.svc-row .du { display: block; font-size: 12.5px; color: var(--text-faint); }
+.svc-row .pr { font: 500 18px/1 var(--font-display); letter-spacing: .02em; font-variant-numeric: tabular-nums; }
+.team { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+.barber { padding: 18px; background: var(--ink-2); border: 1px solid var(--hair); }
+.avatar { width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; background: var(--ink-4); border: 2px solid var(--blue); font: 500 18px/1 var(--font-display); margin-bottom: 12px; }
+.barber:nth-child(odd) .avatar { border-color: var(--red); }
+.barber b { display: block; font-family: var(--font-display); font-weight: 500; font-size: 16px; text-transform: uppercase; letter-spacing: .03em; }
+.barber span { font-size: 13px; color: var(--text-dim); }
+.rv-sum { display: flex; align-items: center; gap: 22px; padding: 20px 0 24px; border-bottom: 1px solid var(--hair); }
+.rv-sum .big { font: 500 56px/1 var(--font-display); }
+.rv-sum .stars { font-size: 18px; }
+.rv-list { display: grid; }
+.rv { padding: 20px 0; border-bottom: 1px solid var(--hair); }
+.rv-top { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; margin-bottom: 6px; }
+.rv-top b { font-weight: 500; }
+.rv-top small { color: var(--text-faint); font-size: 12px; }
+.rv-top .ver { font: 500 10px/1 var(--font-display); letter-spacing: .16em; text-transform: uppercase; color: var(--ok); }
+.rv p { color: var(--text-dim); font-size: 14.5px; }
+.sv-aside { display: grid; gap: 18px; align-content: start; }
+.box { background: var(--ink-2); border: 1px solid var(--hair); padding: 22px 22px; }
+.box h3 { font-family: var(--font-display); font-weight: 500; font-size: 13px; letter-spacing: .2em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 14px; }
+.hours { display: grid; gap: 2px; font-size: 14px; }
+.hours div { display: flex; justify-content: space-between; gap: 12px; padding: 6px 8px; }
+.hours div.today { background: rgba(237,27,46,.14); border-left: 2px solid var(--red); }
+.hours span:last-child { color: var(--text-dim); font-variant-numeric: tabular-nums; }
+.mini-map { position: relative; height: 220px; margin: 0 -22px 14px; border-block: 1px solid var(--hair); isolation: isolate; z-index: 0; }
+.amen { display: flex; flex-wrap: wrap; gap: 8px; }
+.amen span { padding: 6px 10px; border: 1px solid var(--hair-2); font-size: 12.5px; color: #d9d6d1; }
+.contact-list { display: grid; gap: 10px; font-size: 14px; }
+.contact-list a { display: flex; gap: 10px; align-items: center; }
+@media (max-width: 960px) { .sv-body { grid-template-columns: 1fr; } .sv-head { grid-template-columns: 1fr; } }
+
+/* ---------- gavetas (agendar, meus agendamentos) ---------- */
+.sheet { position: fixed; inset: 0; z-index: 140; display: flex; justify-content: flex-end; }
+.sheet[hidden] { display: none; }
+.sheet-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.6); animation: fadeIn .25s both; }
+@keyframes fadeIn { from { opacity: 0; } }
+.sheet-panel { position: relative; width: min(520px, 100vw); height: 100%; display: flex; flex-direction: column; background: var(--ink); border-left: 1px solid var(--hair-2); animation: panelIn .35s var(--ease) both; }
+@keyframes panelIn { from { transform: translateX(40px); opacity: 0; } }
+.sheet-head { flex: none; display: flex; align-items: flex-start; gap: 12px; padding: calc(20px + env(safe-area-inset-top, 0px)) 22px 16px 26px; border-bottom: 1px solid var(--hair); }
+.sheet-head h2 { flex: 1; font-size: 22px; }
+.sheet-head p { font-size: 13px; color: var(--text-dim); margin-top: 4px; font-family: var(--font-body); text-transform: none; letter-spacing: 0; }
+.icon-btn { width: 44px; height: 44px; display: grid; place-items: center; background: none; border: 1px solid var(--hair-2); color: var(--white); flex: none; }
+.icon-btn:hover { border-color: var(--white); }
+.stepper { flex: none; display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid var(--hair); }
+.stepper span { padding: 12px 6px 10px; text-align: center; font-family: var(--font-display); font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--text-faint); border-bottom: 2px solid transparent; }
+.stepper span.on { color: var(--white); border-bottom-color: var(--red); }
+.stepper span.done { color: #d9d6d1; }
+.sheet-body { flex: 1; overflow-y: auto; overscroll-behavior: contain; padding: 22px 26px 30px; }
+.sheet-foot { flex: none; display: flex; align-items: center; gap: 12px; padding: 14px 22px calc(14px + env(safe-area-inset-bottom, 0px)) 26px; border-top: 1px solid var(--hair); background: #090909; }
+.sheet-foot .sum { flex: 1; min-width: 0; font-size: 13px; color: var(--text-dim); line-height: 1.4; }
+.sheet-foot .sum b { display: block; font: 500 20px/1.1 var(--font-display); color: var(--white); letter-spacing: .02em; }
+.opt { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 4px 14px; align-items: center; width: 100%; padding: 14px 14px; margin-bottom: 8px; background: var(--ink-2); border: 1px solid var(--hair); text-align: left; transition: border-color .2s, background .2s; }
+.opt:hover { border-color: var(--hair-2); }
+.opt[aria-checked="true"], .opt[aria-pressed="true"] { border-color: var(--red); background: rgba(237,27,46,.08); }
+.opt .mark { width: 22px; height: 22px; border: 1.5px solid #77746e; display: grid; place-items: center; }
+.opt[role="radio"] .mark { border-radius: 50%; }
+.opt[aria-checked="true"] .mark { background: var(--red); border-color: var(--red); }
+.opt[aria-checked="true"] .mark::after { content: ""; width: 9px; height: 5px; border-left: 2px solid #fff; border-bottom: 2px solid #fff; transform: rotate(-45deg) translate(1px, -1px); }
+.opt .t { font-size: 15px; }
+.opt .s { display: block; font-size: 12.5px; color: var(--text-faint); }
+.opt .p { font: 500 17px/1 var(--font-display); font-variant-numeric: tabular-nums; }
+.days { display: grid; grid-auto-flow: column; grid-auto-columns: 64px; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 18px; scrollbar-width: thin; }
+.day { display: grid; gap: 2px; justify-items: center; padding: 10px 4px; background: var(--ink-2); border: 1px solid var(--hair); }
+.day small { font-family: var(--font-display); font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--text-faint); }
+.day b { font: 500 22px/1 var(--font-display); }
+.day:disabled { opacity: .3; cursor: not-allowed; }
+.day[aria-pressed="true"] { background: var(--red); border-color: var(--red); }
+.day[aria-pressed="true"] small { color: #fff; }
+.slot-group { margin-bottom: 16px; }
+.slot-group h4 { font-family: var(--font-display); font-weight: 500; font-size: 11px; letter-spacing: .24em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 8px; }
+.slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(78px, 1fr)); gap: 8px; }
+.slot { min-height: 44px; background: var(--ink-2); border: 1px solid var(--hair-2); font: 500 15px/1 var(--font-display); letter-spacing: .04em; font-variant-numeric: tabular-nums; }
+.slot:hover { border-color: var(--white); }
+.slot[aria-pressed="true"] { background: var(--white); color: var(--ink); border-color: var(--white); }
+.note { font-size: 13px; color: var(--text-faint); }
+.field { margin-bottom: 18px; }
+.field label { display: block; font-family: var(--font-display); font-size: 10.5px; letter-spacing: .26em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 8px; }
+.field input, .field textarea { width: 100%; background: var(--ink-2); border: 1px solid var(--hair-2); padding: 12px 14px; font-size: 16px; outline: none; border-radius: 0; }
+.field input:focus, .field textarea:focus { border-color: var(--white); }
+.field textarea { resize: vertical; min-height: 84px; }
+.field .err { display: none; margin-top: 6px; font-size: 13px; color: #ff8f99; }
+.field.invalid input { border-color: var(--red); }
+.field.invalid .err { display: block; }
+.summary { background: var(--ink-2); border: 1px solid var(--hair); padding: 18px; margin-bottom: 22px; font-size: 14px; }
+.summary div { display: flex; justify-content: space-between; gap: 12px; padding: 4px 0; }
+.summary div span:first-child { color: var(--text-faint); }
+.summary .tot { border-top: 1px solid var(--hair); margin-top: 8px; padding-top: 10px; font-weight: 600; }
+.done-view { text-align: center; padding: 20px 4px; }
+.done-check { width: 76px; height: 76px; border-radius: 50%; margin: 0 auto 20px; display: grid; place-items: center; background: var(--ok); }
+.done-check .ico { width: 36px; height: 36px; stroke: #062915; stroke-width: 3; }
+.done-view h3 { font-family: var(--font-display); font-weight: 500; font-size: 30px; text-transform: uppercase; }
+.done-code { display: inline-block; margin: 12px 0 20px; padding: 8px 14px; border: 1px dashed var(--hair-2); font: 500 18px/1 var(--font-display); letter-spacing: .2em; }
+.done-view .summary { text-align: left; }
+.done-actions { display: grid; gap: 10px; }
+.mb { padding: 18px; background: var(--ink-2); border: 1px solid var(--hair); margin-bottom: 12px; }
+.mb-top { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+.mb h3 { font-family: var(--font-display); font-weight: 500; font-size: 18px; text-transform: uppercase; }
+.mb p { font-size: 13.5px; color: var(--text-dim); }
+.st { flex: none; padding: 4px 8px; font: 500 10px/1.2 var(--font-display); letter-spacing: .16em; text-transform: uppercase; background: var(--ink-4); color: #d9d6d1; }
+.st.confirmado { background: rgba(52,199,123,.16); color: #8ff0b9; }
+.st.cancelado { background: rgba(237,27,46,.16); color: #ff9aa3; }
+.st.concluido { background: rgba(42,159,224,.16); color: #9fd8ff; }
+.mb-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.rate { display: flex; gap: 4px; margin: 10px 0; }
+.rate button { width: 40px; height: 40px; background: none; border: 1px solid var(--hair-2); font-size: 20px; color: #4a4844; }
+.rate button.on { color: var(--red); border-color: var(--red); }
+@media (max-width: 560px) {
+  .sheet { align-items: flex-end; }
+  .sheet-panel { width: 100%; height: 94svh; border-left: 0; border-top: 1px solid var(--hair-2); animation-name: panelUp; }
+  @keyframes panelUp { from { transform: translateY(40px); opacity: 0; } }
 }
 
-/* Revelação ao rolar: só deslocamento, o texto nunca fica invisível */
-.reveal { transition: transform .9s var(--ease); transition-delay: var(--d, 0s); }
-.reveal.pre { transform: translateY(28px); }
+/* ---------- aviso ---------- */
+.toast { position: fixed; z-index: 200; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); translate: -50% 0; width: max-content; max-width: calc(100vw - 32px); padding: 14px 20px; background: var(--paper); color: var(--ink); font-size: 14px; border-left: 3px solid var(--red); box-shadow: 0 20px 40px -10px rgba(0,0,0,.6); animation: sheetIn .3s var(--ease) both; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .reveal.pre { transform: none; }
-  .marquee-track, .hero-scroll::after, .sash-a { animation: none; }
+  .marquee-track, .hero-scroll::after, .sash-a, .me-dot, .skeleton { animation: none; }
+  .shopview, .sheet-panel, .locsheet, .map-card, .toast, .sheet-backdrop { animation: none; }
 }
 </style>
 </head>
 <body>
 
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 22s7-6.1 7-12a7 7 0 1 0-14 0c0 5.9 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></symbol>
+  <symbol id="i-locate" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="1"/><path d="M3.5 10h17M8 3v4M16 3v4"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="6" r="2.5"/><path d="M8.5 18H15a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h6.5"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1z"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M20 11.5a8 8 0 0 1-11.6 7.1L4 20l1.4-4.1A8 8 0 1 1 20 11.5z"/></symbol>
+  <symbol id="i-scissors" viewBox="0 0 24 24"><circle cx="6" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M8.2 8.2L20 20M8.2 15.8L20 4"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.8l-5.2 2.8 1-5.8L3.5 9.7l5.9-.8z"/></symbol>
+  <symbol id="i-map" viewBox="0 0 24 24"><path d="M9 4L3 6.5v13.5l6-2.5 6 2.5 6-2.5V4l-6 2.5z"/><path d="M9 4v13.5M15 6.5V20"/></symbol>
+  <symbol id="i-store" viewBox="0 0 24 24"><path d="M4 9.5V20h16V9.5M3 4h18l-1.5 5.5a3 3 0 0 1-5.5.5 3 3 0 0 1-5 0 3 3 0 0 1-5.5-.5z"/><path d="M10 20v-5h4v5"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15"/><circle cx="9" cy="10" r="1.8"/><path d="M20.5 16l-5-5-9 8.5"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+</svg>
+
 <div class="brand-bar brand-bar-fixed" aria-hidden="true"></div>
 
-<!-- ===================== HEADER ===================== -->
 <header class="site-header" id="siteHeader">
   <div class="header-inner">
-    <a class="header-logo" href="#inicio" aria-label="Connect Barber, início">
-      <img src="assets/img/banner.webp" alt="Connect Barber" width="1000" height="363">
-    </a>
+    <a class="header-logo" href="#inicio" aria-label="Connect Barber, início"><img src="assets/img/banner.webp" alt="Connect Barber" width="1000" height="363"></a>
     <nav aria-label="Principal">
-      <ul class="nav-links" id="navLinks"></ul>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#explorar">Explorar</a></li>
+        <li><a href="#como-funciona">Como funciona</a></li>
+        <li><a href="#para-barbearias">Para barbearias</a></li>
+        <li class="nav-mobile-only"><a href="parceiro.html#cadastro">Cadastrar barbearia</a></li>
+        <li class="nav-mobile-only"><a href="parceiro.html#entrar">Entrar no painel</a></li>
+      </ul>
     </nav>
     <div class="header-cta">
-      <a href="#agende" class="btn btn-red">Agende</a>
-      <button class="menu-toggle" id="menuToggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="navLinks">
-        <span></span><span></span><span></span>
-      </button>
+      <button class="my-btn" type="button" id="myBtn" aria-label="Meus agendamentos"><svg class="ico"><use href="#i-cal"/></svg><span class="label">Meus agendamentos</span><span class="count" id="myCount"></span></button>
+      <a href="parceiro.html#cadastro" class="btn btn-red btn-sm">Cadastrar barbearia</a>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
     </div>
   </div>
 </header>
 
-<main>
+<main id="main">
 <!-- ===================== HERO ===================== -->
-<section class="hero" id="inicio" data-photo="hero" data-photo-m="heroMobile">
+<section class="hero" id="inicio">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="hero-gl" id="heroGl" aria-hidden="true"><canvas></canvas></div>
   <div class="wrap">
-    <h1 class="display hero-title" data-t="hero.title"></h1>
-    <div class="hero-actions">
-      <a href="#agende" class="btn btn-red">Agende seu horário <span class="arrow">&rarr;</span></a>
-      <a href="#unidades" class="btn btn-ghost">Nossas unidades</a>
+    <p class="kicker">Rede de barbearias</p>
+    <h1 class="display hero-title">Encontre a barbearia certa <em>perto de você</em></h1>
+    <p class="hero-sub">Compare avaliações, preços e horários livres das barbearias da sua região e agende sem precisar ligar.</p>
+    <form class="finder" id="finder" novalidate>
+      <div class="finder-field">
+        <label for="fLoc">Onde você está?</label>
+        <div class="f-row">
+          <svg class="ico" aria-hidden="true"><use href="#i-pin"/></svg>
+          <input id="fLoc" name="loc" placeholder="Cidade, bairro ou CEP" autocomplete="address-level2">
+          <button type="button" class="f-gps" id="fGps" aria-label="Usar minha localização"><svg class="ico" aria-hidden="true"><use href="#i-locate"/></svg><span>Minha localização</span></button>
+        </div>
+      </div>
+      <div class="finder-field">
+        <label for="fSvc">Serviço</label>
+        <select id="fSvc" name="svc">
+          <option value="">Qualquer serviço</option>
+          <option>Corte</option><option>Barba</option><option>Combo</option><option>Infantil</option><option>Sobrancelha</option><option>Tratamentos</option><option>Química</option>
+        </select>
+      </div>
+      <button class="btn btn-red finder-go" type="submit" id="finderGo">Buscar barbearias <span class="arrow">&rarr;</span></button>
+    </form>
+    <div class="finder-quick" id="finderQuick">
+      <span>Mais buscados:</span>
+      <button type="button" data-cat="Corte">Corte</button><button type="button" data-cat="Barba">Barba</button><button type="button" data-cat="Combo">Corte + barba</button><button type="button" data-cat="Infantil">Infantil</button>
     </div>
   </div>
   <div class="hero-foot">
-    <span class="hero-foot-side" data-t="hero.footLeft"></span>
+    <span class="side">Agenda online · Avaliações de clientes</span>
     <span class="hero-scroll">Role</span>
-    <span class="hero-foot-side" data-t="hero.footRight"></span>
+    <a class="side" href="#para-barbearias">Tem uma barbearia? Entre na rede &rarr;</a>
   </div>
 </section>
 
 <div class="brand-bar" aria-hidden="true"></div>
 
-<!-- ===================== PROMO ===================== -->
-<div class="promo-bar" id="promo"></div>
-
-<!-- ===================== NOSSA MARCA ===================== -->
-<section id="marca">
-  <article class="panel">
-    <div class="panel-media"><div class="media-img" data-photo="marca"></div></div>
-    <div class="panel-body">
-      <p class="kicker reveal" data-kicker="about.kicker" data-pole></p>
-      <h2 class="display reveal" style="--d:.08s" data-t="about.title"></h2>
-      <div class="reveal" style="--d:.16s" id="aboutText"></div>
-    </div>
-  </article>
-</section>
-
-<!-- ===================== LETREIRO ===================== -->
-<div class="marquee" aria-hidden="true"><div class="marquee-track" id="marqueeTrack"></div></div>
-
-<!-- ===================== BARBA & CABELO ===================== -->
-<section id="barba-cabelo">
-  <article class="panel flip">
-    <div class="panel-media"><div class="media-img" data-photo="barba" style="--pos:center 45%"></div></div>
-    <div class="panel-body">
-      <p class="kicker reveal" data-kicker="craft.kicker" data-pole></p>
-      <h2 class="display reveal" style="--d:.08s" data-t="craft.title"></h2>
-      <p class="body-copy reveal" style="--d:.16s" data-t="craft.text"></p>
-      <div class="panel-cta reveal" style="--d:.24s">
-        <a href="#agende" class="btn btn-ghost">Agendar serviço <span class="arrow">&rarr;</span></a>
-        <a href="#servicos" class="btn btn-ghost">Ver todos os serviços <span class="arrow">&rarr;</span></a>
+<!-- ===================== EXPLORAR ===================== -->
+<section class="explore" id="explorar" aria-labelledby="exTitle">
+  <div class="wrap">
+    <div class="explore-head">
+      <div>
+        <p class="kicker"><svg class="pole-mark" viewBox="0 0 18 26" aria-hidden="true"><rect x="1" y="14" width="5" height="11" transform="rotate(-28 3.5 19.5)" fill="#ED1B2E"/><rect x="6.5" y="8" width="5" height="11" transform="rotate(-28 9 13.5)" fill="#0077B2"/><rect x="12" y="2" width="5" height="11" transform="rotate(-28 14.5 7.5)" fill="#ED1B2E"/></svg>Explorar</p>
+        <h2 class="display" id="exTitle">Barbearias perto de <span id="placeName">você</span></h2>
+        <p class="explore-sub" id="exSub"></p>
+        <p class="demo-note" id="demoNote" hidden>As barbearias desta demonstração são fictícias e aparecem ao redor da localização escolhida.</p>
+      </div>
+      <div class="toolbar">
+        <label class="tb-field"><span class="tb-label">Ordenar</span>
+          <select id="sortSel" aria-label="Ordenar resultados"><option value="dist">Mais perto</option><option value="rating">Melhor avaliadas</option><option value="price">Menor preço</option></select>
+        </label>
+        <label class="tb-field"><span class="tb-label">Raio</span>
+          <select id="radiusSel" aria-label="Distância máxima"><option value="3">3 km</option><option value="5">5 km</option><option value="10" selected>10 km</option><option value="25">25 km</option><option value="50">50 km</option><option value="0">Sem limite</option></select>
+        </label>
       </div>
     </div>
-  </article>
-
-  <div class="services-photo" data-photo="faixa">
-    <p class="services-photo-caption" data-t="craft.caption"></p>
-  </div>
-
-  <div class="wrap services-wrap" id="servicos">
-    <p class="kicker reveal" data-kicker="servicesIntro.kicker"></p>
-    <h2 class="display reveal" style="--d:.08s" data-t="servicesIntro.title"></h2>
-    <p class="body-copy reveal" style="--d:.16s" data-t="servicesIntro.text"></p>
-    <div class="services-grid" id="servicesGrid"></div>
-  </div>
-</section>
-
-<!-- ===================== AGENDE ===================== -->
-<section class="section agende on-paper" id="agende">
-  <div class="wrap agende-grid">
-    <div class="agende-logo reveal">
-      <img src="assets/img/simbolo-dark.webp" alt="Connect Barber" width="640" height="716">
+    <div class="toolbar" style="margin-top:20px">
+      <label class="tb-field tb-search"><svg class="ico" aria-hidden="true"><use href="#i-search"/></svg><span class="sr-only">Buscar pelo nome</span><input id="qInput" type="search" placeholder="Buscar barbearia pelo nome ou bairro"></label>
     </div>
-    <div class="agende-content">
-      <p class="kicker reveal" data-kicker="booking.kicker"></p>
-      <h2 class="display reveal" style="--d:.08s" data-t="booking.title"></h2>
-      <p class="body-copy reveal" style="--d:.16s" data-t="booking.text"></p>
-
-      <p class="channel-label">Agendamento online</p>
-      <div class="store-buttons" id="bookOnline"></div>
-
-      <p class="channel-label">Pelo aplicativo</p>
-      <div class="store-buttons" id="bookApps"></div>
-
-      <p class="channel-label">Pelo WhatsApp ou por telefone</p>
-      <div class="store-buttons" id="bookWhats"></div>
-      <p class="agende-phones" id="bookPhones"></p>
-      <p class="agende-hint">O botão verde no canto da tela também abre o WhatsApp, de qualquer ponto do site.</p>
+    <div class="chips" id="chips" role="group" aria-label="Filtros">
+      <button class="chip" type="button" data-f="open" aria-pressed="false"><span class="dot"></span>Aberta agora</button>
+      <button class="chip" type="button" data-f="top" aria-pressed="false">Nota 4,5+</button>
+      <button class="chip" type="button" data-f="cheap" aria-pressed="false">A partir de até R$ 40</button>
+      <span class="chip-sep" aria-hidden="true"></span>
+      <button class="chip" type="button" data-cat="Corte" aria-pressed="false">Corte</button>
+      <button class="chip" type="button" data-cat="Barba" aria-pressed="false">Barba</button>
+      <button class="chip" type="button" data-cat="Combo" aria-pressed="false">Combo</button>
+      <button class="chip" type="button" data-cat="Infantil" aria-pressed="false">Infantil</button>
+      <button class="chip" type="button" data-cat="Tratamentos" aria-pressed="false">Tratamentos</button>
+      <button class="chip" type="button" data-cat="Química" aria-pressed="false">Química</button>
+    </div>
+  </div>
+  <div class="explore-grid">
+    <div class="results-col">
+      <p class="results-count" id="resultsCount" aria-live="polite"></p>
+      <div class="results" id="results"><div class="skeleton"></div><div class="skeleton"></div></div>
+    </div>
+    <div class="map-col">
+      <div class="map" id="map" role="region" aria-label="Mapa das barbearias"></div>
+      <div class="map-tools"><button class="map-tool" type="button" id="mapMe" aria-label="Centralizar na minha localização"><svg class="ico"><use href="#i-locate"/></svg></button></div>
+      <div class="map-card" id="mapCard" hidden></div>
     </div>
   </div>
 </section>
 
-<!-- ===================== INSTAGRAM ===================== -->
-<section class="insta-hero" id="instagram">
-  <div class="insta-collage" id="igCollage" aria-hidden="true"></div>
-  <div class="insta-phone" aria-hidden="true">
-    <div class="phone-screen">
-      <div class="phone-status"><b>14:27</b><i></i><b>5G ▮</b></div>
-      <div class="ig-top"><b>&lsaquo;</b><span id="igTopName"></span><b>&middot;&middot;&middot;</b></div>
-      <div class="ig-profile">
-        <div class="ig-avatar"><span><img src="assets/img/simbolo.webp" alt=""></span></div>
-        <div><p class="ig-name" id="igName"></p><p class="ig-bio" data-t="instagram.bio"></p></div>
-      </div>
-      <div class="ig-tabs">
-        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>
-        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M10 9l5 3-5 3z"/></svg>
-        <svg viewBox="0 0 24 24"><path d="M4 4h16v13H4z"/><circle cx="12" cy="10" r="3"/><path d="M7 17c1-3 9-3 10 0"/></svg>
-      </div>
-      <div class="ig-grid" id="igGrid"></div>
+<div class="marquee" aria-hidden="true"><div class="marquee-track" id="marquee"></div></div>
+
+<!-- ===================== COMO FUNCIONA ===================== -->
+<section class="section paper on-paper" id="como-funciona">
+  <div class="wrap">
+    <div class="how-head">
+      <div><p class="kicker">Como funciona</p><h2 class="display">Do mapa à cadeira em três passos</h2></div>
+      <p class="body-copy">Sem ligação e sem fila. Você vê o preço e o horário livre antes de sair de casa, e a barbearia recebe o seu agendamento na hora.</p>
     </div>
-  </div>
-  <div class="insta-hero-copy">
-    <a class="insta-handle reveal" id="igHandle" target="_blank" rel="noopener"></a>
-    <h2 class="display reveal" style="--d:.08s" data-t="instagram.title"></h2>
-    <p class="insta-hero-line reveal" style="--d:.14s" data-t="instagram.line"></p>
-    <a class="btn btn-solid reveal" style="--d:.2s" id="igButton" target="_blank" rel="noopener">Seguir no Instagram <span class="arrow">&rarr;</span></a>
+    <ol class="steps">
+      <li class="step"><span class="n">1</span><h3>Ative sua localização</h3><p>O mapa abre na sua região e mostra as barbearias da rede mais próximas, com distância e se estão abertas agora.</p></li>
+      <li class="step"><span class="n">2</span><h3>Compare e escolha</h3><p>Fotos, serviços com preço, profissionais e avaliações de quem já foi atendido. Filtre por nota, preço ou serviço.</p></li>
+      <li class="step"><span class="n">3</span><h3>Agende em segundos</h3><p>Escolha o serviço, o profissional e o horário livre. Você recebe um código e pode cancelar ou avaliar depois.</p></li>
+    </ol>
   </div>
 </section>
 
-<!-- ===================== TRABALHE CONOSCO (mantida da v1) ===================== -->
-<section class="recruit" id="trabalhe-conosco">
+<!-- ===================== PARA BARBEARIAS (seção cromada) ===================== -->
+<section class="recruit" id="para-barbearias">
   <div class="recruit-sash" aria-hidden="true"><span class="sash sash-a"></span><span class="sash sash-b"></span></div>
   <div class="wrap recruit-inner">
     <div>
-      <img class="recruit-logo reveal" src="assets/img/banner.webp" alt="Connect Barber" width="1000" height="363">
-      <span class="badge reveal" data-t="jobs.badge"></span>
-      <h2 class="display reveal" style="--d:.08s" data-t="jobs.title"></h2>
-      <p class="body-copy reveal" style="--d:.16s" data-t="jobs.text"></p>
-    </div>
-    <div class="reveal" style="--d:.2s"><a class="btn" id="jobsButton">Candidatar-se a uma vaga <span class="arrow">&rarr;</span></a></div>
-  </div>
-</section>
-
-<!-- ===================== UNIDADES ===================== -->
-<section class="section" id="unidades">
-  <div class="wrap">
-    <div class="units-head">
-      <div>
-        <p class="kicker reveal" data-kicker="unitsIntro.kicker"></p>
-        <h2 class="display reveal" style="--d:.08s" data-t="unitsIntro.title"></h2>
+      <img class="recruit-logo" src="assets/img/banner.webp" alt="Connect Barber" width="1000" height="363" loading="lazy">
+      <span class="badge">Connect para barbearias</span>
+      <h2 class="display">Sua barbearia no mapa de quem procura corte agora</h2>
+      <p class="body-copy">Cadastre o salão em poucos minutos: fotos, logo, serviços com preço, horários e equipe. Os clientes da sua região encontram, comparam e agendam direto na sua agenda.</p>
+      <div class="recruit-cta">
+        <a class="btn btn-red" href="parceiro.html#cadastro">Cadastrar minha barbearia <span class="arrow">&rarr;</span></a>
+        <a class="btn btn-ghost" href="parceiro.html#entrar">Já tenho conta</a>
       </div>
     </div>
-    <div class="units-grid" id="unitsGrid"></div>
-  </div>
-</section>
-
-<!-- ===================== AVALIAÇÕES ===================== -->
-<section class="section paper reviews on-paper" id="avaliacoes">
-  <div class="wrap">
-    <p class="kicker reveal" data-kicker="reviews.kicker"></p>
-    <h2 class="display reveal" style="--d:.08s" data-t="reviews.title"></h2>
-    <div class="reviews-grid" id="reviewsGrid"></div>
-    <p class="reviews-note" data-t="reviews.note"></p>
-  </div>
-</section>
-
-<!-- ===================== CONTATO ===================== -->
-<section class="section" id="contato">
-  <div class="wrap contact-grid">
-    <div>
-      <p class="kicker reveal" data-kicker="contact.kicker"></p>
-      <h2 class="display reveal" style="--d:.08s" data-t="contact.title"></h2>
-      <p class="body-copy reveal" style="--d:.16s" data-t="contact.text"></p>
-    </div>
-    <form class="contact-form reveal" id="contactForm" novalidate style="--d:.2s">
-      <p class="hp" aria-hidden="true"><label>Não preencha: <input id="f-bot" name="bot-field" tabindex="-1" autocomplete="off"></label></p>
-      <div class="field"><label for="f-nome">Nome</label><input type="text" id="f-nome" name="nome" required autocomplete="name"></div>
-      <div class="field"><label for="f-email">E-mail</label><input type="email" id="f-email" name="email" required autocomplete="email"></div>
-      <div class="field"><label for="f-unidade">Unidade de interesse</label><select id="f-unidade" name="unidade"></select></div>
-      <div class="field"><label for="f-msg">Mensagem</label><textarea id="f-msg" name="mensagem" required></textarea></div>
-      <button type="submit" class="btn btn-solid">Enviar mensagem <span class="arrow">&rarr;</span></button>
-      <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
-    </form>
+    <ul class="perks">
+      <li class="perk"><svg class="ico"><use href="#i-store"/></svg><div><b>Página da barbearia</b><span>Fotos, logo, serviços com valores, equipe e avaliações em um só lugar.</span></div></li>
+      <li class="perk"><svg class="ico"><use href="#i-cal"/></svg><div><b>Agenda online 24h</b><span>Horários livres calculados pelo seu expediente. Nada de agendamento em cima de outro.</span></div></li>
+      <li class="perk"><svg class="ico"><use href="#i-map"/></svg><div><b>Visível no mapa</b><span>Quem está perto e ativa a localização vê sua barbearia com distância e nota.</span></div></li>
+      <li class="perk"><svg class="ico"><use href="#i-star"/></svg><div><b>Avaliações reais</b><span>Só avalia quem agendou e foi atendido, com o código do agendamento.</span></div></li>
+    </ul>
   </div>
 </section>
 </main>
 
-<!-- ===================== RODAPÉ ===================== -->
 <footer class="site-footer">
-  <div class="wrap footer-grid" id="footerGrid"></div>
-  <div class="wrap footer-legal">
-    <span id="legal"></span>
-    <span class="since" data-t="footer.since"></span>
+  <div class="wrap footer-grid">
+    <div class="footer-brand"><img src="assets/img/banner.webp" alt="Connect Barber" width="1000" height="363" loading="lazy"><p>A Connect Barber liga clientes às barbearias da região: compare, escolha e agende online.</p></div>
+    <div class="footer-col"><h4>Clientes</h4><a href="#explorar">Explorar barbearias</a><button type="button" data-open-my>Meus agendamentos</button><a href="#como-funciona">Como funciona</a></div>
+    <div class="footer-col"><h4>Barbearias</h4><a href="parceiro.html#cadastro">Cadastrar barbearia</a><a href="parceiro.html#entrar">Entrar no painel</a><a href="parceiro.html#demo">Ver painel de demonstração</a></div>
+    <div class="footer-col"><h4>Connect</h4><a href="https://www.instagram.com/connectbarber" target="_blank" rel="noopener">@connectbarber</a><a href="#para-barbearias">Para barbearias</a></div>
   </div>
+  <div class="wrap footer-legal"><span id="legal">© 2026 Connect Barber. Todos os direitos reservados.</span><span>Mapa: © OpenStreetMap</span></div>
   <div class="brand-bar" aria-hidden="true"></div>
 </footer>
 
-<a class="whatsapp-float" id="waFloat" target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
-  <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2.7C8.6 2.7 2.7 8.6 2.7 16c0 2.3.6 4.6 1.8 6.7L2.7 29.3l6.8-1.8c1.9 1.1 4.2 1.7 6.5 1.7 7.4 0 13.3-6 13.3-13.3 0-3.6-1.4-6.9-3.9-9.4A13.2 13.2 0 0 0 16 2.7zm0 24.4c-2 0-3.9-.5-5.6-1.5l-.4-.2-4 1.1 1.1-4-.3-.4a11 11 0 0 1-1.7-5.9C5.1 10 10 5 16 5c3 0 5.8 1.2 7.8 3.3a11 11 0 0 1 3.3 7.8c0 6.1-5 11-11.1 11zm6.1-8.3c-.3-.2-2-1-2.3-1.1-.3-.1-.5-.2-.8.2l-1 1.3c-.2.2-.4.3-.7.1-.3-.2-1.4-.5-2.7-1.7-1-.9-1.7-2-1.9-2.3-.2-.3 0-.5.1-.7l.5-.6.3-.6c.1-.2.1-.4 0-.6l-1-2.5c-.3-.6-.5-.6-.8-.6h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.4c.2.2 2.4 3.6 5.7 5 .8.3 1.4.5 1.9.7.8.3 1.5.2 2.1.1.6-.1 2-.8 2.2-1.6.3-.8.3-1.4.2-1.6-.1-.1-.3-.2-.6-.4z"/></svg>
-</a>
+<!-- aviso de localização -->
+<div class="locsheet" id="locSheet" role="dialog" aria-labelledby="locTitle" aria-describedby="locText" hidden>
+  <span class="pin-ico"><svg class="ico"><use href="#i-pin"/></svg></span>
+  <h3 id="locTitle">Ver barbearias perto de você</h3>
+  <p id="locText">Permita o acesso à sua localização para o mapa abrir na sua região. Usamos só para calcular a distância até as barbearias.</p>
+  <div class="actions">
+    <button class="btn btn-red btn-sm" type="button" id="locAllow"><svg class="ico"><use href="#i-locate"/></svg>Usar minha localização</button>
+    <button class="btn btn-ghost-dark btn-sm" type="button" id="locType">Digitar minha cidade</button>
+  </div>
+  <button class="x" type="button" id="locClose" aria-label="Fechar aviso"><svg class="ico"><use href="#i-close"/></svg></button>
+</div>
 
-<!-- =========================================================================
-     DADOS DO TENANT (multi-tenancy)
-     Cada barbearia tem o seu bloco. No sistema, o PHP injeta aqui o JSON da
-     barbearia certa (ex.: data/tenants/<slug>.json). Nada no HTML acima
-     precisa mudar de uma barbearia para outra.
-     ========================================================================= -->
-<script type="application/json" id="tenant">
-{
-  "slug": "connect-barber",
-  "demo": true,
-  "brand": {
-    "name": "Connect Barber",
-    "instagram": "connectbarber",
-    "whatsapp": "5546900000000",
-    "whatsappLabel": "(46) 9 0000-0000",
-    "whatsappText": "Olá! Quero agendar um horário na Connect Barber."
-  },
-  "photos": {
-    "hero": "assets/img/fotos/hero.webp",
-    "heroMobile": "assets/img/fotos/hero-m.webp",
-    "marca": "assets/img/fotos/marca.webp",
-    "barba": "assets/img/fotos/barba.webp",
-    "faixa": "assets/img/fotos/faixa.webp"
-  },
-  "nav": [
-    ["marca", "Nossa Marca"],
-    ["barba-cabelo", "Barba & Cabelo"],
-    ["unidades", "Unidades"],
-    ["avaliacoes", "Avaliações"],
-    ["trabalhe-conosco", "Trabalhe Conosco"],
-    ["contato", "Contato"]
-  ],
-  "hero": {
-    "title": "A barbearia que conecta\ntradição e precisão",
-    "footLeft": "Centro · Shopping · Jardins",
-    "footRight": "Barba na navalha · Corte clássico"
-  },
-  "promo": { "strong": "Toda segunda na Connect Barber", "text": "30% off em todos os serviços", "href": "#agende" },
-  "about": {
-    "kicker": "Nossa Marca",
-    "title": "Clássica na essência, moderna no agendamento",
-    "paragraphs": [
-      "A **Connect Barber** resgata a cultura das barbearias tradicionais, onde o homem senta na cadeira, conversa sem pressa e sai renovado.",
-      "Entre **toalhas quentes e massagem facial**, cremes e espumas selecionados preparam o rosto de cada cliente. O ritual completo, do início ao fim."
-    ]
-  },
-  "marquee": ["Barba na navalha", "Toalhas quentes", "Desde 2026", "Centro", "Shopping", "Jardins"],
-  "craft": {
-    "kicker": "Barba & Cabelo",
-    "title": "No fio da navalha, do início ao fim",
-    "text": "Barba desenhada na navalha e cortes que não saem de moda. Técnica, calma e o ritual completo, com toalha quente e acabamento que você sente no espelho.",
-    "caption": "Unidade Centro, em movimento"
-  },
-  "servicesIntro": {
-    "kicker": "Nossos Serviços",
-    "title": "Tudo o que fazemos, sem letra miúda",
-    "text": "Do corte clássico ao ritual completo de barba e massagem, veja tudo o que oferecemos nas nossas unidades."
-  },
-  "services": [
-    { "cat": "Cortes", "items": [
-      { "name": "Corte clássico", "min": "30 min" },
-      { "name": "Corte na máquina", "min": "30 min" },
-      { "name": "Pezinho", "min": "15 min" }
-    ]},
-    { "cat": "Barba", "items": [
-      { "name": "Barba na navalha", "min": "30 min", "detail": "Com toalha quente e massagem facial." },
-      { "name": "Hidratação de barba", "min": "30 min" }
-    ]},
-    { "cat": "Combos", "items": [
-      { "name": "Corte e barba Connect", "min": "60 min" }
-    ]},
-    { "cat": "Brancos e Tingimento", "items": [
-      { "name": "Disfarce de fios brancos", "min": "30 min", "detail": "Cabelo, barba, bigode ou sobrancelha." }
-    ]},
-    { "cat": "Tratamentos", "items": [
-      { "name": "Alinhamento dos fios", "min": "60 min" },
-      { "name": "Hidratação capilar", "min": "30 min" },
-      { "name": "Depilação", "min": "15 min", "detail": "Nariz, orelhas ou os dois juntos." }
-    ]},
-    { "cat": "Lavatório e Massagem", "items": [
-      { "name": "Lavagem e penteado", "min": "30 min" },
-      { "name": "Massagem capilar", "min": "30 min", "detail": "Expressa, relax ou profunda." },
-      { "name": "Quick massage", "min": "30 min", "detail": "Massagem nas costas, feita na cadeira." }
-    ]},
-    { "cat": "Sobrancelha", "items": [
-      { "name": "Limpeza de sobrancelha", "min": "15 min" }
-    ]},
-    { "cat": "Outros", "items": [
-      { "name": "Corte de unhas", "min": "30 a 60 min", "detail": "Mãos, pés ou os dois." }
-    ]}
-  ],
-  "booking": {
-    "kicker": "Agende",
-    "title": "Agende do jeito que preferir",
-    "text": "Online, pelo aplicativo, pelo WhatsApp ou por telefone. Todo caminho termina na sua cadeira."
-  },
-  "apps": { "ios": "", "android": "" },
-  "instagram": {
-    "title": "O manual diário do homem moderno",
-    "line": "Barba, cortes, drinks, carros e viagens. Todos os dias.",
-    "bio": "Barbearia clássica · agenda online\nCentro · Shopping · Jardins",
-    "phone": ["assets/img/fotos/ig1.webp", "assets/img/fotos/ig2.webp", "assets/img/fotos/ig3.webp", "assets/img/fotos/ig4.webp", "assets/img/fotos/ig5.webp", "assets/img/fotos/ig6.webp", "assets/img/fotos/ig7.webp", "assets/img/fotos/ig8.webp", "assets/img/fotos/ig9.webp", "assets/img/fotos/ig10.webp", "assets/img/fotos/ig11.webp", "assets/img/fotos/ig12.webp"],
-    "collage": ["assets/img/fotos/u2.webp", "assets/img/fotos/ig10.webp", "assets/img/fotos/ig3.webp", "assets/img/fotos/ig11.webp", "assets/img/fotos/u4.webp", "assets/img/fotos/u1.webp", "assets/img/fotos/ig2.webp", "assets/img/fotos/ig12.webp", "assets/img/fotos/ig7.webp", "assets/img/fotos/u3.webp"]
-  },
-  "jobs": {
-    "badge": "Connect Barber · Carreiras",
-    "title": "Barbeiro, sua cadeira está reservada",
-    "text": "Se você leva o ofício a sério, venha para a Connect Barber. Também temos vagas para cabeleireiros e recepção. Técnica, ambiente e crescimento andam juntos aqui.",
-    "href": ""
-  },
-  "unitsIntro": { "kicker": "Onde estamos", "title": "Nossas unidades" },
-  "units": [
-    {
-      "name": "Centro", "tag": "Centro · Flagship",
-      "address": "Rua das Navalhas, 390", "phone": "(46) 3000-0390",
-      "booking": "", "photo": "assets/img/fotos/u1.webp",
-      "hours": "Seg a Sex 10h às 21h · Sáb 9h às 19h, último atendimento 18h · Dom fechado"
-    },
-    {
-      "name": "Shopping", "tag": "Shopping Central",
-      "address": "Shopping Central · Loja 46", "phone": "(46) 3000-2902",
-      "booking": "", "photo": "assets/img/fotos/u2.webp",
-      "hours": "Seg a Sáb 10h às 22h · Dom e feriados 14h às 20h"
-    },
-    {
-      "name": "Jardins", "tag": "Bairro Jardins",
-      "address": "Av. dos Barbeiros, 2902", "phone": "(46) 3000-1089",
-      "booking": "", "photo": "assets/img/fotos/u3.webp",
-      "hours": "Seg a Sex 9h às 20h · Sáb 9h às 18h · Dom 9h às 13h"
-    },
-    {
-      "name": "Connect Kids", "tag": "Jardins · Meninos e meninas até 14 anos",
-      "address": "Rua da Tesoura, 208", "phone": "(46) 3000-0208",
-      "booking": "", "photo": "assets/img/fotos/u4.webp", "bookable": false,
-      "hours": "Seg e Sáb 9h às 18h · Ter, Qua e Sex 9h às 20h\nQui fechado · Dom 9h às 13h"
-    }
-  ],
-  "reviews": {
-    "kicker": "O que dizem",
-    "title": "Avaliações",
-    "note": "Avaliações ilustrativas desta demonstração. No sistema, cada barbearia mostra as suas avaliações reais do Google.",
-    "link": "",
-    "items": [
-      { "stars": 5, "text": "Clima de barbearia antiga, toalha quente e navalha afiada. Atendimento impecável da recepção ao barbeiro.", "who": "Cliente exemplo · Centro · Google" },
-      { "stars": 5, "text": "Agendei pelo celular em menos de um minuto e fui atendido no horário. Corte e barba exatamente como pedi.", "who": "Cliente exemplo · Shopping · Google" },
-      { "stars": 5, "text": "Ambiente animado, barbeiro gente boa e um acabamento de barba que superou o que eu esperava. Virei cliente.", "who": "Cliente exemplo · Centro · Google" },
-      { "stars": 5, "text": "Espaço bem cuidado e serviço de alto nível. Finalmente encontrei quem acerta meu corte toda vez.", "who": "Cliente exemplo · Jardins · Google" }
-    ]
-  },
-  "contact": {
-    "kicker": "Contato",
-    "title": "Fale com a gente",
-    "text": "Dúvidas, parcerias ou algo que não se encaixa nos canais das unidades? Escreva que a gente responde."
-  },
-  "footer": {
-    "text": "Barba na navalha, toalhas quentes e agendamento online. Uma barbearia clássica, conectada ao seu tempo.",
-    "since": "Conectada desde 2026"
-  }
-}
-</script>
+<!-- página da barbearia -->
+<div class="shopview" id="shopView" role="dialog" aria-modal="true" aria-labelledby="svName" hidden>
+  <div class="sv-bar" id="svBar">
+    <button class="sv-back" type="button" id="svBack"><svg class="ico"><use href="#i-back"/></svg>Voltar ao mapa</button>
+    <span class="sv-bar-name" id="svBarName"></span>
+    <button class="btn btn-red btn-sm" type="button" id="svBookTop">Agendar</button>
+  </div>
+  <div class="sv-scroll" id="svScroll"></div>
+</div>
 
+<!-- agendar -->
+<div class="sheet" id="bookSheet" hidden>
+  <div class="sheet-backdrop" data-close></div>
+  <section class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="bkTitle">
+    <div class="sheet-head"><div style="flex:1;min-width:0"><h2 class="display" id="bkTitle">Agendar horário</h2><p id="bkShop"></p></div><button class="icon-btn" type="button" data-close aria-label="Fechar"><svg class="ico"><use href="#i-close"/></svg></button></div>
+    <div class="stepper" id="bkStepper"><span>Serviço</span><span>Profissional</span><span>Horário</span><span>Confirmar</span></div>
+    <div class="sheet-body" id="bkBody"></div>
+    <div class="sheet-foot" id="bkFoot"></div>
+  </section>
+</div>
+
+<!-- meus agendamentos -->
+<div class="sheet" id="mySheet" hidden>
+  <div class="sheet-backdrop" data-close></div>
+  <section class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="myTitle">
+    <div class="sheet-head"><div style="flex:1"><h2 class="display" id="myTitle">Meus agendamentos</h2><p>Guardados neste aparelho.</p></div><button class="icon-btn" type="button" data-close aria-label="Fechar"><svg class="ico"><use href="#i-close"/></svg></button></div>
+    <div class="sheet-body" id="myBody"></div>
+  </section>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<script src="assets/js/connect.js"></script>
+
+<!-- ===================== REDE ANIMADA (WebGL) =====================
+     Nós = barbearias, pulsos vermelhos e azuis = conexões com clientes.
+     Pausa fora da tela e em aba oculta; quadro parado com movimento reduzido. -->
 <script>
 (function () {
   'use strict';
-  var T = JSON.parse(document.getElementById('tenant').textContent);
-  var DEMO = !!T.demo;
+  var wrap = document.getElementById('heroGl');
+  if (!wrap || wrap.dataset.init) return; wrap.dataset.init = '1';
+  var canvas = wrap.querySelector('canvas');
+  function showError(msg) { var el = document.createElement('pre'); el.textContent = 'WebGL: ' + msg; wrap.appendChild(el); }
+  var gl = canvas.getContext('webgl', { alpha: false, antialias: false, premultipliedAlpha: false });
+  if (!gl) { wrap.style.display = 'none'; return; }
+  var VERT = 'attribute vec2 a_pos; void main(){ gl_Position = vec4(a_pos, 0.0, 1.0); }';
+  var FRAG = [
+    'precision mediump float;',
+    'uniform vec2 u_res; uniform float u_time; uniform vec2 u_mouse;',
+    'float h1(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }',
+    'vec2 node(vec2 c){',
+    '  float a = h1(c), b = h1(c + 19.19);',
+    '  return c + 0.5 + 0.32 * vec2(sin(u_time * 0.30 + a * 6.2831), cos(u_time * 0.26 + b * 6.2831));',
+    '}',
+    'vec3 tint(vec2 c){ return h1(c + 7.7) > 0.5 ? vec3(0.93, 0.11, 0.18) : vec3(0.10, 0.55, 0.95); }',
+    'void main(){',
+    '  float S = 5.2;',
+    '  vec2 p = (gl_FragCoord.xy - 0.5 * u_res) / u_res.y * S;',
+    '  vec2 drift = vec2(u_time * 0.05, u_time * 0.012);',
+    '  p += drift;',
+    '  vec2 m = (u_mouse - 0.5 * u_res) / u_res.y * S + drift;',
+    '  vec2 c = floor(p);',
+    '  vec3 col = vec3(0.0);',
+    '  vec2 g = abs(fract(p) - 0.5);',
+    '  col += vec3(0.03) * smoothstep(0.475, 0.5, max(g.x, g.y));',
+    '  for (int j = -1; j <= 1; j++) {',
+    '    for (int i = -1; i <= 1; i++) {',
+    '      vec2 ca = c + vec2(float(i), float(j));',
+    '      vec2 a = node(ca);',
+    '      vec3 tc = tint(ca);',
+    '      for (int k = 0; k < 3; k++) {',
+    '        vec2 off = k == 0 ? vec2(1.0, 0.0) : (k == 1 ? vec2(0.0, 1.0) : vec2(1.0, 1.0));',
+    '        vec2 b = node(ca + off);',
+    '        vec2 ba = b - a, pa = p - a;',
+    '        float t = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);',
+    '        float d = length(pa - ba * t);',
+    '        float fade = smoothstep(1.6, 0.75, length(ba));',
+    '        col += vec3(0.62) * fade * smoothstep(0.02, 0.0, d) * 0.32;',
+    '        float ph = fract(u_time * 0.16 + h1(ca + off * 3.1));',
+    '        float pd = length(p - mix(a, b, ph));',
+    '        col += tc * fade * smoothstep(0.085, 0.0, pd) * 0.95;',
+    '      }',
+    '      float dn = length(p - a);',
+    '      float near = smoothstep(1.8, 0.0, length(a - m));',
+    '      col += tc * (smoothstep(0.08, 0.0, dn) * 1.3 + 0.03 / (dn * dn * 36.0 + 0.3) * (0.5 + near * 1.5));',
+    '      if (h1(ca + 3.3) > 0.62) {',
+    '        float r = fract(u_time * 0.32 + h1(ca));',
+    '        col += tc * smoothstep(0.018, 0.0, abs(dn - r * 0.75)) * (1.0 - r) * 0.85;',
+    '      }',
+    '      col += vec3(1.0) * smoothstep(0.03, 0.0, dn) * 0.85;',
+    '    }',
+    '  }',
+    '  vec2 uv = gl_FragCoord.xy / u_res;',
+    '  col *= smoothstep(1.2, 0.25, length((uv - vec2(0.5, 0.52)) * vec2(1.0, 1.25)));',
+    '  gl_FragColor = vec4(col, 1.0);',
+    '}'
+  ].join('\n');
+  function compile(type, src) { var s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) { showError(gl.getShaderInfoLog(s) || 'falha ao compilar'); return null; } return s; }
+  var vs = compile(gl.VERTEX_SHADER, VERT), fs = compile(gl.FRAGMENT_SHADER, FRAG);
+  if (!vs || !fs) return;
+  var prog = gl.createProgram(); gl.attachShader(prog, vs); gl.attachShader(prog, fs); gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) { showError(gl.getProgramInfoLog(prog) || 'falha ao ligar o programa'); return; }
+  gl.useProgram(prog);
+  var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+  var aPos = gl.getAttribLocation(prog, 'a_pos'); gl.enableVertexAttribArray(aPos); gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+  var uRes = gl.getUniformLocation(prog, 'u_res'), uTime = gl.getUniformLocation(prog, 'u_time'), uMouse = gl.getUniformLocation(prog, 'u_mouse');
+  var dpr = 1, mouse = [-9999, -9999];
+  function resize() {
+    /* meia resolução: o brilho é suave e o custo cai para 1/4 */
+    dpr = Math.min(window.devicePixelRatio || 1, 1.5) * (window.innerWidth < 700 ? 0.6 : 0.5);
+    var w = Math.max(1, Math.round(wrap.clientWidth * dpr)), h = Math.max(1, Math.round(wrap.clientHeight * dpr));
+    if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; gl.viewport(0, 0, w, h); }
+  }
+  var ro = new ResizeObserver(resize); ro.observe(wrap); resize();
+  var hero = wrap.parentNode;
+  hero.addEventListener('pointermove', function (e) { var r = wrap.getBoundingClientRect(); mouse = [(e.clientX - r.left) * dpr, (r.bottom - e.clientY) * dpr]; }, { passive: true });
+  hero.addEventListener('pointerleave', function () { mouse = [-9999, -9999]; });
+  var raf = 0, running = false, inView = true, start = performance.now();
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  function draw(t) { gl.uniform2f(uRes, canvas.width, canvas.height); gl.uniform1f(uTime, t); gl.uniform2f(uMouse, mouse[0], mouse[1]); gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4); }
+  var last = 0;
+  function frame(now) { raf = requestAnimationFrame(frame); if (now - last < 32) return; last = now; draw((now - start) / 1000); }
+  function play() { if (running || document.hidden || !inView) return; if (reduce.matches) { resize(); draw(12); return; } running = true; raf = requestAnimationFrame(frame); }
+  function pause() { running = false; cancelAnimationFrame(raf); }
+  document.addEventListener('visibilitychange', function () { document.hidden ? pause() : play(); });
+  new IntersectionObserver(function (en) { inView = en[0].isIntersecting; inView ? play() : pause(); }).observe(wrap);
+  if (reduce.addEventListener) reduce.addEventListener('change', function () { pause(); play(); });
+  play();
+})();
+</script>
+
+<!-- ===================== APP ===================== -->
+<script>
+(function () {
+  'use strict';
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
-  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
-  var rich = function (s) { return esc(s).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>'); };
-  var get = function (p) { return p.split('.').reduce(function (o, k) { return o == null ? o : o[k]; }, T); };
-  var cssUrl = function (u) { return 'url("' + String(u).replace(/["\\\n]/g, '') + '")'; };
-  var enc = encodeURIComponent;
-  var EXT = ' target="_blank" rel="noopener"';
+  var esc = CB.esc, LS = CB.LS;
+  var css = function (u) { return 'url("' + String(u || '').replace(/["\\\n]/g, '') + '")'; };
+  var ico = function (id) { return '<svg class="ico" aria-hidden="true"><use href="#i-' + id + '"/></svg>'; };
+  var stars = function (r) { return '<span class="stars" aria-label="' + String(r).replace('.', ',') + ' de 5"><i style="width:' + (r / 5 * 100) + '%"></i></span>'; };
+  var dec = function (n) { return Number(n).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }); };
+  var dur = function (m) { return m >= 60 ? Math.floor(m / 60) + 'h' + (m % 60 ? CB.pad(m % 60) : '') : m + ' min'; };
+  var dateLabel = function (iso) { var d = CB.parseISO(iso); return CB.DAY_LABEL[CB.DAYS[d.getDay()]] + ', ' + d.getDate() + '/' + CB.pad(d.getMonth() + 1); };
 
-  var waHref = function (num, text) {
-    var t = enc(text || T.brand.whatsappText || '');
-    return (DEMO || !num) ? 'https://wa.me/?text=' + t : 'https://wa.me/' + String(num).replace(/\D/g, '') + '?text=' + t;
-  };
-  var telHref = function (p) { return 'tel:+55' + String(p).replace(/\D/g, ''); };
-  var mapHref = function (q) { return 'https://www.google.com/maps/search/?api=1&query=' + enc(q); };
-  /* link do tenant: vazio vira link de demonstração (mostra aviso) */
-  var href = function (url, fallbackMsg) {
-    return url ? 'href="' + esc(url) + '"' + (/^https?:/.test(url) ? EXT : '') : 'href="#" data-demo="' + esc(fallbackMsg || '') + '"';
-  };
-  var poleMark = '<svg class="pole-mark" viewBox="0 0 18 26" aria-hidden="true"><rect x="1" y="14" width="5" height="11" transform="rotate(-28 3.5 19.5)" fill="#ED1B2E"/><rect x="6.5" y="8" width="5" height="11" transform="rotate(-28 9 13.5)" fill="#0077B2"/><rect x="12" y="2" width="5" height="11" transform="rotate(-28 14.5 7.5)" fill="#ED1B2E"/></svg>';
+  var toastT;
+  function toast(msg) { var o = $('.toast'); if (o) o.remove(); var t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status'); t.textContent = msg; document.body.appendChild(t); clearTimeout(toastT); toastT = setTimeout(function () { t.remove(); }, 4200); }
 
-  /* ---- textos ---- */
-  $$('[data-t]').forEach(function (el) { var v = get(el.dataset.t); if (v != null) el.innerHTML = rich(v); });
-  $$('[data-kicker]').forEach(function (el) { el.innerHTML = (el.hasAttribute('data-pole') ? poleMark : '') + esc(get(el.dataset.kicker)); });
-  $('#aboutText').innerHTML = (T.about.paragraphs || []).map(function (p) { return '<p class="body-copy">' + rich(p) + '</p>'; }).join('');
+  CB.injectMapCss();
 
-  /* ---- fotos do tenant ---- */
-  var P = T.photos || {};
-  $$('[data-photo]').forEach(function (el) {
-    if (P[el.dataset.photo]) el.style.setProperty('--img', cssUrl(P[el.dataset.photo]));
-    if (el.dataset.photoM && P[el.dataset.photoM]) el.style.setProperty('--img-m', cssUrl(P[el.dataset.photoM]));
-  });
+  /* ---------------- estado ---------------- */
+  var S = { shops: [], view: [], f: { open: false, top: false, cheap: false, cat: '', q: '' }, sort: 'dist', radius: 10, sel: null, map: null, markers: {}, me: null, shop: null, mini: null };
 
-  /* ---- navegação ---- */
-  $('#navLinks').innerHTML = T.nav.map(function (n) { return '<li><a href="#' + esc(n[0]) + '">' + esc(n[1]) + '</a></li>'; }).join('');
-
-  /* ---- promo ---- */
-  if (T.promo) {
-    $('#promo').innerHTML = '<a class="promo-inner" ' + href(T.promo.href) + '><span><strong>' + esc(T.promo.strong) + '</strong> &nbsp;' + esc(T.promo.text) + '</span></a>';
-  }
-
-  /* ---- letreiro (duplicado para o loop) ---- */
-  var mq = (T.marquee || []).map(function (w) { return '<span>' + esc(w) + ' <i>·</i></span>'; }).join('');
-  $('#marqueeTrack').innerHTML = mq + mq;
-
-  /* ---- serviços ---- */
-  $('#servicesGrid').innerHTML = (T.services || []).map(function (c, i) {
-    return '<div class="service-cat reveal" style="--d:' + (i % 4) * .06 + 's"><h3>' + esc(c.cat) + '</h3><ul class="service-list">' +
-      c.items.map(function (s) {
-        return '<li><div class="service-line"><span class="service-name">' + esc(s.name) + '</span><span class="service-duration">' + esc(s.min || '') +
-          (s.price ? '<b>' + esc(s.price) + '</b>' : '') + '</span></div>' + (s.detail ? '<p class="service-detail">' + esc(s.detail) + '</p>' : '') + '</li>';
-      }).join('') + '</ul></div>';
-  }).join('');
-
-  /* ---- agende ---- */
-  var bookable = T.units.filter(function (u) { return u.bookable !== false; });
-  $('#bookOnline').innerHTML = bookable.map(function (u) {
-    return '<a class="btn btn-red" ' + href(u.booking, 'No sistema, este botão abre a agenda online da unidade ' + u.name + '.') + '>' + esc(u.name) + ' <span class="arrow">&rarr;</span></a>';
-  }).join('');
-  $('#bookApps').innerHTML =
-    '<a class="btn btn-blue" ' + href(T.apps && T.apps.ios, 'O app da barbearia entra aqui quando estiver publicado na App Store.') + '>App na App Store</a>' +
-    '<a class="btn btn-blue" ' + href(T.apps && T.apps.android, 'O app da barbearia entra aqui quando estiver publicado na Google Play.') + '>App na Google Play</a>';
-  $('#bookWhats').innerHTML = '<a class="btn btn-whats" href="' + waHref(T.brand.whatsapp) + '"' + EXT + '>WhatsApp ' + esc(T.brand.whatsappLabel) + '</a>';
-  $('#bookPhones').innerHTML = 'Ou ligue: ' + bookable.filter(function (u) { return u.phone; }).map(function (u) {
-    return '<a href="' + telHref(u.phone) + '">' + esc(u.name) + ' ' + esc(u.phone) + '</a>';
-  }).join(' · ');
-
-  /* ---- instagram ---- */
-  var ig = 'https://www.instagram.com/' + enc(T.brand.instagram || '');
-  $('#igHandle').textContent = '@' + (T.brand.instagram || '');
-  $('#igHandle').href = ig; $('#igButton').href = ig;
-  $('#igTopName').textContent = T.brand.instagram || '';
-  $('#igName').textContent = T.brand.name;
-  var tile = function (u) { return '<span style="--img:' + esc(cssUrl(u)) + '"></span>'; };
-  $('#igGrid').innerHTML = (T.instagram.phone || []).map(tile).join('');
-  $('#igCollage').innerHTML = (T.instagram.collage || []).map(tile).join('');
-
-  /* ---- trabalhe conosco ---- */
-  $('#jobsButton').outerHTML = '<a class="btn" ' + (T.jobs.href ? href(T.jobs.href) : 'href="#contato"') + '>Candidatar-se a uma vaga <span class="arrow">&rarr;</span></a>';
-
-  /* ---- unidades ---- */
-  $('#unitsGrid').innerHTML = T.units.map(function (u, i) {
-    var links = [];
-    if (u.bookable !== false) links.push('<a ' + href(u.booking, 'No sistema, este botão abre a agenda online da unidade ' + u.name + '.') + '>Agendar</a>');
-    links.push('<a href="' + waHref(u.whatsapp || T.brand.whatsapp, 'Olá! Quero falar com a unidade ' + u.name + '.') + '"' + EXT + '>WhatsApp</a>');
-    links.push('<a href="' + mapHref(u.address) + '"' + EXT + '>Mapa</a>');
-    return '<article class="unit reveal" style="--d:' + i * .1 + 's">' +
-      '<div class="unit-photo"' + (u.photo ? ' style="--img:' + esc(cssUrl(u.photo)) + '"' : '') + '></div>' +
-      '<p class="unit-city">' + esc(u.tag || '') + '</p><h3>' + esc(u.name) + '</h3>' +
-      '<p class="meta">' + esc(u.address) + '<br>' + esc(u.phone || '') + '</p>' +
-      '<p class="meta hours">' + rich(u.hours || '') + '</p>' +
-      '<div class="unit-links">' + links.join('') + '</div></article>';
-  }).join('');
-
-  /* ---- avaliações ---- */
-  var revs = T.reviews.items || [];
-  $('#reviewsGrid').innerHTML = revs.map(function (r, i) {
-    var n = Math.max(1, Math.min(5, r.stars || 5));
-    return '<div class="review reveal" style="--d:' + i * .08 + 's"><div class="stars" aria-label="' + n + ' de 5 estrelas">' + Array(n + 1).join('★') + '</div>' +
-      '<p class="quote">“' + esc(r.text) + '”</p><p class="who">' + esc(r.who) + '</p>' +
-      (i === revs.length - 1 && T.reviews.link ? '<a ' + href(T.reviews.link) + '>Ver todas no Google</a>' : '') + '</div>';
-  }).join('');
-
-  /* ---- contato ---- */
-  $('#f-unidade').innerHTML = '<option value="">' + esc(T.units.map(function (u) { return u.name; }).join(', ')) + '</option>' +
-    T.units.map(function (u) { return '<option>' + esc(u.name) + '</option>'; }).join('') + '<option>Outro assunto</option>';
-
-  /* ---- rodapé ---- */
-  var kids = T.units[T.units.length - 1];
-  $('#footerGrid').innerHTML =
-    '<div class="footer-brand"><img src="assets/img/simbolo.webp" alt="' + esc(T.brand.name) + '" width="520" height="582"><p>' + esc(T.footer.text) + '</p></div>' +
-    '<div class="footer-col"><h4>Unidades</h4>' + T.units.map(function (u) { return '<a href="#unidades"' + (u.bookable === false ? ' class="hl"' : '') + '>' + esc(u.name) + '</a>'; }).join('') + '</div>' +
-    '<div class="footer-col"><h4>' + esc(kids.name) + '</h4><a href="' + mapHref(kids.address) + '"' + EXT + '>' + esc(kids.address) + '</a><a href="' + telHref(kids.phone) + '">' + esc(kids.phone) + '</a><a href="' + waHref(kids.whatsapp || T.brand.whatsapp) + '"' + EXT + '>WhatsApp</a></div>' +
-    '<div class="footer-col"><h4>Institucional</h4><a href="#trabalhe-conosco">Trabalhe conosco</a><a href="#contato">Contato</a><a href="#agende">Agende seu horário</a><a href="' + ig + '"' + EXT + '>@' + esc(T.brand.instagram) + '</a></div>';
-  $('#legal').textContent = '© ' + new Date().getFullYear() + ' ' + T.brand.name + '. Todos os direitos reservados.' + (DEMO ? ' Dados de demonstração.' : '');
-  $('#waFloat').href = waHref(T.brand.whatsapp);
-
-  /* ================= interações ================= */
-  var toastTimer;
-  function toast(msg) {
-    var old = $('.toast'); if (old) old.remove();
-    var t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status'); t.textContent = msg;
-    document.body.appendChild(t); clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.remove(); }, 3600);
-  }
-  document.addEventListener('click', function (e) {
-    var a = e.target.closest('a[data-demo]');
-    if (a) { e.preventDefault(); toast(a.dataset.demo || 'Link de demonstração: cada barbearia configura o seu no sistema.'); }
-  });
-
-  /* menu mobile */
-  var toggle = $('#menuToggle'), nav = $('#navLinks');
-  function setMenu(open) {
-    nav.classList.toggle('open', open); toggle.classList.toggle('open', open);
-    toggle.setAttribute('aria-expanded', String(open)); toggle.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
-  }
-  toggle.addEventListener('click', function () { setMenu(!nav.classList.contains('open')); });
-  nav.addEventListener('click', function (e) { if (e.target.tagName === 'A') setMenu(false); });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setMenu(false); });
-
-  /* header sólido ao rolar */
+  /* ---------------- header / menu ---------------- */
   var header = $('#siteHeader');
   var onScroll = function () { header.classList.toggle('scrolled', window.scrollY > 40); };
   window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+  var toggle = $('#menuToggle'), nav = $('#navLinks');
+  function setMenu(o) { nav.classList.toggle('open', o); toggle.classList.toggle('open', o); toggle.setAttribute('aria-expanded', String(o)); }
+  toggle.addEventListener('click', function () { setMenu(!nav.classList.contains('open')); });
+  nav.addEventListener('click', function (e) { if (e.target.closest('a')) setMenu(false); });
 
-  if ('IntersectionObserver' in window) {
-    /* link ativo no menu */
-    var links = $$('#navLinks a');
-    var spy = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        if (en.isIntersecting) links.forEach(function (l) { l.classList.toggle('active', l.getAttribute('href') === '#' + en.target.id); });
-      });
-    }, { rootMargin: '-45% 0px -50% 0px' });
-    T.nav.forEach(function (n) { var s = document.getElementById(n[0]); if (s) spy.observe(s); });
+  var mq = ['Barbearias perto de você', 'Preço antes de sair de casa', 'Agenda online 24h', 'Avaliações de quem foi atendido', 'Cancelamento pelo celular'].map(function (w) { return '<span>' + esc(w) + '<i>·</i></span>'; }).join('');
+  $('#marquee').innerHTML = mq + mq;
 
-    /* revelação: só o que está abaixo da dobra ao carregar ganha o deslocamento */
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.remove('pre'); io.unobserve(en.target); } });
-    }, { threshold: 0.14 });
-    var fold = window.innerHeight;
-    $$('.reveal').forEach(function (el) { if (el.getBoundingClientRect().top > fold) { el.classList.add('pre'); io.observe(el); } });
+  /* ---------------- localização ---------------- */
+  function goExplore() { var el = $('#explorar'); window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 70, behavior: 'smooth' }); }
+  function setLocation(c, opts) {
+    CB.setCenter(c);
+    LS.set('cb_loc_skip', 1);
+    $('#locSheet').hidden = true;
+    $('#fLoc').value = c.label || '';
+    if (S.me) { S.me.setLatLng([c.lat, c.lng]); } else if (S.map) { S.me = L.marker([c.lat, c.lng], { icon: L.divIcon({ className: '', html: '<div class="me-dot" title="Você está aqui"></div>', iconSize: [22, 22], iconAnchor: [11, 11] }), zIndexOffset: 2000, keyboard: false }).addTo(S.map); }
+    return load().then(function () { fitView(true); if (!opts || opts.scroll !== false) goExplore(); });
+  }
+  function locate(btn) {
+    if (btn) btn.classList.add('loading');
+    return CB.myPosition().then(function (p) {
+      return CB.reverseGeocode(p.lat, p.lng).then(function (place) { return setLocation({ lat: p.lat, lng: p.lng, label: place, city: place, precise: true }); });
+    }).catch(function (e) { toast(e.message); $('#locSheet').hidden = true; window.scrollTo({ top: 0, behavior: 'smooth' }); setTimeout(function () { $('#fLoc').focus(); }, 400); })
+      .then(function () { if (btn) btn.classList.remove('loading'); });
+  }
+  $('#fGps').addEventListener('click', function () { locate(this); });
+  $('#locAllow').addEventListener('click', function () { locate(this); });
+  $('#locType').addEventListener('click', function () { $('#locSheet').hidden = true; LS.set('cb_loc_skip', 1); window.scrollTo({ top: 0, behavior: 'smooth' }); setTimeout(function () { $('#fLoc').focus(); }, 450); });
+  $('#locClose').addEventListener('click', function () { $('#locSheet').hidden = true; LS.set('cb_loc_skip', 1); });
+  $('#mapMe').addEventListener('click', function () { var c = CB.getCenter(); if (c && c.precise && S.map) S.map.flyTo([c.lat, c.lng], 14); else locate(this); });
+
+  $('#finder').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var q = $('#fLoc').value.trim(), svc = $('#fSvc').value, btn = $('#finderGo');
+    setCat(svc);
+    var cur = CB.getCenter();
+    if (!q || (cur && q === cur.label)) { if (cur) { render(); goExplore(); } else { locate(btn); } return; }
+    btn.classList.add('loading');
+    var isCep = /^\d{5}-?\d{3}$/.test(q);
+    var p = isCep ? CB.viaCep(q).then(function (a) { return CB.geocode([a.street, a.district, a.city, a.uf].filter(Boolean).join(', ')).catch(function () { return CB.geocode(a.city + ' ' + a.uf); }).then(function (g) { g.label = (a.district ? a.district + ' · ' : '') + a.city; g.city = a.city; return g; }); }) : CB.geocode(q);
+    p.then(function (g) { return setLocation(g); }).catch(function (err) { toast(err.message); }).then(function () { btn.classList.remove('loading'); });
+  });
+  $('#finderQuick').addEventListener('click', function (e) { var b = e.target.closest('button[data-cat]'); if (!b) return; $('#fSvc').value = b.dataset.cat; setCat(b.dataset.cat); if (CB.getCenter()) { goExplore(); } else { locate(); } });
+
+  /* ---------------- filtros ---------------- */
+  function setCat(cat) { S.f.cat = cat || ''; $$('#chips [data-cat]').forEach(function (c) { c.setAttribute('aria-pressed', String(c.dataset.cat === S.f.cat)); }); render(); }
+  $('#chips').addEventListener('click', function (e) {
+    var b = e.target.closest('.chip'); if (!b) return;
+    if (b.dataset.cat) { setCat(S.f.cat === b.dataset.cat ? '' : b.dataset.cat); $('#fSvc').value = S.f.cat; return; }
+    S.f[b.dataset.f] = !S.f[b.dataset.f]; b.setAttribute('aria-pressed', String(S.f[b.dataset.f])); render();
+  });
+  var qT; $('#qInput').addEventListener('input', function () { clearTimeout(qT); var v = this.value; qT = setTimeout(function () { S.f.q = v.trim(); render(); }, 180); });
+  $('#sortSel').addEventListener('change', function () { S.sort = this.value; render(); });
+  $('#radiusSel').addEventListener('change', function () { S.radius = +this.value; render(); fitView(); });
+
+  /* ---------------- dados ---------------- */
+  function load() { return CB.listShops().then(function (list) { S.shops = list; render(); }).catch(function (e) { $('#results').innerHTML = '<div class="empty"><h3>Não carregou</h3><p>' + esc(e.message) + '</p><button class="btn btn-red btn-sm" type="button" onclick="location.reload()">Tentar de novo</button></div>'; }); }
+
+  function filtered() {
+    var c = CB.getCenter(), q = CB.slugify(S.f.q);
+    var v = S.shops.filter(function (s) {
+      if (S.f.open && !s.status.open) return false;
+      if (S.f.top && s.rating < 4.5) return false;
+      if (S.f.cheap && !(s.priceFrom && s.priceFrom <= 40)) return false;
+      if (S.f.cat && s.cats.indexOf(S.f.cat) < 0) return false;
+      if (q && CB.slugify(s.name + ' ' + (s.address && s.address.district)).indexOf(q) < 0) return false;
+      if (c && S.radius && s.dist != null && s.dist > S.radius) return false;
+      return true;
+    });
+    var by = { dist: function (a, b) { return (a.dist == null ? 1e9 : a.dist) - (b.dist == null ? 1e9 : b.dist) || b.rating - a.rating; }, rating: function (a, b) { return b.rating - a.rating || b.reviewsCount - a.reviewsCount; }, price: function (a, b) { return (a.priceFrom || 1e9) - (b.priceFrom || 1e9); } };
+    return v.sort(by[c ? S.sort : (S.sort === 'dist' ? 'rating' : S.sort)]);
   }
 
-  /* formulário de contato */
-  $('#contactForm').addEventListener('submit', function (e) {
-    e.preventDefault();
-    var st = $('#formStatus'); st.className = 'form-status';
-    if ($('#f-bot').value) return;
-    var ok = true;
-    [['#f-nome', function (v) { return v.trim().length > 1; }], ['#f-email', function (v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()); }], ['#f-msg', function (v) { return v.trim().length > 3; }]]
-      .forEach(function (f) { var el = $(f[0]); var good = f[1](el.value); el.parentNode.classList.toggle('invalid', !good); if (!good) ok = false; });
-    if (!ok) { st.classList.add('err'); st.textContent = 'Preencha nome, um e-mail válido e a mensagem.'; return; }
-    st.textContent = DEMO ? 'Mensagem pronta. Nesta demonstração nada é enviado; no sistema ela chega direto para a barbearia.' : 'Mensagem enviada. Respondemos em breve.';
-    if (!DEMO) this.reset();
+  function card(s) {
+    var addr = [s.address && s.address.district, s.address && s.address.street].filter(Boolean).join(' · ');
+    return '<article class="shop-card" data-id="' + esc(s.id) + '">' +
+      '<a class="sc-media" href="#b-' + esc(s.slug) + '" style="background-image:' + esc(css(s.cover)) + '" aria-label="Ver ' + esc(s.name) + '">' +
+      '<span class="sc-status' + (s.status.open ? ' open' : '') + '">' + esc(s.status.text) + '</span>' + (s.dist != null && CB.getCenter() ? '<span class="sc-dist">' + CB.km(s.dist) + '</span>' : '') + '</a>' +
+      '<div class="sc-body"><img class="sc-logo" src="' + esc(s.logo) + '" alt="" loading="lazy">' +
+      '<h3 class="sc-name"><a href="#b-' + esc(s.slug) + '">' + esc(s.name) + '</a></h3>' +
+      '<p class="sc-rating">' + (s.rating ? stars(s.rating) + '<b>' + dec(s.rating) + '</b><span>(' + s.reviewsCount + ' avaliações)</span>' : '<span>Nova na rede</span>') + '</p>' +
+      '<p class="sc-addr">' + esc(addr) + '</p><p class="sc-tags">' + esc(s.cats.slice(0, 4).join(' · ')) + '</p>' +
+      '<div class="sc-foot"><span class="sc-price">a partir de<b>' + CB.brl(s.priceFrom) + '</b></span><button class="btn btn-red btn-sm" type="button" data-book="' + esc(s.slug) + '">Agendar</button></div></div></article>';
+  }
+
+  function render() {
+    var c = CB.getCenter();
+    S.view = filtered();
+    $('#placeName').textContent = c ? (c.city || c.label || 'você') : 'você';
+    $('#exSub').innerHTML = c
+      ? '<span>' + ico('pin') + ' ' + esc(c.label || '') + '</span><button type="button" id="changeLoc">Trocar local</button>'
+      : '<span>Mostrando a região de ' + esc(CB.DEFAULT_CENTER.label) + '.</span><button type="button" id="askLoc">Usar minha localização</button>';
+    $('#demoNote').hidden = !S.view.some(function (x) { return x.demo; });
+    var n = S.view.length;
+    $('#resultsCount').textContent = n + (n === 1 ? ' barbearia' : ' barbearias') + (c && S.radius ? ' em até ' + S.radius + ' km' : '');
+    if (!n) {
+      var wider = c && S.radius && S.radius < 50;
+      $('#results').innerHTML = '<div class="empty"><h3>Nenhuma barbearia com esses filtros</h3><p>' + (wider ? 'Aumente a distância ou tire algum filtro.' : 'Tire algum filtro ou busque outra cidade.') + '</p>' + (wider ? '<button class="btn btn-red btn-sm" type="button" id="widen">Buscar em até 50 km</button>' : '') + '</div>';
+    } else {
+      $('#results').innerHTML = S.view.map(card).join('');
+    }
+    drawMarkers();
+  }
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('#changeLoc')) { window.scrollTo({ top: 0, behavior: 'smooth' }); setTimeout(function () { $('#fLoc').select(); }, 450); }
+    if (e.target.closest('#askLoc')) locate(e.target.closest('#askLoc'));
+    if (e.target.closest('#widen')) { S.radius = 50; $('#radiusSel').value = '50'; render(); fitView(); }
+    var bk = e.target.closest('[data-book]'); if (bk) { e.preventDefault(); CB.getShop(bk.dataset.book).then(function (s) { openBooking(s); }).catch(function (er) { toast(er.message); }); }
+    if (e.target.closest('[data-open-my]')) openMy();
   });
+
+  /* ---------------- mapa ---------------- */
+  function initMap() {
+    var c = CB.getCenter() || CB.DEFAULT_CENTER;
+    S.map = CB.makeMap($('#map'), { center: [c.lat, c.lng], zoom: 13 });
+    if (!S.map) return;
+    if (CB.getCenter()) S.me = L.marker([c.lat, c.lng], { icon: L.divIcon({ className: '', html: '<div class="me-dot" title="Você está aqui"></div>', iconSize: [22, 22], iconAnchor: [11, 11] }), zIndexOffset: 2000, keyboard: false }).addTo(S.map);
+    S.map.on('click', function () { select(null); });
+  }
+  function pinIcon(s, on) { return L.divIcon({ className: '', html: '<div class="pin' + (s.status.open ? '' : ' closed') + (on ? ' on' : '') + '"><b>' + (s.rating ? dec(s.rating) : 'novo') + '</b></div>', iconSize: [46, 52], iconAnchor: [23, 50] }); }
+  function drawMarkers() {
+    if (!S.map) return;
+    var keep = {};
+    S.view.forEach(function (s) {
+      keep[s.id] = 1;
+      var m = S.markers[s.id];
+      if (!m) {
+        m = L.marker([s.lat, s.lng], { icon: pinIcon(s, false), title: s.name, riseOnHover: true });
+        m.on('click', function () { select(s.id, true); });
+        m.addTo(S.map); S.markers[s.id] = m;
+      } else { m.setLatLng([s.lat, s.lng]); m.setIcon(pinIcon(s, S.sel === s.id)); }
+    });
+    Object.keys(S.markers).forEach(function (id) { if (!keep[id]) { S.map.removeLayer(S.markers[id]); delete S.markers[id]; } });
+    if (S.sel && !keep[S.sel]) select(null);
+  }
+  function fitView(near) {
+    if (!S.map || !S.view.length) return;
+    var c = CB.getCenter(), pts = S.view.slice(0, near ? 8 : 40).map(function (s) { return [s.lat, s.lng]; });
+    if (c) pts.push([c.lat, c.lng]);
+    S.map.fitBounds(L.latLngBounds(pts).pad(0.12), { maxZoom: 15, animate: true });
+  }
+  function select(id, fromMap) {
+    var prev = S.sel; S.sel = id;
+    [prev, id].forEach(function (x) { var s = S.shops.filter(function (y) { return y.id === x; })[0]; if (s && S.markers[x]) { S.markers[x].setIcon(pinIcon(s, x === id)); S.markers[x].setZIndexOffset(x === id ? 1000 : 0); } });
+    $$('.shop-card.on').forEach(function (c) { c.classList.remove('on'); });
+    var mc = $('#mapCard');
+    if (!id) { mc.hidden = true; return; }
+    var s = S.shops.filter(function (y) { return y.id === id; })[0]; if (!s) return;
+    var cardEl = $('.shop-card[data-id="' + id + '"]'); if (cardEl) cardEl.classList.add('on');
+    mc.innerHTML = '<div class="mc-img" style="background-image:' + esc(css(s.cover)) + '"></div><div class="mc-body"><h3>' + esc(s.name) + '</h3>' +
+      '<p class="mc-meta">' + (s.rating ? '★ ' + dec(s.rating) + ' · ' : '') + (s.dist != null && CB.getCenter() ? CB.km(s.dist) + ' · ' : '') + esc(s.status.text) + '</p>' +
+      '<div class="mc-actions"><a class="btn btn-ghost btn-sm" href="#b-' + esc(s.slug) + '">Ver</a><button class="btn btn-red btn-sm" type="button" data-book="' + esc(s.slug) + '">Agendar</button></div></div>' +
+      '<button class="x" type="button" aria-label="Fechar">' + ico('close') + '</button>';
+    mc.hidden = false;
+    $('.x', mc).addEventListener('click', function () { select(null); });
+    if (fromMap && cardEl && window.innerWidth > 900) cardEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    if (!fromMap && S.map) S.map.panTo([s.lat, s.lng]);
+  }
+  $('#results').addEventListener('mouseover', function (e) { var c = e.target.closest('.shop-card'); if (c && c.dataset.id !== S.sel && window.matchMedia('(pointer: fine)').matches) { var s = S.shops.filter(function (y) { return y.id === c.dataset.id; })[0]; if (s && S.markers[s.id]) { $$('.pin.hover').forEach(function (p) { p.classList.remove('hover'); }); var el = S.markers[s.id].getElement(); if (el) { el.querySelector('.pin').classList.add('on'); clearTimeout(c._t); } } } });
+  $('#results').addEventListener('mouseout', function (e) { var c = e.target.closest('.shop-card'); if (c && c.dataset.id !== S.sel && S.markers[c.dataset.id]) { var el = S.markers[c.dataset.id].getElement(); if (el && !c.contains(e.relatedTarget)) el.querySelector('.pin').classList.remove('on'); } });
+
+  /* ---------------- página da barbearia ---------------- */
+  var lastFocus = null;
+  function route() {
+    var h = decodeURIComponent(location.hash || '');
+    if (!$('#bookSheet').hidden) closeSheet('#bookSheet');
+    if (h.indexOf('#b-') === 0) openShop(h.slice(3)); else if (!$('#shopView').hidden) closeShop(true);
+  }
+  window.addEventListener('hashchange', route);
+  function lock(on) { document.documentElement.classList.toggle('locked', on); }
+  function openShop(slug) {
+    return CB.getShop(slug).then(function (s) {
+      S.shop = s; lastFocus = lastFocus || document.activeElement;
+      renderShop(s);
+      $('#shopView').hidden = false; lock(true);
+      $('#svScroll').scrollTop = 0; $('#svBack').focus();
+    }).catch(function (e) { toast(e.message); history.replaceState(null, '', '#explorar'); });
+  }
+  function closeShop(fromHash) {
+    $('#shopView').hidden = true; lock(false);
+    if (S.mini) { S.mini.remove(); S.mini = null; }
+    if (!fromHash) history.pushState(null, '', '#explorar');
+    if (lastFocus && lastFocus.focus) lastFocus.focus(); lastFocus = null;
+  }
+  $('#svBack').addEventListener('click', function () { closeShop(false); });
+  $('#svBookTop').addEventListener('click', function () { if (S.shop) openBooking(S.shop); });
+  $('#svScroll').addEventListener('scroll', function () { $('#svBar').classList.toggle('named', this.scrollTop > 280); }, { passive: true });
+
+  function renderShop(s) {
+    $('#svBarName').textContent = s.name;
+    var today = CB.DAYS[new Date().getDay()];
+    var groups = {}; (s.services || []).forEach(function (x) { (groups[x.cat] = groups[x.cat] || []).push(x); });
+    var addr = s.address || {};
+    var fullAddr = [addr.street, addr.district, addr.city, addr.uf].filter(Boolean).join(', ');
+    var wa = CB.phoneDigits(s.whatsapp);
+    var rv = s.reviewsAll || [];
+    var html =
+      '<header class="sv-hero" id="svHero" style="background-image:' + esc(css(s.cover)) + '"><div class="wrap" style="width:100%"><div class="sv-head">' +
+      '<img class="sv-logo" src="' + esc(s.logo) + '" alt="Logo ' + esc(s.name) + '">' +
+      '<div><p class="kicker" style="margin-bottom:10px">Barbearia' + (s.since ? ' · desde ' + esc(s.since) : '') + '</p><h1 class="display" id="svName">' + esc(s.name) + '</h1>' +
+      (s.tagline ? '<p class="sv-tagline">' + esc(s.tagline) + '</p>' : '') +
+      '<div class="sv-meta">' + (s.rating ? '<span>' + stars(s.rating) + ' <b>' + dec(s.rating) + '</b> (' + s.reviewsCount + ')</span>' : '<span>Nova na rede</span>') +
+      (s.dist != null && CB.getCenter() ? '<span>' + ico('pin') + ' ' + CB.km(s.dist) + '</span>' : '') +
+      '<span class="pill' + (s.status.open ? ' open' : '') + '">' + esc(s.status.text) + '</span></div></div>' +
+      '<div class="sv-actions"><button class="btn btn-red" type="button" data-sv-book>Agendar horário <span class="arrow">&rarr;</span></button>' +
+      (wa ? '<a class="btn btn-ghost" href="https://wa.me/55' + wa + '" target="_blank" rel="noopener">' + ico('chat') + 'WhatsApp</a>' : '') +
+      '<a class="btn btn-ghost" href="https://www.google.com/maps/dir/?api=1&destination=' + s.lat + ',' + s.lng + '" target="_blank" rel="noopener">' + ico('route') + 'Como chegar</a></div>' +
+      '</div>' + ((s.gallery || []).length > 1 ? '<div class="sv-thumbs" style="margin-top:22px">' + s.gallery.slice(0, 4).map(function (g, i) { return '<button type="button" data-img="' + esc(g) + '" class="' + (i === 0 ? 'on' : '') + '" style="background-image:' + esc(css(g)) + '" aria-label="Foto ' + (i + 1) + '"></button>'; }).join('') + '</div>' : '') +
+      '</div></header>' +
+      '<div class="wrap sv-body"><div>' +
+      '<section class="sv-sec"><p class="kicker">Serviços e valores</p><h2 class="display">Escolha o serviço</h2>' +
+      Object.keys(groups).map(function (g) { return '<div class="svc-group"><h3>' + esc(g) + '</h3>' + groups[g].map(function (x) { return '<div class="svc-row"><div><span class="nm">' + esc(x.name) + '</span><span class="du">' + dur(+x.duration) + '</span></div><span class="pr">' + CB.brl(x.price) + '</span><button class="btn btn-ghost btn-sm" type="button" data-sv-book="' + esc(x.id) + '">Agendar</button></div>'; }).join('') + '</div>'; }).join('') + '</section>' +
+      ((s.barbers || []).length ? '<section class="sv-sec"><p class="kicker">Equipe</p><h2 class="display">Profissionais</h2><div class="team">' + s.barbers.map(function (b) { return '<div class="barber"><div class="avatar">' + esc(b.name.split(' ').map(function (w) { return w[0]; }).join('').slice(0, 2)) + '</div><b>' + esc(b.name) + '</b><span>' + esc(b.role || '') + '</span></div>'; }).join('') + '</div></section>' : '') +
+      '<section class="sv-sec"><p class="kicker">O que dizem</p><h2 class="display">Avaliações</h2>' +
+      (rv.length ? '<div class="rv-sum"><span class="big">' + dec(s.rating) + '</span><div>' + stars(s.rating) + '<p class="note">' + s.reviewsCount + ' avaliações' + (s.demo ? ' · avaliações fictícias desta demonstração' : '') + '</p></div></div><div class="rv-list">' +
+        rv.slice(0, 8).map(function (r) { return '<article class="rv"><div class="rv-top"><b>' + esc(r.name) + '</b>' + stars(r.stars) + '<small>' + esc(new Date(r.date + 'T12:00').toLocaleDateString('pt-BR')) + '</small>' + (r.verified ? '<span class="ver">Agendou pela Connect</span>' : '') + '</div><p>' + esc(r.text) + '</p></article>'; }).join('') + '</div>'
+        : '<p class="note">Ainda sem avaliações. Depois do atendimento, quem agendou pode avaliar.</p>') +
+      '</section></div>' +
+      '<aside class="sv-aside">' +
+      '<div class="box"><h3>Endereço</h3><div class="mini-map" id="miniMap"></div><p style="font-size:14px">' + esc(fullAddr) + '</p></div>' +
+      '<div class="box"><h3>Horários</h3><div class="hours">' + CB.WEEK.map(function (d) { var r = (s.hours || {})[d]; return '<div class="' + (d === today ? 'today' : '') + '"><span>' + CB.DAY_LABEL[d] + '</span><span>' + (r ? CB.range(r).map(CB.fmtH).join(' às ') : 'Fechado') + '</span></div>'; }).join('') + '</div></div>' +
+      ((s.amenities || []).length ? '<div class="box"><h3>Comodidades</h3><div class="amen">' + s.amenities.map(function (a) { return '<span>' + esc(a) + '</span>'; }).join('') + '</div></div>' : '') +
+      ((s.phone && !/^\(00\)/.test(s.phone)) || s.instagram ? '<div class="box"><h3>Contato</h3><div class="contact-list">' + (s.phone && !/^\(00\)/.test(s.phone) ? '<a href="tel:+55' + CB.phoneDigits(s.phone) + '">' + ico('phone') + esc(s.phone) + '</a>' : '') + (s.instagram ? '<a href="https://www.instagram.com/' + esc(String(s.instagram).replace('@', '')) + '" target="_blank" rel="noopener">@' + esc(String(s.instagram).replace('@', '')) + '</a>' : '') + '</div></div>' : '') +
+      '</aside></div>';
+    $('#svScroll').innerHTML = html;
+    $$('[data-sv-book]', $('#svScroll')).forEach(function (b) { b.addEventListener('click', function () { openBooking(s, b.dataset.svBook || null); }); });
+    $$('.sv-thumbs button', $('#svScroll')).forEach(function (b) { b.addEventListener('click', function () { $('#svHero').style.backgroundImage = css(b.dataset.img); $$('.sv-thumbs button').forEach(function (x) { x.classList.toggle('on', x === b); }); }); });
+    setTimeout(function () {
+      if (S.mini) { S.mini.remove(); S.mini = null; }
+      S.mini = CB.makeMap($('#miniMap'), { center: [s.lat, s.lng], zoom: 15, scrollWheelZoom: false, zoomControl: false });
+      if (S.mini) L.marker([s.lat, s.lng], { icon: pinIcon(s, true) }).addTo(S.mini);
+    }, 60);
+  }
+
+  /* ---------------- gavetas ---------------- */
+  var sheetReturn = {};
+  function openSheet(id) { sheetReturn[id] = document.activeElement; $(id).hidden = false; lock(true); setTimeout(function () { var f = $(id + ' .sheet-body button, ' + id + ' .sheet-body input'); (f || $(id + ' [data-close].icon-btn')).focus(); }, 30); }
+  function closeSheet(id) { $(id).hidden = true; if ($('#shopView').hidden) lock(false); var r = sheetReturn[id]; if (r && r.focus) r.focus(); }
+  $$('.sheet').forEach(function (sh) { sh.addEventListener('click', function (e) { if (e.target.closest('[data-close]')) closeSheet('#' + sh.id); }); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    if (!$('#bookSheet').hidden) return closeSheet('#bookSheet');
+    if (!$('#mySheet').hidden) return closeSheet('#mySheet');
+    if (!$('#shopView').hidden) return closeShop(false);
+    setMenu(false);
+  });
+
+  /* ---------------- agendamento ---------------- */
+  var BK = { shop: null, step: 1, sel: [], barber: 'any', date: null, time: null, slots: [], loading: false, done: null };
+  function openBooking(shop, svcId) {
+    BK = { shop: shop, step: svcId ? 2 : 1, sel: svcId ? [svcId] : [], barber: 'any', date: null, time: null, slots: [], loading: false, done: null };
+    if ((shop.barbers || []).length <= 1 && BK.step === 2) BK.step = 3;
+    $('#bkShop').textContent = shop.name + (shop.address && shop.address.district ? ' · ' + shop.address.district : '');
+    renderBk(); openSheet('#bookSheet');
+    if (BK.step === 3) pickFirstDay();
+  }
+  function chosen() { var l = (BK.shop.services || []).filter(function (s) { return BK.sel.indexOf(s.id) >= 0; }); return { list: l, price: l.reduce(function (a, s) { return a + (+s.price || 0); }, 0), dur: l.reduce(function (a, s) { return a + (+s.duration || 30); }, 0) }; }
+  function days() { var out = [], d = new Date(); for (var i = 0; i < 14; i++) { var x = new Date(d.getFullYear(), d.getMonth(), d.getDate() + i); out.push(x); } return out; }
+  function pickFirstDay() { var first = days().filter(function (d) { return (BK.shop.hours || {})[CB.DAYS[d.getDay()]]; })[0]; if (first) loadSlots(CB.isoDate(first)); }
+  function loadSlots(iso) {
+    BK.date = iso; BK.time = null; BK.loading = true; renderBk();
+    CB.busy(BK.shop.id, iso).then(function (bz) { BK.slots = CB.freeSlots(BK.shop, iso, chosen().dur, bz, BK.barber); }).catch(function (e) { BK.slots = []; toast(e.message); })
+      .then(function () { BK.loading = false; renderBk(); });
+  }
+  function renderBk() {
+    var body = $('#bkBody'), foot = $('#bkFoot'), t = chosen(), shop = BK.shop;
+    $$('#bkStepper span').forEach(function (sp, i) { sp.className = BK.done ? 'done' : (i + 1 === BK.step ? 'on' : i + 1 < BK.step ? 'done' : ''); });
+    var sum = '<div class="sum">' + (t.list.length ? '<b>' + CB.brl(t.price) + '</b>' + t.list.length + (t.list.length === 1 ? ' serviço' : ' serviços') + ' · ' + dur(t.dur) : 'Escolha ao menos um serviço') + '</div>';
+    if (BK.done) {
+      var b = BK.done, start = b.date.replace(/-/g, '') + 'T' + b.time.replace(':', '') + '00', endM = CB.toMin(b.time) + b.duration, end = b.date.replace(/-/g, '') + 'T' + CB.fromMin(endM).replace(':', '') + '00';
+      var gcal = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent('Barbearia: ' + shop.name) + '&dates=' + start + '/' + end + '&ctz=America/Sao_Paulo&details=' + encodeURIComponent(b.services.map(function (s) { return s.name; }).join(', ') + ' · Código ' + b.code) + '&location=' + encodeURIComponent([shop.address.street, shop.address.district, shop.address.city].filter(Boolean).join(', '));
+      var wa = CB.phoneDigits(shop.whatsapp);
+      body.innerHTML = '<div class="done-view"><div class="done-check">' + ico('check') + '</div><h3>Horário agendado</h3><p class="note">Guarde o código para cancelar ou avaliar depois.</p><span class="done-code">' + esc(b.code) + '</span>' +
+        '<div class="summary"><div><span>Quando</span><span>' + esc(dateLabel(b.date)) + ' às ' + esc(b.time) + '</span></div><div><span>Onde</span><span>' + esc(shop.name) + '</span></div><div><span>Profissional</span><span>' + esc(b.barberName || 'A definir') + '</span></div><div><span>Serviços</span><span>' + esc(b.services.map(function (s) { return s.name; }).join(', ')) + '</span></div><div class="tot"><span>Total no local</span><span>' + CB.brl(b.total) + '</span></div></div>' +
+        '<div class="done-actions"><a class="btn btn-solid" href="' + gcal + '" target="_blank" rel="noopener">' + ico('cal') + 'Adicionar à agenda do Google</a>' +
+        (wa ? '<a class="btn btn-ghost" href="https://wa.me/55' + wa + '?text=' + encodeURIComponent('Olá! Agendei pela Connect: ' + dateLabel(b.date) + ' às ' + b.time + ' (código ' + b.code + ').') + '" target="_blank" rel="noopener">' + ico('chat') + 'Avisar a barbearia no WhatsApp</a>' : '') +
+        '<button class="btn btn-ghost" type="button" id="bkMy">Ver meus agendamentos</button></div></div>';
+      foot.innerHTML = '<div class="sum">Pagamento direto na barbearia.</div><button class="btn btn-red" type="button" data-close>Fechar</button>';
+      $('#bkMy').addEventListener('click', function () { closeSheet('#bookSheet'); openMy(); });
+      return;
+    }
+    if (BK.step === 1) {
+      body.innerHTML = '<p class="note" style="margin-bottom:14px">Pode escolher mais de um.</p>' + (shop.services || []).map(function (s) {
+        var on = BK.sel.indexOf(s.id) >= 0;
+        return '<button type="button" class="opt" role="checkbox" aria-checked="' + on + '" data-svc="' + esc(s.id) + '"><span class="mark"></span><span><span class="t">' + esc(s.name) + '</span><span class="s">' + esc(s.cat) + ' · ' + dur(+s.duration) + '</span></span><span class="p">' + CB.brl(s.price) + '</span></button>';
+      }).join('');
+      foot.innerHTML = sum + '<button class="btn btn-red" type="button" id="bkNext"' + (t.list.length ? '' : ' disabled') + '>Continuar</button>';
+    } else if (BK.step === 2) {
+      var opts = [{ id: 'any', name: 'Sem preferência', role: 'Primeiro profissional livre' }].concat(shop.barbers || []);
+      body.innerHTML = opts.map(function (b) { var on = BK.barber === b.id; return '<button type="button" class="opt" role="radio" aria-checked="' + on + '" data-barber="' + esc(b.id) + '"><span class="mark"></span><span><span class="t">' + esc(b.name) + '</span><span class="s">' + esc(b.role || '') + '</span></span><span></span></button>'; }).join('');
+      foot.innerHTML = sum + '<button class="btn btn-ghost" type="button" id="bkPrev">Voltar</button><button class="btn btn-red" type="button" id="bkNext">Continuar</button>';
+    } else if (BK.step === 3) {
+      var dd = days().map(function (d) { var iso = CB.isoDate(d), k = CB.DAYS[d.getDay()], open = !!(shop.hours || {})[k]; return '<button type="button" class="day" data-day="' + iso + '" aria-pressed="' + (BK.date === iso) + '"' + (open ? '' : ' disabled aria-label="' + CB.DAY_LABEL[k] + ' fechado"') + '><small>' + (iso === CB.isoDate(new Date()) ? 'Hoje' : CB.DAY_SHORT[k]) + '</small><b>' + d.getDate() + '</b><small>' + d.toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '') + '</small></button>'; }).join('');
+      var sl = '';
+      if (!BK.date) sl = '<p class="note">Escolha um dia.</p>';
+      else if (BK.loading) sl = '<div class="skeleton" style="min-height:140px"></div>';
+      else if (!BK.slots.length) sl = '<p class="note">Sem horários livres neste dia para ' + dur(t.dur) + ' de serviço. Tente outro dia' + (BK.barber !== 'any' ? ' ou outro profissional' : '') + '.</p>';
+      else {
+        var parts = [['Manhã', 0, 720], ['Tarde', 720, 1080], ['Noite', 1080, 1440]];
+        sl = parts.map(function (p) { var g = BK.slots.filter(function (x) { var m = CB.toMin(x.time); return m >= p[1] && m < p[2]; }); return g.length ? '<div class="slot-group"><h4>' + p[0] + '</h4><div class="slots">' + g.map(function (x) { return '<button type="button" class="slot" data-time="' + x.time + '" aria-pressed="' + (BK.time === x.time) + '">' + x.time + '</button>'; }).join('') + '</div></div>' : ''; }).join('');
+      }
+      body.innerHTML = '<div class="days" role="group" aria-label="Dias">' + dd + '</div>' + sl;
+      foot.innerHTML = sum + '<button class="btn btn-ghost" type="button" id="bkPrev">Voltar</button><button class="btn btn-red" type="button" id="bkNext"' + (BK.time ? '' : ' disabled') + '>Continuar</button>';
+    } else {
+      var bName = BK.barber === 'any' ? 'Primeiro livre' : ((shop.barbers || []).filter(function (b) { return b.id === BK.barber; })[0] || {}).name;
+      var saved = LS.get('cb_client', {});
+      body.innerHTML = '<div class="summary"><div><span>Quando</span><span>' + esc(dateLabel(BK.date)) + ' às ' + esc(BK.time) + '</span></div><div><span>Profissional</span><span>' + esc(bName || '') + '</span></div>' +
+        t.list.map(function (s) { return '<div><span>' + esc(s.name) + '</span><span>' + CB.brl(s.price) + '</span></div>'; }).join('') + '<div class="tot"><span>Total no local · ' + dur(t.dur) + '</span><span>' + CB.brl(t.price) + '</span></div></div>' +
+        '<form id="bkForm" novalidate><div class="field"><label for="bkName">Seu nome</label><input id="bkName" autocomplete="name" value="' + esc(saved.name || '') + '" required><p class="err">Digite seu nome.</p></div>' +
+        '<div class="field"><label for="bkPhone">WhatsApp</label><input id="bkPhone" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="(00) 00000-0000" value="' + esc(saved.phone || '') + '" required><p class="err">Digite um número com DDD.</p></div>' +
+        '<div class="field"><label for="bkNotes">Observação (opcional)</label><textarea id="bkNotes" maxlength="280" placeholder="Ex.: quero manter o comprimento em cima"></textarea></div></form>' +
+        '<p class="note">' + (CB.mode() === 'demo' || /^demo-/.test(shop.id) ? 'Demonstração: o agendamento fica salvo neste navegador.' : 'A barbearia recebe seus dados para confirmar o horário.') + '</p>';
+      foot.innerHTML = sum + '<button class="btn btn-ghost" type="button" id="bkPrev">Voltar</button><button class="btn btn-red" type="button" id="bkNext">Confirmar</button>';
+      var ph = $('#bkPhone'); ph.addEventListener('input', function () { this.value = maskPhone(this.value); });
+    }
+  }
+  function maskPhone(v) { var d = v.replace(/\D/g, '').slice(0, 11); if (!d) return ''; if (d.length <= 2) return '(' + d; if (d.length <= 6) return '(' + d.slice(0, 2) + ') ' + d.slice(2); if (d.length <= 10) return '(' + d.slice(0, 2) + ') ' + d.slice(2, 6) + '-' + d.slice(6); return '(' + d.slice(0, 2) + ') ' + d.slice(2, 7) + '-' + d.slice(7); }
+  $('#bkBody').addEventListener('click', function (e) {
+    var o = e.target.closest('[data-svc]'); if (o) { var id = o.dataset.svc, i = BK.sel.indexOf(id); if (i >= 0) BK.sel.splice(i, 1); else BK.sel.push(id); renderBk(); var again = $('[data-svc="' + id + '"]'); if (again) again.focus(); return; }
+    var b = e.target.closest('[data-barber]'); if (b) { BK.barber = b.dataset.barber; renderBk(); $('[data-barber="' + BK.barber + '"]').focus(); return; }
+    var d = e.target.closest('[data-day]'); if (d && !d.disabled) { loadSlots(d.dataset.day); return; }
+    var s = e.target.closest('[data-time]'); if (s) { BK.time = s.dataset.time; renderBk(); var n = $('#bkNext'); if (n) n.focus(); }
+  });
+  $('#bkFoot').addEventListener('click', function (e) {
+    if (e.target.closest('#bkPrev')) { BK.step = Math.max(1, BK.step - 1); if (BK.step === 2 && (BK.shop.barbers || []).length <= 1) BK.step = 1; renderBk(); return; }
+    if (!e.target.closest('#bkNext')) return;
+    if (BK.step === 1) { BK.step = (BK.shop.barbers || []).length > 1 ? 2 : 3; renderBk(); if (BK.step === 3) BK.date ? loadSlots(BK.date) : pickFirstDay(); return; }
+    if (BK.step === 2) { BK.step = 3; renderBk(); BK.date ? loadSlots(BK.date) : pickFirstDay(); return; }
+    if (BK.step === 3) { if (BK.time) { BK.step = 4; renderBk(); } return; }
+    submitBooking(e.target.closest('#bkNext'));
+  });
+  function submitBooking(btn) {
+    var name = $('#bkName'), phone = $('#bkPhone'), ok = true;
+    [[name, name.value.trim().length >= 2], [phone, CB.phoneDigits(phone.value).length >= 10]].forEach(function (p) { p[0].parentNode.classList.toggle('invalid', !p[1]); if (!p[1] && ok) { p[0].focus(); ok = false; } });
+    if (!ok) return;
+    var t = chosen();
+    LS.set('cb_client', { name: name.value.trim(), phone: phone.value });
+    btn.classList.add('loading');
+    CB.book({ shopId: BK.shop.id, services: t.list.map(function (s) { return { id: s.id, name: s.name, price: +s.price, duration: +s.duration }; }), total: t.price, duration: t.dur, barberId: BK.barber, date: BK.date, time: BK.time, name: name.value.trim(), phone: phone.value, notes: $('#bkNotes').value.trim() })
+      .then(function (b) { BK.done = b; renderBk(); updateMyCount(); })
+      .catch(function (er) { toast(er.message); BK.step = 3; loadSlots(BK.date); })
+      .then(function () { btn.classList.remove('loading'); });
+  }
+
+  /* ---------------- meus agendamentos ---------------- */
+  function updateMyCount() { CB.myBookings().then(function (l) { var n = l.filter(function (b) { return b.status !== 'cancelado' && b.date >= CB.isoDate(new Date()); }).length; $('#myCount').textContent = n ? n : ''; }).catch(function () {}); }
+  function openMy() { renderMy(); openSheet('#mySheet'); }
+  $('#myBtn').addEventListener('click', openMy);
+  function renderMy() {
+    var body = $('#myBody');
+    body.innerHTML = '<div class="skeleton" style="min-height:120px"></div>';
+    CB.myBookings().then(function (list) {
+      if (!list.length) { body.innerHTML = '<div class="empty" style="border:0"><h3>Nenhum agendamento ainda</h3><p>Escolha uma barbearia no mapa e agende. Seus horários aparecem aqui.</p><button class="btn btn-red btn-sm" type="button" data-close>Explorar barbearias</button></div>'; return; }
+      var today = CB.isoDate(new Date());
+      body.innerHTML = list.map(function (b) {
+        var past = b.date < today || (b.date === today && CB.toMin(b.time) < CB.toMin(CB.fromMin(new Date().getHours() * 60 + new Date().getMinutes())));
+        var canCancel = !past && b.status === 'confirmado', canRate = (past || b.status === 'concluido') && b.status !== 'cancelado' && !b.reviewed;
+        return '<article class="mb" data-code="' + esc(b.code) + '"><div class="mb-top"><div><h3>' + esc(b.shopName) + '</h3><p>' + esc(dateLabel(b.date)) + ' às ' + esc(b.time) + ' · ' + esc((b.services || []).map(function (s) { return s.name; }).join(', ')) + '</p><p>Código ' + esc(b.code) + ' · ' + CB.brl(b.total) + '</p></div><span class="st ' + esc(b.status) + '">' + esc(b.status) + '</span></div>' +
+          '<div class="mb-actions">' + (b.shopSlug ? '<a class="btn btn-ghost btn-sm" href="#b-' + esc(b.shopSlug) + '" data-close>Ver barbearia</a>' : '') + (canCancel ? '<button class="btn btn-ghost btn-sm" type="button" data-cancel>Cancelar</button>' : '') + (canRate ? '<button class="btn btn-red btn-sm" type="button" data-rate>Avaliar</button>' : '') + '</div><div class="mb-extra"></div></article>';
+      }).join('');
+    }).catch(function (e) { body.innerHTML = '<p class="note">' + esc(e.message) + '</p>'; });
+  }
+  $('#myBody').addEventListener('click', function (e) {
+    var card = e.target.closest('.mb'); if (!card) return; var c = card.dataset.code, extra = $('.mb-extra', card);
+    if (e.target.closest('[data-cancel]')) { extra.innerHTML = '<p class="note" style="margin-top:12px">Cancelar este horário?</p><div class="mb-actions"><button class="btn btn-red btn-sm" type="button" data-cancel-yes>Sim, cancelar</button><button class="btn btn-ghost btn-sm" type="button" data-cancel-no>Manter</button></div>'; return; }
+    if (e.target.closest('[data-cancel-no]')) { extra.innerHTML = ''; return; }
+    if (e.target.closest('[data-cancel-yes]')) { CB.cancelMine(c).then(function () { toast('Horário cancelado.'); renderMy(); updateMyCount(); }).catch(function (er) { toast(er.message); }); return; }
+    if (e.target.closest('[data-rate]')) { extra.innerHTML = '<div class="rate" role="radiogroup" aria-label="Nota">' + [1, 2, 3, 4, 5].map(function (n) { return '<button type="button" role="radio" aria-checked="false" data-star="' + n + '" aria-label="' + n + ' estrela' + (n > 1 ? 's' : '') + '">★</button>'; }).join('') + '</div><div class="field"><label for="rt-' + esc(c) + '">Comentário</label><textarea id="rt-' + esc(c) + '" maxlength="400"></textarea></div><button class="btn btn-red btn-sm" type="button" data-send-rate>Enviar avaliação</button>'; return; }
+    var st = e.target.closest('[data-star]'); if (st) { var n = +st.dataset.star; $$('[data-star]', card).forEach(function (b) { b.classList.toggle('on', +b.dataset.star <= n); b.setAttribute('aria-checked', String(+b.dataset.star === n)); }); card.dataset.stars = n; return; }
+    if (e.target.closest('[data-send-rate]')) { var n2 = +card.dataset.stars || 0; if (!n2) { toast('Escolha de 1 a 5 estrelas.'); return; } CB.review(c, n2, $('textarea', card).value.trim()).then(function () { toast('Avaliação enviada. Obrigado!'); renderMy(); if (S.shop) CB.getShop(S.shop.slug).then(renderShop); load(); }).catch(function (er) { toast(er.message); }); }
+  });
+
+  /* ---------------- início ---------------- */
+  CB.init().then(function () {
+    initMap();
+    return load();
+  }).then(function () {
+    if (CB.getCenter()) fitView(true); else if (S.map) fitView(false);
+    updateMyCount();
+    route();
+    if (location.hash === '#meus-agendamentos') openMy();
+    if (!CB.getCenter() && !LS.get('cb_loc_skip', 0)) setTimeout(function () { $('#locSheet').hidden = false; }, 900);
+    else if (CB.getCenter()) $('#fLoc').value = CB.getCenter().label || '';
+  });
+  $('#legal').textContent = '© ' + new Date().getFullYear() + ' Connect Barber. Todos os direitos reservados.';
 })();
 </script>
 </body>

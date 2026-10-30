@@ -1,0 +1,1106 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Connect Barber</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Connect Barber: barba na navalha, toalhas quentes e agendamento online. Uma barbearia clássica conectada ao seu tempo.">
+<meta name="theme-color" content="#0b0b0b">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Connect Barber">
+<meta property="og:description" content="Barba na navalha, toalhas quentes e agendamento online.">
+<meta property="og:image" content="assets/img/banner.png">
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<link rel="apple-touch-icon" href="assets/img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Inter:wght@400;500;600&family=Marcellus&family=Jost:wght@300;400&display=swap">
+<style>
+/* ==========================================================================
+   CONNECT BARBER · site do tenant · v2
+   Reconstrução fiel do visual da Barbearia Corleone: Oswald + Inter, preto
+   profundo, off-white institucional, barra bicolor de barber pole (vermelho
+   e azul), fotos em tela cheia e painéis 7/5. Única exceção: a seção
+   "Trabalhe Conosco" mantém o cromo e a tipografia da v1, a pedido.
+   Todo o conteúdo vem do bloco JSON #tenant no fim da página.
+   ========================================================================== */
+:root {
+  --ink: #0b0b0b;
+  --ink-2: #121212;
+  --ink-3: #1a1a1a;
+  --paper: #f4f2ee;
+  --paper-2: #eae7e1;
+  --red: #ED1B2E;
+  --blue: #0077B2;
+  --gray: #585858;
+  --white: #ffffff;
+  --text-dim: #b9b6b1;
+  --text-faint: #7c7a76;
+  --hair: rgba(255,255,255,.10);
+  --hair-dark: rgba(0,0,0,.12);
+
+  --font-display: "Oswald", "Arial Narrow", sans-serif;
+  --font-body: "Inter", -apple-system, "Segoe UI", sans-serif;
+
+  /* só para a seção Trabalhe Conosco (mantida da v1) */
+  --cb-display: "Marcellus", "Optima", "Palatino Linotype", Georgia, serif;
+  --cb-body: "Jost", "Futura", "Century Gothic", sans-serif;
+  --metal: linear-gradient(90deg, #4c5057 0%, #e8eaed 20%, #9ca1a8 38%, #fafbfb 56%, #7b8088 76%, #d6d9dd 100%);
+
+  --w: 1280px;
+  --gutter: clamp(24px, 4vw, 56px);
+  --rhythm: clamp(96px, 12vw, 150px);
+  --ease: cubic-bezier(.22, 1, .36, 1);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; margin: 0; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  font-family: var(--font-body);
+  font-size: 15px;
+  background: var(--ink);
+  color: var(--white);
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto; z-index: 100;
+  height: env(safe-area-inset-top, 0px); background: var(--ink);
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+ul { list-style: none; padding: 0; }
+button, input, select, textarea { font: inherit; }
+::selection { background: var(--red); color: var(--white); }
+:focus-visible { outline: 2px solid var(--white); outline-offset: 3px; }
+
+.wrap {
+  max-width: calc(var(--w) + 2 * var(--gutter));
+  margin: 0 auto;
+  padding-left: max(var(--gutter), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--gutter), env(safe-area-inset-right, 0px));
+}
+
+/* --------------------------------------------------------------------------
+   Barra bicolor (barber pole) e marca de poste ao lado dos títulos
+   -------------------------------------------------------------------------- */
+.brand-bar { display: flex; height: 4px; }
+.brand-bar::before { content: ""; flex: 0 0 38%; background: var(--red); }
+.brand-bar::after { content: ""; flex: 1; background: var(--blue); }
+.brand-bar-fixed { position: fixed; top: env(safe-area-inset-top, 0px); left: 0; right: 0; z-index: 90; }
+.pole-mark { width: 18px; height: 26px; flex: none; }
+
+/* --------------------------------------------------------------------------
+   Tipografia
+   -------------------------------------------------------------------------- */
+.display {
+  font-family: var(--font-display);
+  font-weight: 500;
+  text-transform: uppercase;
+  line-height: 1.02;
+  letter-spacing: .01em;
+}
+.kicker {
+  display: flex; align-items: center; gap: 14px;
+  font-family: var(--font-display); font-weight: 400;
+  font-size: 11px; letter-spacing: .38em; text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 28px;
+}
+.kicker::after { content: ""; height: 1px; width: 56px; background: var(--hair); }
+.on-paper .kicker::after { background: var(--hair-dark); }
+
+.body-copy { color: var(--text-dim); max-width: 52ch; }
+.body-copy strong { color: var(--white); font-weight: 500; }
+.on-paper .body-copy { color: var(--gray); }
+.on-paper .body-copy strong { color: var(--ink); }
+
+/* --------------------------------------------------------------------------
+   Botões
+   -------------------------------------------------------------------------- */
+.btn {
+  position: relative;
+  display: inline-flex; align-items: center; justify-content: center; gap: 12px;
+  padding: 17px 34px;
+  font-family: var(--font-display); font-weight: 500;
+  font-size: 12px; letter-spacing: .22em; text-transform: uppercase;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background .35s var(--ease), color .35s var(--ease), border-color .35s var(--ease);
+}
+.btn .arrow { transition: transform .35s var(--ease); }
+.btn:hover .arrow { transform: translateX(5px); }
+.btn-solid { background: var(--white); color: var(--ink); }
+.btn-solid:hover { background: var(--red); color: var(--white); }
+.btn-ghost { background: rgba(10,10,10,.45); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); color: var(--white); border-color: rgba(255,255,255,.45); }
+.btn-ghost:hover { border-color: var(--white); background: rgba(10,10,10,.65); }
+.btn-ghost-dark { background: transparent; color: var(--ink); border-color: rgba(0,0,0,.4); }
+.btn-ghost-dark:hover { background: var(--ink); color: var(--white); }
+.btn-red { background: var(--red); color: var(--white); }
+.btn-red:hover { background: var(--white); color: var(--ink); }
+.btn-blue { background: var(--blue); color: var(--white); }
+.btn-blue:hover { background: #005d8c; }
+.btn-whats { background: #000000; color: var(--white); }
+.btn-whats:hover { background: #262626; }
+
+/* --------------------------------------------------------------------------
+   Header
+   -------------------------------------------------------------------------- */
+.site-header {
+  position: fixed; top: calc(4px + env(safe-area-inset-top, 0px)); left: 0; right: 0; z-index: 80;
+  transition: background .45s var(--ease), border-color .45s var(--ease);
+  border-bottom: 1px solid transparent;
+  background: linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,0));
+}
+.site-header.scrolled {
+  background: rgba(9,9,9,.94);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border-bottom-color: var(--hair);
+}
+.header-inner {
+  max-width: calc(var(--w) + 2 * var(--gutter)); margin: 0 auto;
+  padding-left: max(var(--gutter), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--gutter), env(safe-area-inset-right, 0px));
+  height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 24px;
+}
+.header-logo img { height: 52px; width: auto; }
+@media (max-width: 520px) { .header-logo img { height: 44px; } }
+.nav-links { display: flex; gap: 34px; }
+.nav-links a {
+  font-family: var(--font-display); font-weight: 400;
+  font-size: 11px; letter-spacing: .26em; text-transform: uppercase;
+  color: #d9d6d1; padding: 6px 0; position: relative;
+}
+.nav-links a::after {
+  content: ""; position: absolute; left: 0; bottom: 0; width: 100%; height: 1px;
+  background: var(--red); transform: scaleX(0); transform-origin: right;
+  transition: transform .4s var(--ease);
+}
+.nav-links a:hover, .nav-links a.active { color: var(--white); }
+.nav-links a:hover::after, .nav-links a.active::after { transform: scaleX(1); transform-origin: left; }
+.header-cta { display: flex; align-items: center; gap: 20px; }
+.header-cta .btn { padding: 12px 22px; }
+.menu-toggle { display: none; flex-direction: column; gap: 6px; background: none; border: none; cursor: pointer; padding: 6px; }
+.menu-toggle span { width: 26px; height: 1px; background: var(--white); transition: transform .3s var(--ease), opacity .3s; }
+.menu-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.menu-toggle.open span:nth-child(2) { opacity: 0; }
+.menu-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+@media (max-width: 1020px) {
+  .nav-links {
+    position: fixed; inset: calc(80px + env(safe-area-inset-top, 0px)) 0 auto 0;
+    background: rgba(9,9,9,.98); flex-direction: column; gap: 0;
+    padding: 12px max(var(--gutter), env(safe-area-inset-right, 0px)) 28px max(var(--gutter), env(safe-area-inset-left, 0px));
+    border-bottom: 1px solid var(--hair); display: none;
+  }
+  .nav-links.open { display: flex; }
+  .nav-links a { display: block; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,.06); }
+  .menu-toggle { display: flex; }
+  .header-cta .btn { display: none; }
+}
+
+/* --------------------------------------------------------------------------
+   Hero (foto da fachada em tela cheia)
+   -------------------------------------------------------------------------- */
+.hero {
+  position: relative; min-height: 100svh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; overflow: hidden; isolation: isolate;
+  padding: 120px 0 110px;
+  background-color: var(--ink);
+  background-image: var(--img);
+  background-size: cover; background-position: center 40%;
+}
+.hero::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(180deg, rgba(5,5,5,.62) 0%, rgba(5,5,5,.38) 45%, rgba(5,5,5,.82) 100%);
+}
+.hero-title { font-size: clamp(32px, 6.4vw, 84px); max-width: 24ch; margin: 0 auto 40px; text-shadow: 0 6px 40px rgba(0,0,0,.5); }
+.hero-actions { display: flex; gap: 18px; flex-wrap: wrap; justify-content: center; }
+.hero-foot {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  display: flex; align-items: flex-end; justify-content: space-between;
+  padding: 0 max(var(--gutter), env(safe-area-inset-right, 0px)) 30px max(var(--gutter), env(safe-area-inset-left, 0px));
+  font-family: var(--font-display); font-size: 10px; letter-spacing: .3em; text-transform: uppercase;
+  color: rgba(255,255,255,.55);
+}
+.hero-scroll { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.hero-scroll::after {
+  content: ""; width: 1px; height: 52px;
+  background: linear-gradient(180deg, rgba(255,255,255,.7), rgba(255,255,255,0));
+  animation: scrollHint 2.4s var(--ease) infinite;
+}
+@keyframes scrollHint {
+  0% { transform: scaleY(0); transform-origin: top; }
+  45% { transform: scaleY(1); transform-origin: top; }
+  55% { transform: scaleY(1); transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+@media (max-width: 720px) {
+  .hero { background-image: var(--img-m, var(--img)); background-position: center; }
+  .hero-foot { justify-content: center; }
+  .hero-foot .hero-foot-side { display: none; }
+}
+
+/* --------------------------------------------------------------------------
+   Faixa de promoção
+   -------------------------------------------------------------------------- */
+.promo-bar { border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); background: var(--ink-2); }
+.promo-inner {
+  max-width: calc(var(--w) + 2 * var(--gutter)); margin: 0 auto;
+  padding: 18px max(var(--gutter), env(safe-area-inset-right, 0px)) 18px max(var(--gutter), env(safe-area-inset-left, 0px));
+  display: flex; align-items: center; justify-content: center; gap: 16px; text-align: center;
+  font-family: var(--font-display); font-size: 12px; letter-spacing: .24em; text-transform: uppercase;
+  color: var(--text-dim); transition: color .3s;
+}
+.promo-inner:hover { color: var(--white); }
+.promo-inner strong { color: var(--red); font-weight: 500; }
+
+/* --------------------------------------------------------------------------
+   Letreiro contínuo
+   -------------------------------------------------------------------------- */
+.marquee { overflow: hidden; border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); padding: 22px 0; background: var(--ink); }
+.marquee-track { display: flex; width: max-content; animation: marquee 38s linear infinite; }
+.marquee span {
+  font-family: var(--font-display); font-weight: 400; font-size: 13px; letter-spacing: .42em; text-transform: uppercase;
+  color: var(--text-faint); padding: 0 34px; white-space: nowrap;
+}
+.marquee span i { font-style: normal; color: var(--red); padding-right: 68px; }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* --------------------------------------------------------------------------
+   Painéis editoriais (foto 7 colunas + texto 5 colunas)
+   -------------------------------------------------------------------------- */
+.panel { display: grid; grid-template-columns: repeat(12, 1fr); align-items: stretch; min-height: 640px; }
+.panel-media { grid-column: 1 / 8; position: relative; overflow: hidden; min-height: 380px; background: var(--ink-2); }
+.panel-media .media-img {
+  position: absolute; inset: 0;
+  background-image: var(--img); background-size: cover; background-position: var(--pos, center);
+  transform: scale(1.001); transition: transform 1.4s var(--ease);
+}
+.panel:hover .media-img { transform: scale(1.045); }
+.panel-media::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, rgba(0,0,0,0) 60%, rgba(11,11,11,.32) 100%); }
+.panel-body {
+  grid-column: 8 / 13; min-width: 0;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: clamp(56px, 7vw, 110px) clamp(32px, 5vw, 90px);
+  background: var(--ink);
+}
+.panel-body .body-copy + .body-copy { margin-top: 0; }
+.panel.flip .panel-media { grid-column: 6 / 13; order: 2; }
+.panel.flip .panel-media::after { background: linear-gradient(270deg, rgba(0,0,0,0) 60%, rgba(11,11,11,.32) 100%); }
+.panel.flip .panel-body { grid-column: 1 / 6; order: 1; }
+.panel h2 { font-size: clamp(34px, 4.2vw, 56px); margin-bottom: 26px; }
+.panel .panel-cta { margin-top: 38px; display: flex; gap: 16px; flex-wrap: wrap; }
+@media (max-width: 900px) {
+  .panel, .panel.flip { display: flex; flex-direction: column; }
+  .panel-media { min-height: 62vw; order: -1 !important; }
+  .panel-body { padding: 56px max(var(--gutter), env(safe-area-inset-right, 0px)) 72px max(var(--gutter), env(safe-area-inset-left, 0px)); }
+}
+
+/* --------------------------------------------------------------------------
+   Nossos serviços
+   -------------------------------------------------------------------------- */
+.services-photo {
+  position: relative; isolation: isolate; overflow: hidden;
+  min-height: clamp(240px, 32vw, 400px);
+  background-image: var(--img); background-size: cover; background-position: center 55%;
+}
+.services-photo::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(5,5,5,0) 55%, rgba(5,5,5,.88) 100%); }
+.services-photo-caption {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 0 max(var(--gutter), env(safe-area-inset-right, 0px)) 22px max(var(--gutter), env(safe-area-inset-left, 0px));
+  font-family: var(--font-display); font-size: 10px; letter-spacing: .3em; text-transform: uppercase;
+  color: rgba(255,255,255,.75);
+}
+.services-wrap { padding-block: var(--rhythm); }
+.services-wrap h2 { font-size: clamp(30px, 3.4vw, 46px); margin-bottom: 22px; }
+.services-wrap .body-copy { margin-bottom: 8px; }
+.services-grid { display: grid; grid-template-columns: repeat(4, 1fr); border-left: 1px solid var(--hair); margin-top: 52px; }
+.service-cat { border-right: 1px solid var(--hair); border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); padding: 34px 28px; min-width: 0; }
+.service-cat h3 { font-family: var(--font-display); font-weight: 500; font-size: 14px; letter-spacing: .1em; text-transform: uppercase; color: var(--red); margin-bottom: 22px; }
+.service-list li { margin-bottom: 18px; }
+.service-list li:last-child { margin-bottom: 0; }
+.service-line { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.service-name { font-size: 14px; color: var(--white); }
+.service-duration { font-family: var(--font-display); font-size: 10px; letter-spacing: .1em; color: var(--text-faint); white-space: nowrap; }
+.service-duration b { font-weight: 500; color: #d9d6d1; margin-left: 8px; }
+.service-detail { margin-top: 6px; font-size: 12px; line-height: 1.6; color: var(--text-dim); }
+@media (max-width: 1100px) { .services-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .services-grid { grid-template-columns: 1fr; } }
+
+/* --------------------------------------------------------------------------
+   Seções e Agende (fundo institucional claro)
+   -------------------------------------------------------------------------- */
+.section { padding: var(--rhythm) 0; }
+.section.paper { background: var(--paper); color: var(--ink); }
+.agende { position: relative; background: var(--paper); color: var(--ink); border-top: 1px solid var(--hair-dark); }
+.agende-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: clamp(40px, 6vw, 96px); align-items: center; }
+.agende-content { min-width: 0; }
+.agende-logo { display: flex; justify-content: center; }
+.agende-logo img { width: clamp(220px, 24vw, 320px); height: auto; }
+.agende h2 { font-size: clamp(32px, 4vw, 52px); margin-bottom: 22px; }
+.agende .body-copy { margin-bottom: 8px; }
+.store-buttons { display: flex; gap: 16px; flex-wrap: wrap; }
+.channel-label { font-family: var(--font-display); font-size: 10px; letter-spacing: .34em; text-transform: uppercase; color: #8b8880; margin: 40px 0 14px; }
+.agende-phones { margin: 22px 0 0; font-size: 14px; color: var(--gray); }
+.agende-phones a { color: var(--ink); border-bottom: 1px solid rgba(0,0,0,.35); padding-bottom: 2px; white-space: nowrap; transition: color .3s, border-color .3s; }
+.agende-phones a:hover { color: var(--red); border-color: var(--red); }
+.agende-hint { margin: 26px 0 0; font-size: 12px; color: #8b8880; }
+@media (max-width: 900px) {
+  .agende-grid { grid-template-columns: 1fr; }
+  .agende-logo img { width: clamp(200px, 46vw, 280px); }
+}
+
+/* --------------------------------------------------------------------------
+   Instagram: celular com o perfil + colagem de fotos à direita
+   -------------------------------------------------------------------------- */
+.insta-hero {
+  position: relative; isolation: isolate; overflow: hidden;
+  min-height: clamp(560px, 62vw, 720px);
+  display: flex; align-items: center;
+  border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair);
+  background: radial-gradient(60% 80% at 40% 60%, #1a1714 0%, var(--ink) 70%);
+  color: var(--white);
+}
+.insta-collage {
+  position: absolute; z-index: 0; top: 0; bottom: 0; right: 0; width: 42%;
+  display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(4, 1fr); gap: 4px;
+}
+.insta-collage span { background-image: var(--img); background-size: cover; background-position: center; filter: saturate(.9) brightness(.9); }
+.insta-collage span:nth-child(1) { grid-column: span 2; }
+.insta-collage span:nth-child(6) { grid-row: span 2; }
+.insta-collage span:nth-child(8) { grid-column: span 2; }
+.insta-phone {
+  position: absolute; z-index: 1; left: 34%; top: 7%;
+  width: clamp(280px, 27vw, 390px); aspect-ratio: 9 / 19.2;
+  border-radius: 52px; padding: 12px;
+  background: linear-gradient(150deg, #3b3b3d, #0d0d0e 35%, #1c1c1e 70%, #434345);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.22), 0 50px 90px -30px rgba(0,0,0,.95), -30px 30px 80px rgba(0,0,0,.6);
+  transform: rotate(-7deg);
+}
+.phone-screen { position: relative; height: 100%; border-radius: 42px; overflow: hidden; background: #000; padding: 14px 16px 0; display: flex; flex-direction: column; gap: 12px; font-family: var(--font-body); }
+.phone-status { display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 600; padding: 2px 10px 0; }
+.phone-status i { width: 90px; height: 24px; border-radius: 14px; background: #000; box-shadow: 0 0 0 1px #1d1d1f; }
+.phone-status b { font-weight: 600; letter-spacing: .04em; font-size: 10px; }
+.ig-top { display: flex; align-items: center; justify-content: space-between; font-size: 14px; font-weight: 600; }
+.ig-top span { display: inline-flex; align-items: center; gap: 6px; }
+.ig-top span::after { content: ""; width: 10px; height: 10px; border-radius: 50%; background: #3897f0; }
+.ig-profile { display: flex; align-items: center; gap: 16px; }
+.ig-avatar { width: 66px; height: 66px; border-radius: 50%; flex: none; padding: 3px; background: conic-gradient(var(--red) 0 38%, #fff 38% 50%, var(--blue) 50% 88%, #fff 88%); }
+.ig-avatar span { display: grid; place-items: center; width: 100%; height: 100%; border-radius: 50%; background: #0b0b0b; border: 2px solid #000; }
+.ig-avatar img { width: 62%; }
+.ig-name { font-size: 13px; font-weight: 600; line-height: 1.3; }
+.ig-bio { font-size: 11px; color: #a8a8a8; line-height: 1.4; }
+.ig-tabs { display: flex; justify-content: space-around; padding: 8px 0 6px; border-top: 1px solid #262626; }
+.ig-tabs svg { width: 18px; height: 18px; fill: none; stroke: #f2f2f2; stroke-width: 1.6; }
+.ig-tabs svg:not(:first-child) { stroke: #8e8e8e; }
+.ig-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin: 0 -16px; }
+.ig-grid span { aspect-ratio: 1; background-image: var(--img); background-size: cover; background-position: center; }
+.insta-hero-copy { position: relative; z-index: 2; margin-left: max(clamp(24px, 4vw, 72px), env(safe-area-inset-left, 0px)); width: min(340px, 26vw); min-width: 240px; }
+.insta-hero-copy h2 { font-size: clamp(24px, 2.4vw, 38px); margin-bottom: 16px; }
+.insta-hero-line { color: #cfccc7; font-size: 15px; margin-bottom: 30px; }
+.insta-handle { display: inline-block; font-family: var(--font-display); font-size: 13px; letter-spacing: .3em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 12px; transition: color .3s; }
+.insta-handle:hover { color: var(--white); }
+@media (max-width: 1080px) {
+  .insta-hero { align-items: flex-end; min-height: max(124vw, 680px); }
+  .insta-collage { width: 100%; opacity: .5; grid-template-rows: repeat(5, 1fr); }
+  .insta-phone { left: 50%; top: 3%; width: min(60vw, 330px); transform: translateX(-50%) rotate(-6deg); }
+  .insta-hero::after { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, rgba(5,5,5,0) 38%, rgba(5,5,5,.9) 70%); pointer-events: none; }
+  .insta-hero-copy { padding-bottom: 56px; width: auto; max-width: 420px; margin-right: max(var(--gutter), env(safe-area-inset-right, 0px)); }
+}
+
+/* --------------------------------------------------------------------------
+   Trabalhe conosco: mantida exatamente como na v1 (cromo + Marcellus/Jost)
+   -------------------------------------------------------------------------- */
+.recruit { position: relative; overflow: hidden; background: #111214; border-bottom: 1px solid var(--hair); padding: clamp(88px, 12vw, 150px) 0; }
+.recruit-sash { position: absolute; left: -8%; right: -8%; top: 36%; transform: rotate(-8deg); z-index: 0; pointer-events: none; }
+.sash { display: block; height: clamp(26px, 3.4vw, 44px); }
+.sash-a { background: var(--metal); background-size: 200% 100%; animation: metalSlide 12s linear infinite; opacity: .9; }
+.sash-b { margin-top: clamp(10px, 1.4vw, 18px); transform: translateX(clamp(30px, 4vw, 64px)); background: linear-gradient(90deg, #1c1d20, #4a4e54 30%, #2a2c30 60%, #5a5e65 85%, #1c1d20); }
+@keyframes metalSlide { to { background-position: -200% 0; } }
+.recruit-inner { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 48px; align-items: center; }
+.recruit .display { font-family: var(--cb-display); font-weight: 400; line-height: 1.06; letter-spacing: .015em; text-wrap: balance; }
+.recruit h2 { font-size: clamp(30px, 3.6vw, 48px); margin-bottom: 20px; }
+.recruit .body-copy { font-family: var(--cb-body); font-weight: 300; font-size: 16.5px; line-height: 1.7; color: #b3b7bd; text-shadow: 0 2px 14px rgba(0,0,0,.9); }
+.recruit-logo { width: clamp(300px, 36vw, 470px); height: auto; margin-bottom: 30px; filter: drop-shadow(0 16px 30px rgba(0,0,0,.8)); }
+.recruit .badge {
+  display: inline-block; margin-bottom: 26px; padding: 9px 16px;
+  font-family: var(--cb-display); font-size: 10px; line-height: 1.7; letter-spacing: .34em; text-transform: uppercase;
+  background: #18191c; border-left: 3px solid #d9dce0;
+}
+.recruit .btn { font-family: var(--cb-display); font-weight: 400; min-height: 52px; padding: 0 32px; background: rgba(10,10,11,.45); border-color: rgba(255,255,255,.4); }
+.recruit .btn:hover { border-color: var(--white); background: rgba(10,10,11,.7); }
+@media (max-width: 860px) { .recruit-inner { grid-template-columns: 1fr; } }
+
+/* --------------------------------------------------------------------------
+   Unidades
+   -------------------------------------------------------------------------- */
+.units-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 56px; }
+.units-head h2 { font-size: clamp(34px, 4.2vw, 56px); }
+.units-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.unit {
+  position: relative; overflow: hidden; isolation: isolate; min-width: 0;
+  background: var(--ink-2); min-height: 520px;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 30px 26px; border: 1px solid var(--hair);
+}
+.unit .unit-photo { position: absolute; inset: 0; z-index: -2; background-image: var(--img); background-size: cover; background-position: center; transition: transform 1.2s var(--ease); }
+.unit:hover .unit-photo { transform: scale(1.06); }
+.unit::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(5,5,5,.05) 30%, rgba(5,5,5,.92) 100%); }
+.unit .unit-city { font-family: var(--font-display); font-size: 10px; letter-spacing: .32em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 8px; }
+.unit h3 { font-family: var(--font-display); font-weight: 500; font-size: 24px; text-transform: uppercase; letter-spacing: .02em; margin-bottom: 14px; line-height: 1.15; }
+.unit .meta { font-size: 12.5px; color: var(--text-dim); line-height: 1.7; margin-bottom: 6px; }
+.unit .meta.hours { color: var(--text-faint); font-size: 11.5px; margin-bottom: 20px; }
+.unit .unit-links { display: flex; gap: 18px; flex-wrap: wrap; }
+.unit .unit-links a {
+  font-family: var(--font-display); font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--white);
+  border-bottom: 1px solid rgba(255,255,255,.4); padding-bottom: 3px; transition: border-color .3s, color .3s;
+}
+.unit .unit-links a:hover { color: var(--red); border-color: var(--red); }
+@media (max-width: 1100px) { .units-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 620px) { .units-grid { grid-template-columns: 1fr; } .unit { min-height: 420px; } }
+
+/* --------------------------------------------------------------------------
+   Avaliações (fundo claro)
+   -------------------------------------------------------------------------- */
+.reviews { border-top: 1px solid var(--hair-dark); }
+.reviews h2 { font-size: clamp(34px, 4.2vw, 56px); }
+.reviews-grid { display: grid; grid-template-columns: repeat(4, 1fr); border-left: 1px solid var(--hair-dark); margin-top: 52px; }
+.review { border-right: 1px solid var(--hair-dark); border-top: 1px solid var(--hair-dark); border-bottom: 1px solid var(--hair-dark); padding: 40px 28px; transition: background .4s var(--ease); min-width: 0; }
+.review:hover { background: var(--paper-2); }
+.review .stars { color: var(--red); letter-spacing: 4px; font-size: 15px; margin-bottom: 14px; }
+.review .quote { font-size: 14px; line-height: 1.7; color: #2c2c2c; margin-bottom: 18px; }
+.review .who { font-family: var(--font-display); font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 14px; }
+.review a { font-family: var(--font-display); font-size: 10.5px; letter-spacing: .24em; text-transform: uppercase; color: var(--gray); border-bottom: 1px solid rgba(0,0,0,.3); padding-bottom: 3px; }
+.review a:hover { color: var(--ink); border-color: var(--ink); }
+.reviews-note { margin-top: 22px; font-size: 12px; color: #8b8880; }
+@media (max-width: 900px) { .reviews-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .reviews-grid { grid-template-columns: 1fr; } }
+
+/* --------------------------------------------------------------------------
+   Contato
+   -------------------------------------------------------------------------- */
+.contact-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: clamp(48px, 7vw, 110px); }
+.contact-grid > * { min-width: 0; }
+.contact-grid h2 { font-size: clamp(32px, 4vw, 52px); margin-bottom: 22px; }
+.field { margin-bottom: 26px; }
+.field label { display: block; font-family: var(--font-display); font-size: 10px; letter-spacing: .3em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 10px; }
+.field input, .field textarea, .field select {
+  width: 100%; background: transparent; border: 0; border-bottom: 1px solid rgba(255,255,255,.25); border-radius: 0;
+  color: var(--white); font-family: var(--font-body); font-size: 16px; padding: 8px 0 14px; outline: none; transition: border-color .3s;
+}
+.field select { appearance: none; -webkit-appearance: none; cursor: pointer; }
+.field select option { background: var(--ink-2); color: var(--white); }
+.field input:focus, .field textarea:focus, .field select:focus { border-bottom-color: var(--red); }
+.field textarea { resize: vertical; min-height: 110px; }
+.field.invalid input, .field.invalid textarea { border-bottom-color: var(--red); }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.contact-form .btn { margin-top: 14px; }
+.form-status { margin-top: 18px; font-size: 14px; color: var(--text-dim); min-height: 1.5em; }
+.form-status.err { color: #ff8f99; }
+@media (max-width: 860px) { .contact-grid { grid-template-columns: 1fr; } }
+
+/* --------------------------------------------------------------------------
+   Rodapé
+   -------------------------------------------------------------------------- */
+.site-footer { border-top: 1px solid var(--hair); background: #070707; padding-top: 84px; }
+.footer-grid { display: grid; grid-template-columns: 1.3fr 1fr 1fr 1fr; gap: 40px; padding-bottom: 64px; }
+.footer-brand img { height: 84px; width: auto; margin-bottom: 24px; }
+.footer-brand p { color: var(--text-faint); font-size: 13px; max-width: 30ch; }
+.footer-col h4 { font-family: var(--font-display); font-weight: 500; font-size: 11px; letter-spacing: .3em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 22px; }
+.footer-col a { display: block; font-size: 13.5px; color: #c9c6c1; padding: 5px 0; transition: color .3s; }
+.footer-col a:hover { color: var(--white); }
+.footer-col a.hl { color: var(--red); }
+.footer-legal { border-top: 1px solid var(--hair); padding-block: 26px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 11px; color: #6d6b67; }
+.footer-legal .since { font-family: var(--font-display); letter-spacing: .3em; text-transform: uppercase; font-size: 10px; }
+@media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .footer-grid { grid-template-columns: 1fr; } }
+
+/* --------------------------------------------------------------------------
+   WhatsApp flutuante e aviso de demonstração
+   -------------------------------------------------------------------------- */
+.whatsapp-float {
+  position: fixed; z-index: 70;
+  bottom: calc(26px + env(safe-area-inset-bottom, 0px)); right: calc(26px + env(safe-area-inset-right, 0px));
+  width: 54px; height: 54px; border-radius: 50%; background: #1fbd59;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,.45); transition: transform .35s var(--ease);
+}
+.whatsapp-float:hover { transform: translateY(-4px); }
+.whatsapp-float svg { width: 26px; height: 26px; fill: var(--white); }
+.toast {
+  position: fixed; z-index: 95; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  translate: -50% 0; width: max-content; max-width: calc(100vw - 32px);
+  background: var(--paper); color: var(--ink); padding: 14px 20px; font-size: 14px; border-left: 3px solid var(--red);
+  box-shadow: 0 20px 40px -10px rgba(0,0,0,.6);
+}
+
+/* Revelação ao rolar: só deslocamento, o texto nunca fica invisível */
+.reveal { transition: transform .9s var(--ease); transition-delay: var(--d, 0s); }
+.reveal.pre { transform: translateY(28px); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal.pre { transform: none; }
+  .marquee-track, .hero-scroll::after, .sash-a { animation: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="brand-bar brand-bar-fixed" aria-hidden="true"></div>
+
+<!-- ===================== HEADER ===================== -->
+<header class="site-header" id="siteHeader">
+  <div class="header-inner">
+    <a class="header-logo" href="#inicio" aria-label="Connect Barber, início">
+      <img src="assets/img/banner.webp" alt="Connect Barber" width="1000" height="363">
+    </a>
+    <nav aria-label="Principal">
+      <ul class="nav-links" id="navLinks"></ul>
+    </nav>
+    <div class="header-cta">
+      <a href="#agende" class="btn btn-red">Agende</a>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="navLinks">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+<!-- ===================== HERO ===================== -->
+<section class="hero" id="inicio" data-photo="hero" data-photo-m="heroMobile">
+  <div class="wrap">
+    <h1 class="display hero-title" data-t="hero.title"></h1>
+    <div class="hero-actions">
+      <a href="#agende" class="btn btn-red">Agende seu horário <span class="arrow">&rarr;</span></a>
+      <a href="#unidades" class="btn btn-ghost">Nossas unidades</a>
+    </div>
+  </div>
+  <div class="hero-foot">
+    <span class="hero-foot-side" data-t="hero.footLeft"></span>
+    <span class="hero-scroll">Role</span>
+    <span class="hero-foot-side" data-t="hero.footRight"></span>
+  </div>
+</section>
+
+<div class="brand-bar" aria-hidden="true"></div>
+
+<!-- ===================== PROMO ===================== -->
+<div class="promo-bar" id="promo"></div>
+
+<!-- ===================== NOSSA MARCA ===================== -->
+<section id="marca">
+  <article class="panel">
+    <div class="panel-media"><div class="media-img" data-photo="marca"></div></div>
+    <div class="panel-body">
+      <p class="kicker reveal" data-kicker="about.kicker" data-pole></p>
+      <h2 class="display reveal" style="--d:.08s" data-t="about.title"></h2>
+      <div class="reveal" style="--d:.16s" id="aboutText"></div>
+    </div>
+  </article>
+</section>
+
+<!-- ===================== LETREIRO ===================== -->
+<div class="marquee" aria-hidden="true"><div class="marquee-track" id="marqueeTrack"></div></div>
+
+<!-- ===================== BARBA & CABELO ===================== -->
+<section id="barba-cabelo">
+  <article class="panel flip">
+    <div class="panel-media"><div class="media-img" data-photo="barba" style="--pos:center 45%"></div></div>
+    <div class="panel-body">
+      <p class="kicker reveal" data-kicker="craft.kicker" data-pole></p>
+      <h2 class="display reveal" style="--d:.08s" data-t="craft.title"></h2>
+      <p class="body-copy reveal" style="--d:.16s" data-t="craft.text"></p>
+      <div class="panel-cta reveal" style="--d:.24s">
+        <a href="#agende" class="btn btn-ghost">Agendar serviço <span class="arrow">&rarr;</span></a>
+        <a href="#servicos" class="btn btn-ghost">Ver todos os serviços <span class="arrow">&rarr;</span></a>
+      </div>
+    </div>
+  </article>
+
+  <div class="services-photo" data-photo="faixa">
+    <p class="services-photo-caption" data-t="craft.caption"></p>
+  </div>
+
+  <div class="wrap services-wrap" id="servicos">
+    <p class="kicker reveal" data-kicker="servicesIntro.kicker"></p>
+    <h2 class="display reveal" style="--d:.08s" data-t="servicesIntro.title"></h2>
+    <p class="body-copy reveal" style="--d:.16s" data-t="servicesIntro.text"></p>
+    <div class="services-grid" id="servicesGrid"></div>
+  </div>
+</section>
+
+<!-- ===================== AGENDE ===================== -->
+<section class="section agende on-paper" id="agende">
+  <div class="wrap agende-grid">
+    <div class="agende-logo reveal">
+      <img src="assets/img/simbolo-dark.webp" alt="Connect Barber" width="640" height="716">
+    </div>
+    <div class="agende-content">
+      <p class="kicker reveal" data-kicker="booking.kicker"></p>
+      <h2 class="display reveal" style="--d:.08s" data-t="booking.title"></h2>
+      <p class="body-copy reveal" style="--d:.16s" data-t="booking.text"></p>
+
+      <p class="channel-label">Agendamento online</p>
+      <div class="store-buttons" id="bookOnline"></div>
+
+      <p class="channel-label">Pelo aplicativo</p>
+      <div class="store-buttons" id="bookApps"></div>
+
+      <p class="channel-label">Pelo WhatsApp ou por telefone</p>
+      <div class="store-buttons" id="bookWhats"></div>
+      <p class="agende-phones" id="bookPhones"></p>
+      <p class="agende-hint">O botão verde no canto da tela também abre o WhatsApp, de qualquer ponto do site.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== INSTAGRAM ===================== -->
+<section class="insta-hero" id="instagram">
+  <div class="insta-collage" id="igCollage" aria-hidden="true"></div>
+  <div class="insta-phone" aria-hidden="true">
+    <div class="phone-screen">
+      <div class="phone-status"><b>14:27</b><i></i><b>5G ▮</b></div>
+      <div class="ig-top"><b>&lsaquo;</b><span id="igTopName"></span><b>&middot;&middot;&middot;</b></div>
+      <div class="ig-profile">
+        <div class="ig-avatar"><span><img src="assets/img/simbolo.webp" alt=""></span></div>
+        <div><p class="ig-name" id="igName"></p><p class="ig-bio" data-t="instagram.bio"></p></div>
+      </div>
+      <div class="ig-tabs">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M10 9l5 3-5 3z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M4 4h16v13H4z"/><circle cx="12" cy="10" r="3"/><path d="M7 17c1-3 9-3 10 0"/></svg>
+      </div>
+      <div class="ig-grid" id="igGrid"></div>
+    </div>
+  </div>
+  <div class="insta-hero-copy">
+    <a class="insta-handle reveal" id="igHandle" target="_blank" rel="noopener"></a>
+    <h2 class="display reveal" style="--d:.08s" data-t="instagram.title"></h2>
+    <p class="insta-hero-line reveal" style="--d:.14s" data-t="instagram.line"></p>
+    <a class="btn btn-solid reveal" style="--d:.2s" id="igButton" target="_blank" rel="noopener">Seguir no Instagram <span class="arrow">&rarr;</span></a>
+  </div>
+</section>
+
+<!-- ===================== TRABALHE CONOSCO (mantida da v1) ===================== -->
+<section class="recruit" id="trabalhe-conosco">
+  <div class="recruit-sash" aria-hidden="true"><span class="sash sash-a"></span><span class="sash sash-b"></span></div>
+  <div class="wrap recruit-inner">
+    <div>
+      <img class="recruit-logo reveal" src="assets/img/banner.webp" alt="Connect Barber" width="1000" height="363">
+      <span class="badge reveal" data-t="jobs.badge"></span>
+      <h2 class="display reveal" style="--d:.08s" data-t="jobs.title"></h2>
+      <p class="body-copy reveal" style="--d:.16s" data-t="jobs.text"></p>
+    </div>
+    <div class="reveal" style="--d:.2s"><a class="btn" id="jobsButton">Candidatar-se a uma vaga <span class="arrow">&rarr;</span></a></div>
+  </div>
+</section>
+
+<!-- ===================== UNIDADES ===================== -->
+<section class="section" id="unidades">
+  <div class="wrap">
+    <div class="units-head">
+      <div>
+        <p class="kicker reveal" data-kicker="unitsIntro.kicker"></p>
+        <h2 class="display reveal" style="--d:.08s" data-t="unitsIntro.title"></h2>
+      </div>
+    </div>
+    <div class="units-grid" id="unitsGrid"></div>
+  </div>
+</section>
+
+<!-- ===================== AVALIAÇÕES ===================== -->
+<section class="section paper reviews on-paper" id="avaliacoes">
+  <div class="wrap">
+    <p class="kicker reveal" data-kicker="reviews.kicker"></p>
+    <h2 class="display reveal" style="--d:.08s" data-t="reviews.title"></h2>
+    <div class="reviews-grid" id="reviewsGrid"></div>
+    <p class="reviews-note" data-t="reviews.note"></p>
+  </div>
+</section>
+
+<!-- ===================== CONTATO ===================== -->
+<section class="section" id="contato">
+  <div class="wrap contact-grid">
+    <div>
+      <p class="kicker reveal" data-kicker="contact.kicker"></p>
+      <h2 class="display reveal" style="--d:.08s" data-t="contact.title"></h2>
+      <p class="body-copy reveal" style="--d:.16s" data-t="contact.text"></p>
+    </div>
+    <form class="contact-form reveal" id="contactForm" novalidate style="--d:.2s">
+      <p class="hp" aria-hidden="true"><label>Não preencha: <input id="f-bot" name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+      <div class="field"><label for="f-nome">Nome</label><input type="text" id="f-nome" name="nome" required autocomplete="name"></div>
+      <div class="field"><label for="f-email">E-mail</label><input type="email" id="f-email" name="email" required autocomplete="email"></div>
+      <div class="field"><label for="f-unidade">Unidade de interesse</label><select id="f-unidade" name="unidade"></select></div>
+      <div class="field"><label for="f-msg">Mensagem</label><textarea id="f-msg" name="mensagem" required></textarea></div>
+      <button type="submit" class="btn btn-solid">Enviar mensagem <span class="arrow">&rarr;</span></button>
+      <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+</section>
+</main>
+
+<!-- ===================== RODAPÉ ===================== -->
+<footer class="site-footer">
+  <div class="wrap footer-grid" id="footerGrid"></div>
+  <div class="wrap footer-legal">
+    <span id="legal"></span>
+    <span class="since" data-t="footer.since"></span>
+  </div>
+  <div class="brand-bar" aria-hidden="true"></div>
+</footer>
+
+<a class="whatsapp-float" id="waFloat" target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
+  <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2.7C8.6 2.7 2.7 8.6 2.7 16c0 2.3.6 4.6 1.8 6.7L2.7 29.3l6.8-1.8c1.9 1.1 4.2 1.7 6.5 1.7 7.4 0 13.3-6 13.3-13.3 0-3.6-1.4-6.9-3.9-9.4A13.2 13.2 0 0 0 16 2.7zm0 24.4c-2 0-3.9-.5-5.6-1.5l-.4-.2-4 1.1 1.1-4-.3-.4a11 11 0 0 1-1.7-5.9C5.1 10 10 5 16 5c3 0 5.8 1.2 7.8 3.3a11 11 0 0 1 3.3 7.8c0 6.1-5 11-11.1 11zm6.1-8.3c-.3-.2-2-1-2.3-1.1-.3-.1-.5-.2-.8.2l-1 1.3c-.2.2-.4.3-.7.1-.3-.2-1.4-.5-2.7-1.7-1-.9-1.7-2-1.9-2.3-.2-.3 0-.5.1-.7l.5-.6.3-.6c.1-.2.1-.4 0-.6l-1-2.5c-.3-.6-.5-.6-.8-.6h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.4c.2.2 2.4 3.6 5.7 5 .8.3 1.4.5 1.9.7.8.3 1.5.2 2.1.1.6-.1 2-.8 2.2-1.6.3-.8.3-1.4.2-1.6-.1-.1-.3-.2-.6-.4z"/></svg>
+</a>
+
+<!-- =========================================================================
+     DADOS DO TENANT (multi-tenancy)
+     Cada barbearia tem o seu bloco. No sistema, o PHP injeta aqui o JSON da
+     barbearia certa (ex.: data/tenants/<slug>.json). Nada no HTML acima
+     precisa mudar de uma barbearia para outra.
+     ========================================================================= -->
+<script type="application/json" id="tenant">
+{
+  "slug": "connect-barber",
+  "demo": true,
+  "brand": {
+    "name": "Connect Barber",
+    "instagram": "connectbarber",
+    "whatsapp": "5546900000000",
+    "whatsappLabel": "(46) 9 0000-0000",
+    "whatsappText": "Olá! Quero agendar um horário na Connect Barber."
+  },
+  "photos": {
+    "hero": "assets/img/fotos/hero.webp",
+    "heroMobile": "assets/img/fotos/hero-m.webp",
+    "marca": "assets/img/fotos/marca.webp",
+    "barba": "assets/img/fotos/barba.webp",
+    "faixa": "assets/img/fotos/faixa.webp"
+  },
+  "nav": [
+    ["marca", "Nossa Marca"],
+    ["barba-cabelo", "Barba & Cabelo"],
+    ["unidades", "Unidades"],
+    ["avaliacoes", "Avaliações"],
+    ["trabalhe-conosco", "Trabalhe Conosco"],
+    ["contato", "Contato"]
+  ],
+  "hero": {
+    "title": "A barbearia que conecta\ntradição e precisão",
+    "footLeft": "Centro · Shopping · Jardins",
+    "footRight": "Barba na navalha · Corte clássico"
+  },
+  "promo": { "strong": "Toda segunda na Connect Barber", "text": "30% off em todos os serviços", "href": "#agende" },
+  "about": {
+    "kicker": "Nossa Marca",
+    "title": "Clássica na essência, moderna no agendamento",
+    "paragraphs": [
+      "A **Connect Barber** resgata a cultura das barbearias tradicionais, onde o homem senta na cadeira, conversa sem pressa e sai renovado.",
+      "Entre **toalhas quentes e massagem facial**, cremes e espumas selecionados preparam o rosto de cada cliente. O ritual completo, do início ao fim."
+    ]
+  },
+  "marquee": ["Barba na navalha", "Toalhas quentes", "Desde 2026", "Centro", "Shopping", "Jardins"],
+  "craft": {
+    "kicker": "Barba & Cabelo",
+    "title": "No fio da navalha, do início ao fim",
+    "text": "Barba desenhada na navalha e cortes que não saem de moda. Técnica, calma e o ritual completo, com toalha quente e acabamento que você sente no espelho.",
+    "caption": "Unidade Centro, em movimento"
+  },
+  "servicesIntro": {
+    "kicker": "Nossos Serviços",
+    "title": "Tudo o que fazemos, sem letra miúda",
+    "text": "Do corte clássico ao ritual completo de barba e massagem, veja tudo o que oferecemos nas nossas unidades."
+  },
+  "services": [
+    { "cat": "Cortes", "items": [
+      { "name": "Corte clássico", "min": "30 min" },
+      { "name": "Corte na máquina", "min": "30 min" },
+      { "name": "Pezinho", "min": "15 min" }
+    ]},
+    { "cat": "Barba", "items": [
+      { "name": "Barba na navalha", "min": "30 min", "detail": "Com toalha quente e massagem facial." },
+      { "name": "Hidratação de barba", "min": "30 min" }
+    ]},
+    { "cat": "Combos", "items": [
+      { "name": "Corte e barba Connect", "min": "60 min" }
+    ]},
+    { "cat": "Brancos e Tingimento", "items": [
+      { "name": "Disfarce de fios brancos", "min": "30 min", "detail": "Cabelo, barba, bigode ou sobrancelha." }
+    ]},
+    { "cat": "Tratamentos", "items": [
+      { "name": "Alinhamento dos fios", "min": "60 min" },
+      { "name": "Hidratação capilar", "min": "30 min" },
+      { "name": "Depilação", "min": "15 min", "detail": "Nariz, orelhas ou os dois juntos." }
+    ]},
+    { "cat": "Lavatório e Massagem", "items": [
+      { "name": "Lavagem e penteado", "min": "30 min" },
+      { "name": "Massagem capilar", "min": "30 min", "detail": "Expressa, relax ou profunda." },
+      { "name": "Quick massage", "min": "30 min", "detail": "Massagem nas costas, feita na cadeira." }
+    ]},
+    { "cat": "Sobrancelha", "items": [
+      { "name": "Limpeza de sobrancelha", "min": "15 min" }
+    ]},
+    { "cat": "Outros", "items": [
+      { "name": "Corte de unhas", "min": "30 a 60 min", "detail": "Mãos, pés ou os dois." }
+    ]}
+  ],
+  "booking": {
+    "kicker": "Agende",
+    "title": "Agende do jeito que preferir",
+    "text": "Online, pelo aplicativo, pelo WhatsApp ou por telefone. Todo caminho termina na sua cadeira."
+  },
+  "apps": { "ios": "", "android": "" },
+  "instagram": {
+    "title": "O manual diário do homem moderno",
+    "line": "Barba, cortes, drinks, carros e viagens. Todos os dias.",
+    "bio": "Barbearia clássica · agenda online\nCentro · Shopping · Jardins",
+    "phone": ["assets/img/fotos/ig1.webp", "assets/img/fotos/ig2.webp", "assets/img/fotos/ig3.webp", "assets/img/fotos/ig4.webp", "assets/img/fotos/ig5.webp", "assets/img/fotos/ig6.webp", "assets/img/fotos/ig7.webp", "assets/img/fotos/ig8.webp", "assets/img/fotos/ig9.webp", "assets/img/fotos/ig10.webp", "assets/img/fotos/ig11.webp", "assets/img/fotos/ig12.webp"],
+    "collage": ["assets/img/fotos/u2.webp", "assets/img/fotos/ig10.webp", "assets/img/fotos/ig3.webp", "assets/img/fotos/ig11.webp", "assets/img/fotos/u4.webp", "assets/img/fotos/u1.webp", "assets/img/fotos/ig2.webp", "assets/img/fotos/ig12.webp", "assets/img/fotos/ig7.webp", "assets/img/fotos/u3.webp"]
+  },
+  "jobs": {
+    "badge": "Connect Barber · Carreiras",
+    "title": "Barbeiro, sua cadeira está reservada",
+    "text": "Se você leva o ofício a sério, venha para a Connect Barber. Também temos vagas para cabeleireiros e recepção. Técnica, ambiente e crescimento andam juntos aqui.",
+    "href": ""
+  },
+  "unitsIntro": { "kicker": "Onde estamos", "title": "Nossas unidades" },
+  "units": [
+    {
+      "name": "Centro", "tag": "Centro · Flagship",
+      "address": "Rua das Navalhas, 390", "phone": "(46) 3000-0390",
+      "booking": "", "photo": "assets/img/fotos/u1.webp",
+      "hours": "Seg a Sex 10h às 21h · Sáb 9h às 19h, último atendimento 18h · Dom fechado"
+    },
+    {
+      "name": "Shopping", "tag": "Shopping Central",
+      "address": "Shopping Central · Loja 46", "phone": "(46) 3000-2902",
+      "booking": "", "photo": "assets/img/fotos/u2.webp",
+      "hours": "Seg a Sáb 10h às 22h · Dom e feriados 14h às 20h"
+    },
+    {
+      "name": "Jardins", "tag": "Bairro Jardins",
+      "address": "Av. dos Barbeiros, 2902", "phone": "(46) 3000-1089",
+      "booking": "", "photo": "assets/img/fotos/u3.webp",
+      "hours": "Seg a Sex 9h às 20h · Sáb 9h às 18h · Dom 9h às 13h"
+    },
+    {
+      "name": "Connect Kids", "tag": "Jardins · Meninos e meninas até 14 anos",
+      "address": "Rua da Tesoura, 208", "phone": "(46) 3000-0208",
+      "booking": "", "photo": "assets/img/fotos/u4.webp", "bookable": false,
+      "hours": "Seg e Sáb 9h às 18h · Ter, Qua e Sex 9h às 20h\nQui fechado · Dom 9h às 13h"
+    }
+  ],
+  "reviews": {
+    "kicker": "O que dizem",
+    "title": "Avaliações",
+    "note": "Avaliações ilustrativas desta demonstração. No sistema, cada barbearia mostra as suas avaliações reais do Google.",
+    "link": "",
+    "items": [
+      { "stars": 5, "text": "Clima de barbearia antiga, toalha quente e navalha afiada. Atendimento impecável da recepção ao barbeiro.", "who": "Cliente exemplo · Centro · Google" },
+      { "stars": 5, "text": "Agendei pelo celular em menos de um minuto e fui atendido no horário. Corte e barba exatamente como pedi.", "who": "Cliente exemplo · Shopping · Google" },
+      { "stars": 5, "text": "Ambiente animado, barbeiro gente boa e um acabamento de barba que superou o que eu esperava. Virei cliente.", "who": "Cliente exemplo · Centro · Google" },
+      { "stars": 5, "text": "Espaço bem cuidado e serviço de alto nível. Finalmente encontrei quem acerta meu corte toda vez.", "who": "Cliente exemplo · Jardins · Google" }
+    ]
+  },
+  "contact": {
+    "kicker": "Contato",
+    "title": "Fale com a gente",
+    "text": "Dúvidas, parcerias ou algo que não se encaixa nos canais das unidades? Escreva que a gente responde."
+  },
+  "footer": {
+    "text": "Barba na navalha, toalhas quentes e agendamento online. Uma barbearia clássica, conectada ao seu tempo.",
+    "since": "Conectada desde 2026"
+  }
+}
+</script>
+
+<script>
+(function () {
+  'use strict';
+  var T = JSON.parse(document.getElementById('tenant').textContent);
+  var DEMO = !!T.demo;
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var rich = function (s) { return esc(s).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>'); };
+  var get = function (p) { return p.split('.').reduce(function (o, k) { return o == null ? o : o[k]; }, T); };
+  var cssUrl = function (u) { return 'url("' + String(u).replace(/["\\\n]/g, '') + '")'; };
+  var enc = encodeURIComponent;
+  var EXT = ' target="_blank" rel="noopener"';
+
+  var waHref = function (num, text) {
+    var t = enc(text || T.brand.whatsappText || '');
+    return (DEMO || !num) ? 'https://wa.me/?text=' + t : 'https://wa.me/' + String(num).replace(/\D/g, '') + '?text=' + t;
+  };
+  var telHref = function (p) { return 'tel:+55' + String(p).replace(/\D/g, ''); };
+  var mapHref = function (q) { return 'https://www.google.com/maps/search/?api=1&query=' + enc(q); };
+  /* link do tenant: vazio vira link de demonstração (mostra aviso) */
+  var href = function (url, fallbackMsg) {
+    return url ? 'href="' + esc(url) + '"' + (/^https?:/.test(url) ? EXT : '') : 'href="#" data-demo="' + esc(fallbackMsg || '') + '"';
+  };
+  var poleMark = '<svg class="pole-mark" viewBox="0 0 18 26" aria-hidden="true"><rect x="1" y="14" width="5" height="11" transform="rotate(-28 3.5 19.5)" fill="#ED1B2E"/><rect x="6.5" y="8" width="5" height="11" transform="rotate(-28 9 13.5)" fill="#0077B2"/><rect x="12" y="2" width="5" height="11" transform="rotate(-28 14.5 7.5)" fill="#ED1B2E"/></svg>';
+
+  /* ---- textos ---- */
+  $$('[data-t]').forEach(function (el) { var v = get(el.dataset.t); if (v != null) el.innerHTML = rich(v); });
+  $$('[data-kicker]').forEach(function (el) { el.innerHTML = (el.hasAttribute('data-pole') ? poleMark : '') + esc(get(el.dataset.kicker)); });
+  $('#aboutText').innerHTML = (T.about.paragraphs || []).map(function (p) { return '<p class="body-copy">' + rich(p) + '</p>'; }).join('');
+
+  /* ---- fotos do tenant ---- */
+  var P = T.photos || {};
+  $$('[data-photo]').forEach(function (el) {
+    if (P[el.dataset.photo]) el.style.setProperty('--img', cssUrl(P[el.dataset.photo]));
+    if (el.dataset.photoM && P[el.dataset.photoM]) el.style.setProperty('--img-m', cssUrl(P[el.dataset.photoM]));
+  });
+
+  /* ---- navegação ---- */
+  $('#navLinks').innerHTML = T.nav.map(function (n) { return '<li><a href="#' + esc(n[0]) + '">' + esc(n[1]) + '</a></li>'; }).join('');
+
+  /* ---- promo ---- */
+  if (T.promo) {
+    $('#promo').innerHTML = '<a class="promo-inner" ' + href(T.promo.href) + '><span><strong>' + esc(T.promo.strong) + '</strong> &nbsp;' + esc(T.promo.text) + '</span></a>';
+  }
+
+  /* ---- letreiro (duplicado para o loop) ---- */
+  var mq = (T.marquee || []).map(function (w) { return '<span>' + esc(w) + ' <i>·</i></span>'; }).join('');
+  $('#marqueeTrack').innerHTML = mq + mq;
+
+  /* ---- serviços ---- */
+  $('#servicesGrid').innerHTML = (T.services || []).map(function (c, i) {
+    return '<div class="service-cat reveal" style="--d:' + (i % 4) * .06 + 's"><h3>' + esc(c.cat) + '</h3><ul class="service-list">' +
+      c.items.map(function (s) {
+        return '<li><div class="service-line"><span class="service-name">' + esc(s.name) + '</span><span class="service-duration">' + esc(s.min || '') +
+          (s.price ? '<b>' + esc(s.price) + '</b>' : '') + '</span></div>' + (s.detail ? '<p class="service-detail">' + esc(s.detail) + '</p>' : '') + '</li>';
+      }).join('') + '</ul></div>';
+  }).join('');
+
+  /* ---- agende ---- */
+  var bookable = T.units.filter(function (u) { return u.bookable !== false; });
+  $('#bookOnline').innerHTML = bookable.map(function (u) {
+    return '<a class="btn btn-red" ' + href(u.booking, 'No sistema, este botão abre a agenda online da unidade ' + u.name + '.') + '>' + esc(u.name) + ' <span class="arrow">&rarr;</span></a>';
+  }).join('');
+  $('#bookApps').innerHTML =
+    '<a class="btn btn-blue" ' + href(T.apps && T.apps.ios, 'O app da barbearia entra aqui quando estiver publicado na App Store.') + '>App na App Store</a>' +
+    '<a class="btn btn-blue" ' + href(T.apps && T.apps.android, 'O app da barbearia entra aqui quando estiver publicado na Google Play.') + '>App na Google Play</a>';
+  $('#bookWhats').innerHTML = '<a class="btn btn-whats" href="' + waHref(T.brand.whatsapp) + '"' + EXT + '>WhatsApp ' + esc(T.brand.whatsappLabel) + '</a>';
+  $('#bookPhones').innerHTML = 'Ou ligue: ' + bookable.filter(function (u) { return u.phone; }).map(function (u) {
+    return '<a href="' + telHref(u.phone) + '">' + esc(u.name) + ' ' + esc(u.phone) + '</a>';
+  }).join(' · ');
+
+  /* ---- instagram ---- */
+  var ig = 'https://www.instagram.com/' + enc(T.brand.instagram || '');
+  $('#igHandle').textContent = '@' + (T.brand.instagram || '');
+  $('#igHandle').href = ig; $('#igButton').href = ig;
+  $('#igTopName').textContent = T.brand.instagram || '';
+  $('#igName').textContent = T.brand.name;
+  var tile = function (u) { return '<span style="--img:' + esc(cssUrl(u)) + '"></span>'; };
+  $('#igGrid').innerHTML = (T.instagram.phone || []).map(tile).join('');
+  $('#igCollage').innerHTML = (T.instagram.collage || []).map(tile).join('');
+
+  /* ---- trabalhe conosco ---- */
+  $('#jobsButton').outerHTML = '<a class="btn" ' + (T.jobs.href ? href(T.jobs.href) : 'href="#contato"') + '>Candidatar-se a uma vaga <span class="arrow">&rarr;</span></a>';
+
+  /* ---- unidades ---- */
+  $('#unitsGrid').innerHTML = T.units.map(function (u, i) {
+    var links = [];
+    if (u.bookable !== false) links.push('<a ' + href(u.booking, 'No sistema, este botão abre a agenda online da unidade ' + u.name + '.') + '>Agendar</a>');
+    links.push('<a href="' + waHref(u.whatsapp || T.brand.whatsapp, 'Olá! Quero falar com a unidade ' + u.name + '.') + '"' + EXT + '>WhatsApp</a>');
+    links.push('<a href="' + mapHref(u.address) + '"' + EXT + '>Mapa</a>');
+    return '<article class="unit reveal" style="--d:' + i * .1 + 's">' +
+      '<div class="unit-photo"' + (u.photo ? ' style="--img:' + esc(cssUrl(u.photo)) + '"' : '') + '></div>' +
+      '<p class="unit-city">' + esc(u.tag || '') + '</p><h3>' + esc(u.name) + '</h3>' +
+      '<p class="meta">' + esc(u.address) + '<br>' + esc(u.phone || '') + '</p>' +
+      '<p class="meta hours">' + rich(u.hours || '') + '</p>' +
+      '<div class="unit-links">' + links.join('') + '</div></article>';
+  }).join('');
+
+  /* ---- avaliações ---- */
+  var revs = T.reviews.items || [];
+  $('#reviewsGrid').innerHTML = revs.map(function (r, i) {
+    var n = Math.max(1, Math.min(5, r.stars || 5));
+    return '<div class="review reveal" style="--d:' + i * .08 + 's"><div class="stars" aria-label="' + n + ' de 5 estrelas">' + Array(n + 1).join('★') + '</div>' +
+      '<p class="quote">“' + esc(r.text) + '”</p><p class="who">' + esc(r.who) + '</p>' +
+      (i === revs.length - 1 && T.reviews.link ? '<a ' + href(T.reviews.link) + '>Ver todas no Google</a>' : '') + '</div>';
+  }).join('');
+
+  /* ---- contato ---- */
+  $('#f-unidade').innerHTML = '<option value="">' + esc(T.units.map(function (u) { return u.name; }).join(', ')) + '</option>' +
+    T.units.map(function (u) { return '<option>' + esc(u.name) + '</option>'; }).join('') + '<option>Outro assunto</option>';
+
+  /* ---- rodapé ---- */
+  var kids = T.units[T.units.length - 1];
+  $('#footerGrid').innerHTML =
+    '<div class="footer-brand"><img src="assets/img/simbolo.webp" alt="' + esc(T.brand.name) + '" width="520" height="582"><p>' + esc(T.footer.text) + '</p></div>' +
+    '<div class="footer-col"><h4>Unidades</h4>' + T.units.map(function (u) { return '<a href="#unidades"' + (u.bookable === false ? ' class="hl"' : '') + '>' + esc(u.name) + '</a>'; }).join('') + '</div>' +
+    '<div class="footer-col"><h4>' + esc(kids.name) + '</h4><a href="' + mapHref(kids.address) + '"' + EXT + '>' + esc(kids.address) + '</a><a href="' + telHref(kids.phone) + '">' + esc(kids.phone) + '</a><a href="' + waHref(kids.whatsapp || T.brand.whatsapp) + '"' + EXT + '>WhatsApp</a></div>' +
+    '<div class="footer-col"><h4>Institucional</h4><a href="#trabalhe-conosco">Trabalhe conosco</a><a href="#contato">Contato</a><a href="#agende">Agende seu horário</a><a href="' + ig + '"' + EXT + '>@' + esc(T.brand.instagram) + '</a></div>';
+  $('#legal').textContent = '© ' + new Date().getFullYear() + ' ' + T.brand.name + '. Todos os direitos reservados.' + (DEMO ? ' Dados de demonstração.' : '');
+  $('#waFloat').href = waHref(T.brand.whatsapp);
+
+  /* ================= interações ================= */
+  var toastTimer;
+  function toast(msg) {
+    var old = $('.toast'); if (old) old.remove();
+    var t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status'); t.textContent = msg;
+    document.body.appendChild(t); clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.remove(); }, 3600);
+  }
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest('a[data-demo]');
+    if (a) { e.preventDefault(); toast(a.dataset.demo || 'Link de demonstração: cada barbearia configura o seu no sistema.'); }
+  });
+
+  /* menu mobile */
+  var toggle = $('#menuToggle'), nav = $('#navLinks');
+  function setMenu(open) {
+    nav.classList.toggle('open', open); toggle.classList.toggle('open', open);
+    toggle.setAttribute('aria-expanded', String(open)); toggle.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
+  }
+  toggle.addEventListener('click', function () { setMenu(!nav.classList.contains('open')); });
+  nav.addEventListener('click', function (e) { if (e.target.tagName === 'A') setMenu(false); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setMenu(false); });
+
+  /* header sólido ao rolar */
+  var header = $('#siteHeader');
+  var onScroll = function () { header.classList.toggle('scrolled', window.scrollY > 40); };
+  window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  if ('IntersectionObserver' in window) {
+    /* link ativo no menu */
+    var links = $$('#navLinks a');
+    var spy = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) links.forEach(function (l) { l.classList.toggle('active', l.getAttribute('href') === '#' + en.target.id); });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    T.nav.forEach(function (n) { var s = document.getElementById(n[0]); if (s) spy.observe(s); });
+
+    /* revelação: só o que está abaixo da dobra ao carregar ganha o deslocamento */
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.remove('pre'); io.unobserve(en.target); } });
+    }, { threshold: 0.14 });
+    var fold = window.innerHeight;
+    $$('.reveal').forEach(function (el) { if (el.getBoundingClientRect().top > fold) { el.classList.add('pre'); io.observe(el); } });
+  }
+
+  /* formulário de contato */
+  $('#contactForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var st = $('#formStatus'); st.className = 'form-status';
+    if ($('#f-bot').value) return;
+    var ok = true;
+    [['#f-nome', function (v) { return v.trim().length > 1; }], ['#f-email', function (v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()); }], ['#f-msg', function (v) { return v.trim().length > 3; }]]
+      .forEach(function (f) { var el = $(f[0]); var good = f[1](el.value); el.parentNode.classList.toggle('invalid', !good); if (!good) ok = false; });
+    if (!ok) { st.classList.add('err'); st.textContent = 'Preencha nome, um e-mail válido e a mensagem.'; return; }
+    st.textContent = DEMO ? 'Mensagem pronta. Nesta demonstração nada é enviado; no sistema ela chega direto para a barbearia.' : 'Mensagem enviada. Respondemos em breve.';
+    if (!DEMO) this.reset();
+  });
+})();
+</script>
+</body>
+</html>

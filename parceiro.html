@@ -1,0 +1,762 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Connect Barber · Barbearias</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Cadastre sua barbearia na Connect Barber: página com fotos, serviços e valores, agenda online e visibilidade no mapa.">
+<meta name="theme-color" content="#0b0b0b">
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Inter:wght@400;500;600&family=Marcellus&family=Jost:wght@300;400&display=swap">
+<style>
+/* ==========================================================================
+   CONNECT BARBER · portal da barbearia (cadastro, login e painel)
+   Mesmo sistema visual do app do cliente. A prévia ao vivo mostra o cartão
+   e o pino exatamente como o cliente vai ver no mapa.
+   ========================================================================== */
+:root {
+  --ink: #0b0b0b; --ink-2: #121212; --ink-3: #1a1a1a; --ink-4: #232323;
+  --paper: #f4f2ee; --paper-2: #eae7e1;
+  --red: #ED1B2E; --blue: #0077B2; --blue-2: #2a9fe0; --gray: #585858;
+  --white: #ffffff; --text-dim: #b9b6b1; --text-faint: #8a877f; --ok: #34c77b;
+  --hair: rgba(255,255,255,.10); --hair-2: rgba(255,255,255,.18); --hair-dark: rgba(0,0,0,.12);
+  --font-display: "Oswald", "Arial Narrow", sans-serif;
+  --font-body: "Inter", -apple-system, "Segoe UI", sans-serif;
+  --cb-display: "Marcellus", "Optima", Georgia, serif;
+  --cb-body: "Jost", "Futura", sans-serif;
+  --metal: linear-gradient(90deg, #4c5057 0%, #e8eaed 20%, #9ca1a8 38%, #fafbfb 56%, #7b8088 76%, #d6d9dd 100%);
+  --w: 1280px; --gutter: clamp(20px, 4vw, 56px); --ease: cubic-bezier(.22, 1, .36, 1); --header: 76px;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; margin: 0; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body { font-family: var(--font-body); font-size: 15px; line-height: 1.65; background: var(--ink); color: var(--white); -webkit-font-smoothing: antialiased; overflow-x: clip; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; z-index: 100; height: env(safe-area-inset-top, 0px); background: var(--ink); }
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+ul { list-style: none; padding: 0; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+::selection { background: var(--red); color: var(--white); }
+:focus-visible { outline: 2px solid var(--white); outline-offset: 3px; }
+.ico { width: 18px; height: 18px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.wrap { max-width: calc(var(--w) + 2 * var(--gutter)); margin: 0 auto; padding-left: max(var(--gutter), env(safe-area-inset-left, 0px)); padding-right: max(var(--gutter), env(safe-area-inset-right, 0px)); }
+.brand-bar { display: flex; height: 4px; }
+.brand-bar::before { content: ""; flex: 0 0 38%; background: var(--red); }
+.brand-bar::after { content: ""; flex: 1; background: var(--blue); }
+.brand-bar-fixed { position: fixed; top: env(safe-area-inset-top, 0px); left: 0; right: 0; z-index: 90; }
+.display { font-family: var(--font-display); font-weight: 500; text-transform: uppercase; line-height: 1.04; letter-spacing: .01em; text-wrap: balance; }
+.kicker { display: flex; align-items: center; gap: 14px; font-family: var(--font-display); font-size: 11px; letter-spacing: .38em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 18px; }
+.kicker::after { content: ""; height: 1px; width: 56px; background: var(--hair); }
+.body-copy { color: var(--text-dim); max-width: 56ch; }
+.note { font-size: 13px; color: var(--text-faint); }
+
+.btn { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 0 26px; font-family: var(--font-display); font-weight: 500; font-size: 12px; letter-spacing: .22em; text-transform: uppercase; border: 1px solid transparent; background: none; transition: background .3s var(--ease), color .3s var(--ease), border-color .3s var(--ease), opacity .2s; white-space: nowrap; touch-action: manipulation; }
+.btn .arrow { transition: transform .3s var(--ease); }
+.btn:hover .arrow { transform: translateX(4px); }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.btn-red { background: var(--red); color: var(--white); }
+.btn-red:hover:not(:disabled) { background: var(--white); color: var(--ink); }
+.btn-solid { background: var(--white); color: var(--ink); }
+.btn-solid:hover { background: var(--red); color: var(--white); }
+.btn-ghost { color: var(--white); border-color: rgba(255,255,255,.4); background: rgba(10,10,10,.4); }
+.btn-ghost:hover { border-color: var(--white); }
+.btn-blue { background: var(--blue); color: var(--white); }
+.btn-blue:hover { background: #005d8c; }
+.btn-sm { min-height: 40px; padding: 0 16px; font-size: 11px; letter-spacing: .16em; }
+.btn.loading { pointer-events: none; opacity: .7; }
+.btn.loading::after { content: ""; width: 14px; height: 14px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spin .7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.linkish { background: none; border: 0; padding: 0; color: #cfeaff; border-bottom: 1px solid rgba(42,159,224,.5); }
+
+.site-header { position: fixed; top: calc(4px + env(safe-area-inset-top, 0px)); left: 0; right: 0; z-index: 80; background: rgba(9,9,9,.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--hair); }
+.header-inner { max-width: calc(var(--w) + 2 * var(--gutter)); margin: 0 auto; padding-left: max(var(--gutter), env(safe-area-inset-left, 0px)); padding-right: max(var(--gutter), env(safe-area-inset-right, 0px)); height: var(--header); display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.header-logo { display: flex; align-items: center; gap: 14px; }
+.header-logo img { height: 50px; width: auto; }
+.header-logo span { font-family: var(--font-display); font-size: 10.5px; letter-spacing: .3em; text-transform: uppercase; color: var(--text-faint); padding-left: 14px; border-left: 1px solid var(--hair-2); }
+.header-nav { display: flex; align-items: center; gap: 12px; }
+.header-nav .plain { font-family: var(--font-display); font-size: 11px; letter-spacing: .24em; text-transform: uppercase; color: #d9d6d1; padding: 10px 6px; }
+.header-nav .plain:hover { color: var(--white); }
+@media (max-width: 720px) { .header-logo span, .header-nav .hide-m { display: none; } .header-logo img { height: 42px; } }
+
+main { padding-top: calc(var(--header) + 4px); min-height: 100svh; }
+.view[hidden] { display: none; }
+
+/* ---------- início (para donos) ---------- */
+.intro { position: relative; overflow: hidden; isolation: isolate; padding-block: clamp(64px, 9vw, 120px); border-bottom: 1px solid var(--hair); }
+.intro-bg { position: absolute; inset: 0; z-index: -1; background: #070707 url("assets/img/capas/c1.webp") center / cover; }
+.intro-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(7,7,7,.97) 0%, rgba(7,7,7,.86) 48%, rgba(7,7,7,.55) 100%); }
+.intro-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 56px; align-items: center; }
+.intro h1 { font-size: clamp(38px, 5.6vw, 80px); margin-bottom: 20px; }
+.intro h1 em { font-style: normal; color: var(--red); }
+.intro .body-copy { font-size: 16.5px; color: #d7d4ce; }
+.intro-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+.intro-demo { margin-top: 18px; font-size: 14px; color: var(--text-dim); }
+.benefits { display: grid; grid-template-columns: repeat(4, 1fr); border-left: 1px solid var(--hair); }
+.benefit { border-right: 1px solid var(--hair); border-bottom: 1px solid var(--hair); padding: 32px 26px; }
+.benefit .ico { width: 26px; height: 26px; color: var(--red); margin-bottom: 18px; }
+.benefit:nth-child(even) .ico { color: var(--blue-2); }
+.benefit h3 { font-family: var(--font-display); font-weight: 500; font-size: 17px; text-transform: uppercase; letter-spacing: .03em; margin-bottom: 8px; }
+.benefit p { font-size: 14px; color: var(--text-dim); }
+@media (max-width: 960px) { .intro-grid { grid-template-columns: 1fr; } .benefits { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .benefits { grid-template-columns: 1fr; } }
+
+/* ---------- cartão (prévia) ---------- */
+.shop-card { position: relative; display: flex; flex-direction: column; background: var(--ink-2); border: 1px solid var(--hair-2); max-width: 420px; width: 100%; }
+.sc-media { position: relative; display: block; aspect-ratio: 16 / 10; background: var(--ink-3) center / cover; }
+.sc-media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.35) 0%, rgba(0,0,0,0) 35%, rgba(0,0,0,.55) 100%); }
+.sc-media.empty-img { display: grid; place-items: center; color: var(--text-faint); font-size: 13px; background-image: repeating-linear-gradient(-45deg, #161616 0 14px, #1b1b1b 14px 28px); }
+.sc-media.empty-img::after { display: none; }
+.sc-status { position: absolute; z-index: 1; top: 10px; left: 10px; display: inline-flex; align-items: center; gap: 6px; padding: 5px 9px; background: rgba(11,11,11,.82); font-size: 11.5px; font-weight: 500; }
+.sc-status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #77746e; }
+.sc-status.open::before { background: var(--ok); }
+.sc-dist { position: absolute; z-index: 1; top: 10px; right: 10px; padding: 5px 9px; background: var(--white); color: var(--ink); font: 600 11px/1.2 var(--font-display); letter-spacing: .08em; }
+.sc-body { position: relative; padding: 34px 18px 18px; display: flex; flex-direction: column; gap: 4px; }
+.sc-logo { position: absolute; top: -30px; left: 16px; width: 56px; height: 56px; border-radius: 50%; object-fit: cover; background: var(--ink); border: 2px solid var(--ink-2); }
+.sc-name { font-family: var(--font-display); font-weight: 500; font-size: 21px; text-transform: uppercase; line-height: 1.12; word-break: break-word; }
+.sc-rating, .sc-addr { font-size: 13px; color: var(--text-dim); }
+.sc-tags { font-family: var(--font-display); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--text-faint); }
+.sc-foot { margin-top: 10px; padding-top: 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; border-top: 1px solid var(--hair); }
+.sc-price { font-size: 12.5px; color: var(--text-dim); }
+.sc-price b { display: block; font: 500 18px/1.1 var(--font-display); color: var(--white); }
+.fake-btn { display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; background: var(--red); font-family: var(--font-display); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; }
+.pin { position: relative; width: 46px; height: 52px; display: grid; place-items: start center; filter: drop-shadow(0 8px 10px rgba(0,0,0,.6)); }
+.pin::before { content: ""; position: absolute; top: 0; left: 3px; width: 40px; height: 40px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: var(--red); border: 2px solid var(--white); }
+.pin b { position: relative; margin-top: 11px; font: 600 11px/1 var(--font-display); color: var(--white); text-transform: uppercase; }
+
+/* ---------- autenticação ---------- */
+.auth { display: grid; place-items: center; padding: clamp(48px, 8vw, 100px) 0; }
+.auth-card { width: min(460px, 100%); background: var(--ink-2); border: 1px solid var(--hair-2); padding: 34px 32px; border-top: 4px solid var(--red); }
+.auth-card h1 { font-size: 32px; margin-bottom: 8px; }
+.auth-card .sub { color: var(--text-dim); margin-bottom: 26px; font-size: 14.5px; }
+.auth-alt { margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--hair); font-size: 14px; color: var(--text-dim); display: grid; gap: 10px; }
+.demo-box { background: var(--ink-3); border: 1px dashed var(--hair-2); padding: 14px 16px; font-size: 13.5px; color: var(--text-dim); }
+
+/* ---------- campos ---------- */
+.field { margin-bottom: 18px; min-width: 0; }
+.field > label, .lbl { display: block; font-family: var(--font-display); font-size: 10.5px; letter-spacing: .24em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 8px; }
+.field > label .req { color: var(--red); margin-left: 4px; }
+.inp, .field input:not([type=checkbox]):not([type=file]), .field select, .field textarea { width: 100%; background: var(--ink); border: 1px solid var(--hair-2); padding: 12px 14px; font-size: 16px; outline: none; border-radius: 0; min-height: 48px; }
+.field select { appearance: none; -webkit-appearance: none; padding-right: 32px; background: var(--ink) linear-gradient(45deg, transparent 50%, #9a978f 50%) right 14px center / 6px 6px no-repeat; }
+.field select option { background: var(--ink-2); }
+.inp:focus, .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--white); }
+.field textarea { resize: vertical; min-height: 96px; }
+.field .help { margin-top: 6px; font-size: 12.5px; color: var(--text-faint); }
+.field .err { display: none; margin-top: 6px; font-size: 13px; color: #ff8f99; }
+.field.invalid input, .field.invalid select, .field.invalid textarea { border-color: var(--red); }
+.field.invalid .err { display: block; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
+.grid3 { display: grid; grid-template-columns: 1.4fr .8fr .5fr; gap: 0 16px; }
+.pass-wrap { position: relative; }
+.pass-wrap button { position: absolute; right: 4px; top: 4px; height: 40px; padding: 0 12px; background: none; border: 0; color: var(--text-dim); font-size: 12.5px; }
+.check { display: flex; gap: 12px; align-items: flex-start; font-size: 14px; color: var(--text-dim); cursor: pointer; }
+.check input { width: 20px; height: 20px; accent-color: var(--red); margin-top: 1px; flex: none; }
+@media (max-width: 640px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+
+/* ---------- assistente de cadastro ---------- */
+.wiz { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, .75fr); gap: 48px; padding-block: 40px 100px; align-items: start; }
+.wiz-head h1 { font-size: clamp(30px, 3.6vw, 46px); }
+.wiz-steps { display: flex; gap: 6px; margin: 26px 0 30px; overflow-x: auto; scrollbar-width: none; }
+.wiz-steps::-webkit-scrollbar { display: none; }
+.wiz-steps button { flex: 1 0 auto; min-width: 92px; padding: 10px 10px 9px; background: var(--ink-2); border: 0; border-bottom: 3px solid var(--ink-4); text-align: left; font-family: var(--font-display); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--text-faint); }
+.wiz-steps button b { display: block; font: 500 18px/1.2 var(--font-display); color: var(--text-dim); }
+.wiz-steps button.done { border-bottom-color: var(--blue); color: #cfeaff; }
+.wiz-steps button.on { border-bottom-color: var(--red); color: var(--white); background: var(--ink-3); }
+.wiz-steps button.on b, .wiz-steps button.done b { color: var(--white); }
+.wiz-panel { background: var(--ink-2); border: 1px solid var(--hair); padding: 30px 30px 26px; }
+.wiz-panel h2 { font-size: 24px; margin-bottom: 6px; }
+.wiz-panel > .note { margin-bottom: 24px; }
+.wiz-nav { display: flex; justify-content: space-between; gap: 12px; margin-top: 26px; padding-top: 22px; border-top: 1px solid var(--hair); }
+.wiz-aside { position: sticky; top: calc(var(--header) + 28px); display: grid; gap: 14px; }
+.wiz-aside .lbl { margin-bottom: 0; }
+.prev-map { position: relative; height: 180px; border: 1px solid var(--hair-2); isolation: isolate; z-index: 0; }
+.addr-map { position: relative; height: 320px; border: 1px solid var(--hair-2); margin: 6px 0 12px; isolation: isolate; z-index: 0; }
+.map { background: #151515; }
+.map .leaflet-tile-pane { filter: invert(1) hue-rotate(185deg) brightness(.92) contrast(.86) saturate(.35); }
+.map.map-notiles, .map.map-off { background-color: #141414; background-image: linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px); background-size: 60px 60px; }
+.row-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.uploads { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 18px; margin-bottom: 22px; }
+.up { position: relative; display: grid; place-items: center; text-align: center; gap: 6px; border: 1px dashed var(--hair-2); background: var(--ink) center / cover no-repeat; color: var(--text-dim); font-size: 13px; cursor: pointer; overflow: hidden; transition: border-color .2s; }
+.up:hover, .up:focus-within { border-color: var(--white); }
+.up input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.up .ico { width: 26px; height: 26px; color: var(--text-faint); }
+.up.has { color: transparent; border-style: solid; }
+.up.has .ico, .up.has span { display: none; }
+.up-logo { aspect-ratio: 1; border-radius: 50%; }
+.up-cover { aspect-ratio: 16 / 10; }
+.gal { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
+.gal .up { aspect-ratio: 4 / 3; }
+.gal-item { position: relative; aspect-ratio: 4 / 3; background: var(--ink) center / cover; border: 1px solid var(--hair-2); }
+.gal-item button { position: absolute; top: 4px; right: 4px; width: 32px; height: 32px; display: grid; place-items: center; background: rgba(0,0,0,.75); border: 0; }
+.rows { display: grid; gap: 10px; margin-bottom: 14px; }
+.svc-edit { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) minmax(0, .8fr) minmax(0, .8fr) 44px; gap: 8px; align-items: end; padding: 12px; background: var(--ink); border: 1px solid var(--hair); }
+.svc-edit .field, .team-edit .field { margin: 0; }
+.svc-edit .field > label, .team-edit .field > label { font-size: 9.5px; letter-spacing: .18em; margin-bottom: 6px; }
+.money { position: relative; }
+.money span { position: absolute; left: 12px; top: 50%; translate: 0 -50%; color: var(--text-faint); font-size: 14px; }
+.money input { padding-left: 38px !important; }
+.del { width: 44px; height: 48px; display: grid; place-items: center; background: none; border: 1px solid var(--hair-2); color: var(--text-dim); }
+.del:hover { border-color: var(--red); color: var(--white); }
+.team-edit { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 44px; gap: 8px; align-items: end; padding: 12px; background: var(--ink); border: 1px solid var(--hair); }
+@media (max-width: 720px) { .svc-edit { grid-template-columns: 1fr 1fr; } .svc-edit .f-name { grid-column: 1 / -1; } .svc-edit .del { grid-column: 2; justify-self: end; } .team-edit { grid-template-columns: 1fr 44px; } .team-edit .f-role { grid-column: 1; } }
+.hours-edit { display: grid; gap: 8px; }
+.h-row { display: grid; grid-template-columns: 150px minmax(0, 1fr) minmax(0, 1fr); gap: 10px; align-items: center; padding: 10px 12px; background: var(--ink); border: 1px solid var(--hair); }
+.h-row input[type=time] { width: 100%; background: var(--ink-2); border: 1px solid var(--hair-2); padding: 10px 10px; min-height: 44px; }
+.h-row.closed input[type=time] { opacity: .3; pointer-events: none; }
+.h-row.closed .closed-lbl { display: block; }
+@media (max-width: 560px) { .h-row { grid-template-columns: 1fr 1fr; } .h-row .check { grid-column: 1 / -1; } }
+.amen-pick { display: flex; flex-wrap: wrap; gap: 8px; }
+.amen-pick label { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border: 1px solid var(--hair-2); font-size: 13.5px; cursor: pointer; }
+.amen-pick input { accent-color: var(--red); }
+.amen-pick label:has(input:checked) { border-color: var(--red); background: rgba(237,27,46,.1); }
+@media (max-width: 1000px) { .wiz { grid-template-columns: minmax(0, 1fr); gap: 36px; } .wiz-aside { position: static; } .wiz-aside .shop-card { max-width: none; } }
+@media (max-width: 560px) { .wiz-panel { padding: 22px 18px; } .uploads { grid-template-columns: 1fr; } .up-logo { width: 150px; } }
+
+/* ---------- painel ---------- */
+.dash-head { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 20px; align-items: center; padding-block: 36px 28px; border-bottom: 1px solid var(--hair); }
+.dash-head img { width: 76px; height: 76px; border-radius: 50%; object-fit: cover; border: 2px solid var(--red); background: var(--ink); }
+.dash-head h1 { font-size: clamp(26px, 3.4vw, 42px); }
+.dash-head .meta { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13.5px; color: var(--text-dim); margin-top: 6px; }
+.dash-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; }
+@media (max-width: 860px) { .dash-head { grid-template-columns: auto minmax(0, 1fr); } .dash-actions { grid-column: 1 / -1; justify-content: flex-start; } }
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); border-left: 1px solid var(--hair); margin-top: 28px; }
+.kpi { border-right: 1px solid var(--hair); border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); padding: 22px 22px; }
+.kpi span { font-family: var(--font-display); font-size: 10.5px; letter-spacing: .24em; text-transform: uppercase; color: var(--text-faint); }
+.kpi b { display: block; font: 500 36px/1.1 var(--font-display); margin-top: 6px; font-variant-numeric: tabular-nums; }
+.kpi small { font-size: 12.5px; color: var(--text-dim); }
+@media (max-width: 860px) { .kpis { grid-template-columns: 1fr 1fr; } }
+.tabs { display: flex; gap: 0; margin-top: 34px; border-bottom: 1px solid var(--hair); }
+.tabs button { min-height: 48px; padding: 0 20px; background: none; border: 0; border-bottom: 2px solid transparent; font-family: var(--font-display); font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--text-dim); }
+.tabs button[aria-selected="true"] { color: var(--white); border-bottom-color: var(--red); }
+.day-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 22px 0 18px; }
+.day-nav .cur { min-width: 210px; text-align: center; font: 500 18px/1 var(--font-display); text-transform: uppercase; letter-spacing: .04em; }
+.icon-btn { width: 44px; height: 44px; display: grid; place-items: center; background: none; border: 1px solid var(--hair-2); color: var(--white); }
+.icon-btn:hover { border-color: var(--white); }
+.seg { display: inline-flex; border: 1px solid var(--hair-2); margin-left: auto; }
+.seg button { min-height: 42px; padding: 0 14px; background: none; border: 0; font-family: var(--font-display); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--text-dim); }
+.seg button[aria-pressed="true"] { background: var(--white); color: var(--ink); }
+.agenda { display: grid; gap: 10px; padding-bottom: 80px; }
+.appt { display: grid; grid-template-columns: 96px minmax(0, 1fr) auto; gap: 18px; align-items: start; padding: 18px 20px; background: var(--ink-2); border: 1px solid var(--hair); border-left: 3px solid var(--blue); }
+.appt.cancelado { border-left-color: #55524d; opacity: .6; }
+.appt.concluido { border-left-color: var(--ok); }
+.appt.faltou { border-left-color: var(--red); }
+.appt .when { font: 500 26px/1 var(--font-display); font-variant-numeric: tabular-nums; }
+.appt .when small { display: block; font: 400 12px/1.4 var(--font-body); color: var(--text-faint); margin-top: 6px; }
+.appt h3 { font-family: var(--font-display); font-weight: 500; font-size: 19px; text-transform: uppercase; }
+.appt p { font-size: 13.5px; color: var(--text-dim); }
+.appt .wa { color: #8ff0b9; border-bottom: 1px solid rgba(52,199,123,.4); }
+.appt-side { display: grid; gap: 8px; justify-items: end; }
+.appt-actions { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
+.st { padding: 4px 8px; font: 500 10px/1.2 var(--font-display); letter-spacing: .16em; text-transform: uppercase; background: var(--ink-4); color: #d9d6d1; }
+.st.confirmado { background: rgba(42,159,224,.16); color: #9fd8ff; }
+.st.concluido { background: rgba(52,199,123,.16); color: #8ff0b9; }
+.st.cancelado { background: rgba(255,255,255,.08); color: #a9a6a0; }
+.st.faltou { background: rgba(237,27,46,.16); color: #ff9aa3; }
+@media (max-width: 720px) { .appt { grid-template-columns: 70px minmax(0, 1fr); } .appt-side { grid-column: 1 / -1; justify-items: start; } .appt-actions { justify-content: flex-start; } .seg { margin-left: 0; } }
+.empty { padding: 44px 28px; border: 1px dashed var(--hair-2); text-align: center; color: var(--text-dim); }
+.empty h3 { font-family: var(--font-display); font-weight: 500; font-size: 22px; text-transform: uppercase; color: var(--white); margin-bottom: 8px; }
+.share { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 18px; }
+.share input { flex: 1 1 280px; max-width: 420px; background: var(--ink); border: 1px solid var(--hair-2); padding: 10px 12px; font-size: 14px; color: var(--text-dim); }
+.rv { padding: 20px 0; border-bottom: 1px solid var(--hair); }
+.rv b { font-weight: 500; }
+.rv p { color: var(--text-dim); }
+.stars { position: relative; display: inline-block; font-size: 13px; line-height: 1; letter-spacing: 2px; color: #3d3b38; white-space: nowrap; }
+.stars::before { content: "★★★★★"; }
+.stars i { position: absolute; inset: 0 auto 0 0; overflow: hidden; color: var(--red); font-style: normal; }
+.stars i::before { content: "★★★★★"; }
+
+.site-footer { border-top: 1px solid var(--hair); background: #070707; }
+.footer-legal { padding-block: 24px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-size: 12px; color: #6d6b67; }
+.toast { position: fixed; z-index: 200; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); translate: -50% 0; width: max-content; max-width: calc(100vw - 32px); padding: 14px 20px; background: var(--paper); color: var(--ink); font-size: 14px; border-left: 3px solid var(--red); box-shadow: 0 20px 40px -10px rgba(0,0,0,.6); }
+.skeleton { background: linear-gradient(90deg, var(--ink-2) 0%, var(--ink-3) 50%, var(--ink-2) 100%); background-size: 200% 100%; animation: shimmer 1.2s linear infinite; }
+@keyframes shimmer { to { background-position: -200% 0; } }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-store" viewBox="0 0 24 24"><path d="M4 9.5V20h16V9.5M3 4h18l-1.5 5.5a3 3 0 0 1-5.5.5 3 3 0 0 1-5 0 3 3 0 0 1-5.5-.5z"/><path d="M10 20v-5h4v5"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="1"/><path d="M3.5 10h17M8 3v4M16 3v4"/></symbol>
+  <symbol id="i-map" viewBox="0 0 24 24"><path d="M9 4L3 6.5v13.5l6-2.5 6 2.5 6-2.5V4l-6 2.5z"/><path d="M9 4v13.5M15 6.5V20"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.8l-5.2 2.8 1-5.8L3.5 9.7l5.9-.8z"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15"/><circle cx="9" cy="10" r="1.8"/><path d="M20.5 16l-5-5-9 8.5"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+  <symbol id="i-locate" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 22s7-6.1 7-12a7 7 0 1 0-14 0c0 5.9 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v6H4V6h6"/></symbol>
+</svg>
+
+<div class="brand-bar brand-bar-fixed" aria-hidden="true"></div>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="header-logo" href="index.html" aria-label="Connect Barber, voltar para o app"><img src="assets/img/banner.webp" alt="Connect Barber" width="1000" height="363"><span>Barbearias</span></a>
+    <nav class="header-nav" id="hNav" aria-label="Conta"></nav>
+  </div>
+</header>
+
+<main id="main">
+  <!-- início -->
+  <section class="view" id="v-inicio" hidden>
+    <div class="intro">
+      <div class="intro-bg" aria-hidden="true"></div>
+      <div class="wrap intro-grid">
+        <div>
+          <p class="kicker">Connect para barbearias</p>
+          <h1 class="display">Coloque sua barbearia <em>no mapa</em></h1>
+          <p class="body-copy">Monte a página do seu salão com fotos, logo, serviços e valores. Clientes da sua região encontram pelo mapa, comparam e agendam direto nos seus horários livres.</p>
+          <div class="intro-cta"><a class="btn btn-red" href="#cadastro">Cadastrar minha barbearia <span class="arrow">&rarr;</span></a><a class="btn btn-ghost" href="#entrar">Entrar</a></div>
+          <p class="intro-demo">Quer ver o painel antes? <button class="linkish" type="button" data-demo-login>Entrar na conta de demonstração</button></p>
+        </div>
+        <div class="shop-card" aria-hidden="true">
+          <div class="sc-media" style="background-image:url('assets/img/capas/c2.webp')"><span class="sc-status open">Aberta · fecha às 20h</span><span class="sc-dist">850 m</span></div>
+          <div class="sc-body"><img class="sc-logo" id="introLogo" alt=""><h3 class="sc-name">Sua barbearia aqui</h3><p class="sc-rating"><span class="stars"><i style="width:96%"></i></span> 4,8 · avaliações de clientes</p><p class="sc-addr">Seu bairro · sua rua</p><p class="sc-tags">Corte · Barba · Combo</p><div class="sc-foot"><span class="sc-price">a partir de<b>R$ 35</b></span><span class="fake-btn">Agendar</span></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="wrap" style="padding-block:0 90px">
+      <div class="benefits">
+        <div class="benefit"><svg class="ico"><use href="#i-store"/></svg><h3>Página completa</h3><p>Logo, capa, galeria, serviços com preço e duração, equipe e comodidades.</p></div>
+        <div class="benefit"><svg class="ico"><use href="#i-cal"/></svg><h3>Agenda sem conflito</h3><p>O cliente só vê horários livres dentro do seu expediente, por profissional.</p></div>
+        <div class="benefit"><svg class="ico"><use href="#i-map"/></svg><h3>Aparece no mapa</h3><p>Quem ativa a localização perto de você vê o salão com distância e nota.</p></div>
+        <div class="benefit"><svg class="ico"><use href="#i-star"/></svg><h3>Avaliação de verdade</h3><p>Só avalia quem agendou e foi atendido, com o código do agendamento.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- entrar -->
+  <section class="view" id="v-entrar" hidden>
+    <div class="wrap auth">
+      <form class="auth-card" id="loginForm" novalidate>
+        <h1 class="display">Entrar no painel</h1>
+        <p class="sub">Acesse a agenda e a página da sua barbearia.</p>
+        <div class="field"><label for="lgEmail">E-mail</label><input id="lgEmail" type="email" autocomplete="email" required><p class="err">Digite o e-mail do cadastro.</p></div>
+        <div class="field"><label for="lgPass">Senha</label><div class="pass-wrap"><input id="lgPass" type="password" autocomplete="current-password" required><button type="button" data-toggle-pass="lgPass">Mostrar</button></div><p class="err">Digite a senha.</p></div>
+        <button class="btn btn-red" type="submit" style="width:100%" id="lgGo">Entrar</button>
+        <div class="auth-alt">
+          <span>Ainda não tem cadastro? <a class="linkish" href="#cadastro">Cadastrar barbearia</a></span>
+          <div class="demo-box">Conta de demonstração: <b>demo@connectbarber.com.br</b> · senha <b>connect123</b>. <button class="linkish" type="button" data-demo-login>Entrar com ela</button></div>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- cadastro / edição -->
+  <section class="view" id="v-cadastro" hidden>
+    <div class="wrap wiz">
+      <div>
+        <div class="wiz-head"><p class="kicker" id="wzKicker">Cadastro da barbearia</p><h1 class="display" id="wzTitle">Monte a página do seu salão</h1></div>
+        <div class="wiz-steps" id="wzSteps" role="tablist" aria-label="Etapas"></div>
+        <form class="wiz-panel" id="wzForm" novalidate></form>
+      </div>
+      <aside class="wiz-aside" aria-label="Prévia">
+        <span class="lbl">Prévia: assim o cliente vê</span>
+        <div id="pvCard"></div>
+        <div class="prev-map map" id="pvMap"></div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- painel -->
+  <section class="view" id="v-painel" hidden>
+    <div class="wrap">
+      <div class="dash-head" id="dHead"></div>
+      <div class="kpis" id="dKpis"></div>
+      <div class="tabs" role="tablist"><button type="button" role="tab" aria-selected="true" data-tab="agenda">Agenda</button><button type="button" role="tab" aria-selected="false" data-tab="avaliacoes">Avaliações</button></div>
+      <div id="dTab"></div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer"><div class="wrap footer-legal"><span id="legal">© 2026 Connect Barber</span><a href="index.html">Ir para o app de clientes &rarr;</a></div><div class="brand-bar" aria-hidden="true"></div></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<script src="assets/js/connect.js"></script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var esc = CB.esc, LS = CB.LS;
+  var css = function (u) { return 'url("' + String(u || '').replace(/["\\\n]/g, '') + '")'; };
+  var ico = function (id) { return '<svg class="ico" aria-hidden="true"><use href="#i-' + id + '"/></svg>'; };
+  var toastT;
+  function toast(m) { var o = $('.toast'); if (o) o.remove(); var t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status'); t.textContent = m; document.body.appendChild(t); clearTimeout(toastT); toastT = setTimeout(function () { t.remove(); }, 4200); }
+  CB.injectMapCss();
+  $('#introLogo').src = CB.monogram('Sua Barbearia', '#ED1B2E');
+  $('#legal').textContent = '© ' + new Date().getFullYear() + ' Connect Barber';
+
+  var ME = null;          // barbearia logada
+  var BOOKINGS = [];
+
+  /* ---------------- navegação ---------------- */
+  function show(view) {
+    $$('.view').forEach(function (v) { v.hidden = v.id !== 'v-' + view; });
+    window.scrollTo(0, 0);
+    renderNav();
+  }
+  function renderNav() {
+    $('#hNav').innerHTML = ME
+      ? '<a class="plain hide-m" href="index.html#b-' + esc(ME.slug) + '" target="_blank" rel="noopener">Minha página</a><a class="btn btn-ghost btn-sm" href="#painel">Painel</a><button class="btn btn-sm" type="button" id="logout" style="border-color:rgba(255,255,255,.25)">Sair</button>'
+      : '<a class="plain hide-m" href="index.html">Explorar barbearias</a><a class="btn btn-ghost btn-sm" href="#entrar">Entrar</a><a class="btn btn-red btn-sm" href="#cadastro">Cadastrar</a>';
+    var lo = $('#logout'); if (lo) lo.addEventListener('click', function () { CB.logout().then(function () { ME = null; toast('Você saiu do painel.'); location.hash = '#inicio'; }); });
+  }
+  function route() {
+    var h = (location.hash || '#inicio').slice(1);
+    if (h === 'demo') { CB.demoOwnerShop().then(function (s) { ME = s; history.replaceState(null, '', '#painel'); openDash(); }); return; }
+    if (h === 'painel') { if (!ME) { location.hash = '#entrar'; return; } openDash(); return; }
+    if (h === 'editar') { if (!ME) { location.hash = '#entrar'; return; } openWizard(ME); return; }
+    if (h === 'cadastro') { openWizard(null); return; }
+    if (h === 'entrar') { if (ME) { location.hash = '#painel'; return; } show('entrar'); setTimeout(function () { $('#lgEmail').focus(); }, 50); return; }
+    show('inicio');
+  }
+  window.addEventListener('hashchange', route);
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('[data-demo-login]')) { CB.demoOwnerShop().then(function (s) { ME = s; toast('Você entrou na conta de demonstração.'); location.hash = '#painel'; }); }
+    var tp = e.target.closest('[data-toggle-pass]'); if (tp) { var i = document.getElementById(tp.dataset.togglePass); i.type = i.type === 'password' ? 'text' : 'password'; tp.textContent = i.type === 'password' ? 'Mostrar' : 'Ocultar'; }
+  });
+
+  /* ---------------- login ---------------- */
+  $('#loginForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var em = $('#lgEmail'), pw = $('#lgPass'), ok = true;
+    [[em, /\S+@\S+\.\S+/.test(em.value)], [pw, pw.value.length > 0]].forEach(function (p) { p[0].closest('.field').classList.toggle('invalid', !p[1]); if (!p[1] && ok) { p[0].focus(); ok = false; } });
+    if (!ok) return;
+    var b = $('#lgGo'); b.classList.add('loading');
+    CB.login(em.value, pw.value).then(function (s) { ME = s; location.hash = '#painel'; }).catch(function (er) { toast(er.message); pw.select(); }).then(function () { b.classList.remove('loading'); });
+  });
+
+  /* ==================================================================
+     ASSISTENTE DE CADASTRO / EDIÇÃO
+     ================================================================== */
+  var STEPS = ['Barbearia', 'Endereço', 'Fotos', 'Serviços', 'Horários', 'Equipe', 'Acesso'];
+  var DUR = [15, 20, 30, 40, 45, 60, 75, 90, 120, 150, 180];
+  var AMEN = ['Wi-Fi', 'Café', 'Cerveja', 'Estacionamento', 'Cartão e Pix', 'Ar-condicionado', 'Espaço kids', 'Videogame', 'Acessibilidade'];
+  var W = { edit: false, step: 0, d: null, map: null, pin: null, pvMap: null, pvPin: null };
+
+  function blankShop() {
+    var c = CB.getCenter() || CB.DEFAULT_CENTER;
+    return {
+      name: '', tagline: '', about: '', since: '', phone: '', whatsapp: '', instagram: '',
+      address: { cep: '', street: '', district: '', city: c.city || '', uf: '' }, lat: c.lat, lng: c.lng, located: false,
+      logo: '', cover: '', gallery: [],
+      services: [{ id: 's1', name: 'Corte masculino', cat: 'Corte', duration: 40, price: 40 }, { id: 's2', name: 'Barba', cat: 'Barba', duration: 30, price: 35 }, { id: 's3', name: 'Corte + barba', cat: 'Combo', duration: 60, price: 70 }],
+      hours: { seg: '09:00-19:00', ter: '09:00-19:00', qua: '09:00-19:00', qui: '09:00-19:00', sex: '09:00-19:00', sab: '09:00-17:00', dom: null },
+      barbers: [{ id: 'b1', name: '', role: '' }], amenities: ['Cartão e Pix'],
+      owner: { name: '', email: '', password: '' }, terms: false
+    };
+  }
+  function openWizard(shop) {
+    W.edit = !!shop;
+    var draft = !shop && LS.get('cb_draft', null);
+    W.d = shop ? JSON.parse(JSON.stringify(shop)) : (draft || blankShop());
+    if (!W.d.owner) W.d.owner = { name: '', email: '', password: '' };
+    W.d.owner.password = '';
+    W.d.located = W.d.located || !!shop;
+    W.step = 0;
+    $('#wzKicker').textContent = W.edit ? 'Editar barbearia' : 'Cadastro da barbearia';
+    $('#wzTitle').textContent = W.edit ? 'Atualize a página do seu salão' : 'Monte a página do seu salão';
+    show('cadastro');
+    renderStep(); renderPreview();
+    if (draft && !W.edit) toast('Continuando o cadastro que você começou.');
+  }
+  function stepsList() { return W.edit ? STEPS.slice(0, 6).concat(['Publicar']) : STEPS; }
+  function renderSteps() {
+    $('#wzSteps').innerHTML = stepsList().map(function (s, i) { return '<button type="button" role="tab" aria-selected="' + (i === W.step) + '" class="' + (i === W.step ? 'on' : i < W.step ? 'done' : '') + '" data-go="' + i + '"><b>' + (i + 1) + '</b>' + s + '</button>'; }).join('');
+  }
+  $('#wzSteps').addEventListener('click', function (e) { var b = e.target.closest('[data-go]'); if (!b) return; var to = +b.dataset.go; if (to > W.step && !validate()) return; collect(); W.step = to; renderStep(); });
+
+  function saveDraft() { if (W.edit) return; var c = JSON.parse(JSON.stringify(W.d)); c.owner.password = ''; if (!LS.set('cb_draft', c)) { c.gallery = []; LS.set('cb_draft', c); } }
+
+  function f(id, label, val, o) {
+    o = o || {};
+    var input = o.type === 'textarea' ? '<textarea id="' + id + '" maxlength="' + (o.max || 400) + '"' + (o.req ? ' required' : '') + '>' + esc(val) + '</textarea>'
+      : '<input id="' + id + '" type="' + (o.type || 'text') + '" value="' + esc(val) + '"' + (o.ph ? ' placeholder="' + esc(o.ph) + '"' : '') + (o.ac ? ' autocomplete="' + o.ac + '"' : '') + (o.im ? ' inputmode="' + o.im + '"' : '') + (o.max ? ' maxlength="' + o.max + '"' : '') + (o.req ? ' required' : '') + '>';
+    return '<div class="field' + (o.cls ? ' ' + o.cls : '') + '"><label for="' + id + '">' + label + (o.req ? '<span class="req" aria-hidden="true">*</span>' : '') + '</label>' + input + (o.help ? '<p class="help">' + o.help + '</p>' : '') + '<p class="err">' + (o.err || 'Preencha este campo.') + '</p></div>';
+  }
+  function maskPhone(v) { var d = v.replace(/\D/g, '').slice(0, 11); if (!d) return ''; if (d.length <= 2) return '(' + d; if (d.length <= 6) return '(' + d.slice(0, 2) + ') ' + d.slice(2); if (d.length <= 10) return '(' + d.slice(0, 2) + ') ' + d.slice(2, 6) + '-' + d.slice(6); return '(' + d.slice(0, 2) + ') ' + d.slice(2, 7) + '-' + d.slice(7); }
+
+  function renderStep() {
+    renderSteps();
+    var d = W.d, s = stepsList()[W.step], h = '';
+    if (W.map) { W.map.remove(); W.map = null; W.pin = null; }
+    if (W.step === 0) {
+      h = '<h2 class="display">Sua barbearia</h2><p class="note">Nome e contatos que aparecem para os clientes.</p>' +
+        f('wName', 'Nome da barbearia', d.name, { req: true, max: 60, ph: 'Ex.: Navalha de Ouro', err: 'Digite o nome da barbearia.' }) +
+        f('wTag', 'Frase de apresentação', d.tagline, { max: 80, ph: 'Ex.: Barbearia clássica com toalha quente' }) +
+        f('wAbout', 'Sobre o salão', d.about, { type: 'textarea', max: 600, help: 'Conte o estilo da casa, o que oferece e por que vale a visita.' }) +
+        '<div class="grid2">' + f('wPhone', 'Telefone', d.phone, { type: 'tel', im: 'tel', ac: 'tel-national', ph: '(00) 0000-0000' }) + f('wWa', 'WhatsApp', d.whatsapp, { type: 'tel', im: 'tel', ph: '(00) 00000-0000', help: 'O cliente pode chamar você depois de agendar.' }) + '</div>' +
+        '<div class="grid2">' + f('wIg', 'Instagram', d.instagram, { ph: '@suabarbearia', max: 40 }) + f('wSince', 'Ano de abertura', d.since, { im: 'numeric', max: 4, ph: '2015' }) + '</div>' +
+        '<div class="field"><span class="lbl">Comodidades</span><div class="amen-pick">' + AMEN.map(function (a) { return '<label><input type="checkbox" name="amen" value="' + esc(a) + '"' + ((d.amenities || []).indexOf(a) >= 0 ? ' checked' : '') + '>' + esc(a) + '</label>'; }).join('') + '</div></div>';
+    } else if (W.step === 1) {
+      var a = d.address || {};
+      h = '<h2 class="display">Endereço e mapa</h2><p class="note">É por aqui que os clientes perto de você encontram a barbearia.</p>' +
+        '<div class="grid2">' + f('wCep', 'CEP', a.cep, { im: 'numeric', ph: '00000-000', max: 9, help: 'Preenche rua, bairro e cidade.' }) + '<div class="field" style="display:flex;align-items:flex-end"><button class="btn btn-ghost" type="button" id="wCepGo" style="width:100%">Buscar CEP</button></div></div>' +
+        f('wStreet', 'Rua e número', a.street, { req: true, ac: 'address-line1', ph: 'Rua das Navalhas, 120', err: 'Digite a rua e o número.' }) +
+        '<div class="grid3">' + f('wDistrict', 'Bairro', a.district, { req: true, err: 'Digite o bairro.' }) + f('wCity', 'Cidade', a.city, { req: true, ac: 'address-level2', err: 'Digite a cidade.' }) + f('wUf', 'UF', a.uf, { req: true, max: 2, err: 'UF' }) + '</div>' +
+        '<span class="lbl">Posição no mapa</span><div class="addr-map map" id="wMap"></div>' +
+        '<div class="row-actions"><button class="btn btn-blue btn-sm" type="button" id="wGeo">' + ico('pin') + 'Localizar o endereço</button><button class="btn btn-ghost btn-sm" type="button" id="wHere">' + ico('locate') + 'Estou na barbearia agora</button></div>' +
+        '<p class="note" style="margin-top:10px" id="wPinNote">' + (d.located ? 'Pino posicionado. Arraste se precisar ajustar.' : 'Localize o endereço e arraste o pino até a porta da barbearia.') + '</p>';
+    } else if (W.step === 2) {
+      h = '<h2 class="display">Fotos e logo</h2><p class="note">Fotos boas fazem o cliente escolher você. As imagens são reduzidas automaticamente.</p>' +
+        '<div class="uploads"><div><span class="lbl">Logo</span><label class="up up-logo' + (d.logo ? ' has' : '') + '" style="' + (d.logo ? 'background-image:' + esc(css(d.logo)) : '') + '">' + ico('image') + '<span>Enviar logo</span><input type="file" accept="image/*" data-up="logo" aria-label="Enviar logo"></label><p class="help note" style="margin-top:8px">Sem logo, usamos as iniciais.</p></div>' +
+        '<div><span class="lbl">Foto de capa</span><label class="up up-cover' + (d.cover ? ' has' : '') + '" style="' + (d.cover ? 'background-image:' + esc(css(d.cover)) : '') + '">' + ico('image') + '<span>Enviar capa (fachada ou salão)</span><input type="file" accept="image/*" data-up="cover" aria-label="Enviar foto de capa"></label></div></div>' +
+        '<span class="lbl">Galeria (até 6 fotos)</span><div class="gal">' + (d.gallery || []).map(function (g, i) { return '<div class="gal-item" style="background-image:' + esc(css(g)) + '"><button type="button" data-delgal="' + i + '" aria-label="Remover foto ' + (i + 1) + '">' + ico('close') + '</button></div>'; }).join('') +
+        ((d.gallery || []).length < 6 ? '<label class="up">' + ico('plus') + '<span>Adicionar</span><input type="file" accept="image/*" multiple data-up="gallery" aria-label="Adicionar fotos à galeria"></label>' : '') + '</div>';
+    } else if (W.step === 3) {
+      h = '<h2 class="display">Serviços e valores</h2><p class="note">Preço e duração definem os horários livres que o cliente vê.</p><div class="rows" id="svcRows">' + (d.services || []).map(svcRow).join('') + '</div>' +
+        '<button class="btn btn-ghost btn-sm" type="button" id="addSvc">' + ico('plus') + 'Adicionar serviço</button>';
+    } else if (W.step === 4) {
+      h = '<h2 class="display">Horário de funcionamento</h2><p class="note">Os horários de agendamento seguem esses intervalos, em blocos de 30 minutos.</p><div class="hours-edit">' + CB.WEEK.map(function (k) {
+        var r = (d.hours || {})[k], o = r ? CB.range(r) : ['09:00', '19:00'];
+        return '<div class="h-row' + (r ? '' : ' closed') + '" data-day="' + k + '"><label class="check"><input type="checkbox" data-open' + (r ? ' checked' : '') + '>' + CB.DAY_LABEL[k] + '</label><label><span class="sr-only">Abre</span><input type="time" step="1800" value="' + o[0] + '" data-from></label><label><span class="sr-only">Fecha</span><input type="time" step="1800" value="' + o[1] + '" data-to></label></div>';
+      }).join('') + '</div><p class="err" id="hErr" style="color:#ff8f99;margin-top:10px" hidden>Abra pelo menos um dia, com o fechamento depois da abertura.</p>';
+    } else if (W.step === 5) {
+      h = '<h2 class="display">Equipe</h2><p class="note">O cliente pode escolher o profissional. Cada um tem a própria agenda.</p><div class="rows" id="teamRows">' + (d.barbers || []).map(teamRow).join('') + '</div>' +
+        '<button class="btn btn-ghost btn-sm" type="button" id="addBarber">' + ico('plus') + 'Adicionar profissional</button>';
+    } else if (!W.edit) {
+      var o = d.owner || {};
+      h = '<h2 class="display">Acesso ao painel</h2><p class="note">Com este e-mail e senha você entra no painel para ver a agenda.</p>' +
+        f('oName', 'Seu nome', o.name, { req: true, ac: 'name', err: 'Digite seu nome.' }) +
+        f('oEmail', 'E-mail', o.email, { req: true, type: 'email', ac: 'email', err: 'Digite um e-mail válido.' }) +
+        '<div class="field"><label for="oPass">Senha<span class="req" aria-hidden="true">*</span></label><div class="pass-wrap"><input id="oPass" type="password" autocomplete="new-password" minlength="6" required><button type="button" data-toggle-pass="oPass">Mostrar</button></div><p class="help">Mínimo de 6 caracteres.</p><p class="err">A senha precisa de 6 caracteres ou mais.</p></div>' +
+        '<div class="field"><label class="check"><input type="checkbox" id="oTerms"' + (d.terms ? ' checked' : '') + '>Confirmo que sou responsável por esta barbearia e que as informações são verdadeiras.</label><p class="err">Confirme para publicar.</p></div>' +
+        (CB.mode() === 'demo' ? '<p class="note">Demonstração: o cadastro fica salvo neste navegador e já aparece no mapa do app.</p>' : '');
+    } else {
+      h = '<h2 class="display">Publicar alterações</h2><p class="note">Confira a prévia ao lado. As mudanças aparecem para os clientes assim que você salvar.</p>';
+    }
+    var last = W.step === stepsList().length - 1;
+    h += '<div class="wiz-nav">' + (W.step ? '<button class="btn btn-ghost" type="button" id="wPrev">Voltar</button>' : (W.edit ? '<a class="btn btn-ghost" href="#painel">Cancelar</a>' : '<span></span>')) +
+      '<button class="btn btn-red" type="submit" id="wNext">' + (last ? (W.edit ? 'Salvar alterações' : 'Publicar barbearia') : 'Continuar') + ' <span class="arrow">&rarr;</span></button></div>';
+    /* formulário novo a cada etapa: evita ouvintes duplicados */
+    var old = $('#wzForm'), form = old.cloneNode(false); old.parentNode.replaceChild(form, old);
+    form.innerHTML = h; form.addEventListener('submit', onSubmit);
+    bindStep();
+  }
+  function svcRow(s) {
+    return '<div class="svc-edit" data-id="' + esc(s.id) + '">' +
+      '<div class="field f-name"><label>Serviço</label><input data-k="name" value="' + esc(s.name) + '" placeholder="Ex.: Corte degradê" maxlength="60" aria-label="Nome do serviço"></div>' +
+      '<div class="field"><label>Categoria</label><select data-k="cat" aria-label="Categoria">' + CB.CATEGORIES.map(function (c) { return '<option' + (c === s.cat ? ' selected' : '') + '>' + c + '</option>'; }).join('') + '</select></div>' +
+      '<div class="field"><label>Duração</label><select data-k="duration" aria-label="Duração">' + DUR.map(function (m) { return '<option value="' + m + '"' + (+s.duration === m ? ' selected' : '') + '>' + (m >= 60 ? Math.floor(m / 60) + 'h' + (m % 60 ? m % 60 : '') : m + ' min') + '</option>'; }).join('') + '</select></div>' +
+      '<div class="field"><label>Preço</label><div class="money"><span>R$</span><input data-k="price" inputmode="decimal" value="' + esc(s.price) + '" aria-label="Preço"></div></div>' +
+      '<button class="del" type="button" data-del aria-label="Remover serviço">' + ico('close') + '</button></div>';
+  }
+  function teamRow(b) {
+    return '<div class="team-edit" data-id="' + esc(b.id) + '"><div class="field"><label>Nome</label><input data-k="name" value="' + esc(b.name) + '" maxlength="40" placeholder="Ex.: Matheus" aria-label="Nome do profissional"></div>' +
+      '<div class="field f-role"><label>Especialidade</label><input data-k="role" value="' + esc(b.role) + '" maxlength="40" placeholder="Ex.: Degradê e navalha" aria-label="Especialidade"></div>' +
+      '<button class="del" type="button" data-del aria-label="Remover profissional">' + ico('close') + '</button></div>';
+  }
+
+  /* lê os campos da etapa atual para o rascunho */
+  function collect() {
+    var d = W.d, v = function (id) { var el = document.getElementById(id); return el ? el.value.trim() : null; };
+    if (W.step === 0) {
+      d.name = v('wName'); d.tagline = v('wTag'); d.about = v('wAbout'); d.phone = v('wPhone'); d.whatsapp = v('wWa'); d.instagram = v('wIg').replace(/^@/, ''); d.since = v('wSince');
+      d.amenities = $$('input[name=amen]:checked').map(function (i) { return i.value; });
+    } else if (W.step === 1) {
+      d.address = { cep: v('wCep'), street: v('wStreet'), district: v('wDistrict'), city: v('wCity'), uf: (v('wUf') || '').toUpperCase() };
+    } else if (W.step === 3) {
+      d.services = $$('.svc-edit').map(function (r, i) { var g = function (k) { return $('[data-k="' + k + '"]', r).value.trim(); }; return { id: r.dataset.id || 's' + (i + 1), name: g('name'), cat: g('cat'), duration: +g('duration'), price: Math.max(0, parseFloat(g('price').replace(',', '.')) || 0) }; });
+    } else if (W.step === 4) {
+      var h = {}; $$('.h-row').forEach(function (r) { h[r.dataset.day] = $('[data-open]', r).checked ? $('[data-from]', r).value + '-' + $('[data-to]', r).value : null; }); d.hours = h;
+    } else if (W.step === 5) {
+      d.barbers = $$('.team-edit').map(function (r, i) { return { id: r.dataset.id || 'b' + (i + 1), name: $('[data-k="name"]', r).value.trim(), role: $('[data-k="role"]', r).value.trim() }; });
+    } else if (W.step === 6 && !W.edit) {
+      d.owner = { name: v('oName'), email: v('oEmail'), password: $('#oPass').value }; d.terms = $('#oTerms').checked;
+    }
+    saveDraft(); renderPreview();
+  }
+  function bad(el, cond) { var fld = el.closest('.field'); if (fld) fld.classList.toggle('invalid', cond); return cond; }
+  function validate() {
+    collect();
+    var d = W.d, first = null, mark = function (id, cond) { var el = document.getElementById(id); if (el && bad(el, cond) && !first) first = el; };
+    if (W.step === 0) mark('wName', d.name.length < 2);
+    if (W.step === 1) {
+      mark('wStreet', !d.address.street); mark('wDistrict', !d.address.district); mark('wCity', !d.address.city); mark('wUf', !/^[A-Z]{2}$/.test(d.address.uf));
+      if (!first && !d.located) { toast('Localize o endereço no mapa ou arraste o pino até a barbearia.'); first = $('#wGeo'); }
+    }
+    if (W.step === 3) {
+      var rows = $$('.svc-edit'); if (!rows.length) { toast('Cadastre pelo menos um serviço.'); return false; }
+      rows.forEach(function (r) { var n = $('[data-k="name"]', r); if (bad(n, !n.value.trim()) && !first) first = n; var p = $('[data-k="price"]', r); if (bad(p, !(parseFloat(p.value.replace(',', '.')) >= 0) || !p.value.trim()) && !first) first = p; });
+    }
+    if (W.step === 4) {
+      var okDay = Object.keys(d.hours).some(function (k) { var r = d.hours[k]; if (!r) return false; var x = CB.range(r); return CB.toMin(x[1]) > CB.toMin(x[0]); });
+      var badRow = Object.keys(d.hours).some(function (k) { var r = d.hours[k]; if (!r) return false; var x = CB.range(r); return CB.toMin(x[1]) <= CB.toMin(x[0]); });
+      $('#hErr').hidden = okDay && !badRow; if (!okDay || badRow) return false;
+    }
+    if (W.step === 5) {
+      var tr = $$('.team-edit'); if (!tr.length) { toast('Adicione pelo menos um profissional.'); return false; }
+      tr.forEach(function (r) { var n = $('[data-k="name"]', r); if (bad(n, !n.value.trim()) && !first) first = n; });
+    }
+    if (W.step === 6 && !W.edit) {
+      mark('oName', !d.owner.name); mark('oEmail', !/\S+@\S+\.\S+/.test(d.owner.email)); mark('oPass', d.owner.password.length < 6); mark('oTerms', !d.terms);
+    }
+    if (first) { first.focus(); return false; }
+    return true;
+  }
+
+  function bindStep() {
+    var form = $('#wzForm');
+    $$('input[type=tel]', form).forEach(function (i) { i.addEventListener('input', function () { this.value = maskPhone(this.value); }); });
+    form.addEventListener('input', debounce(function () { collect(); }, 250));
+    var prev = $('#wPrev'); if (prev) prev.addEventListener('click', function () { collect(); W.step--; renderStep(); });
+    if (W.step === 1) {
+      var cep = $('#wCep'); cep.addEventListener('input', function () { var d = this.value.replace(/\D/g, '').slice(0, 8); this.value = d.length > 5 ? d.slice(0, 5) + '-' + d.slice(5) : d; });
+      $('#wCepGo').addEventListener('click', function () {
+        var b = this; b.classList.add('loading');
+        CB.viaCep(cep.value).then(function (a) { if (a.street) $('#wStreet').value = a.street + ', '; $('#wDistrict').value = a.district || ''; $('#wCity').value = a.city; $('#wUf').value = a.uf; collect(); $('#wStreet').focus(); toast('Endereço preenchido. Complete com o número.'); })
+          .catch(function (er) { toast(er.message === 'Failed to fetch' ? 'Sem conexão com o serviço de CEP. Preencha o endereço à mão.' : er.message); }).then(function () { b.classList.remove('loading'); });
+      });
+      setTimeout(function () {
+        W.map = CB.makeMap($('#wMap'), { center: [W.d.lat, W.d.lng], zoom: W.d.located ? 17 : 13 });
+        if (!W.map) return;
+        W.pin = L.marker([W.d.lat, W.d.lng], { draggable: true, icon: L.divIcon({ className: '', html: '<div class="pin"><b>aqui</b></div>', iconSize: [46, 52], iconAnchor: [23, 50] }) }).addTo(W.map);
+        W.pin.on('dragend', function () { var p = W.pin.getLatLng(); W.d.lat = p.lat; W.d.lng = p.lng; W.d.located = true; $('#wPinNote').textContent = 'Pino posicionado. Arraste se precisar ajustar.'; saveDraft(); renderPreview(); });
+        W.map.on('click', function (ev) { W.pin.setLatLng(ev.latlng); W.d.lat = ev.latlng.lat; W.d.lng = ev.latlng.lng; W.d.located = true; $('#wPinNote').textContent = 'Pino posicionado. Arraste se precisar ajustar.'; saveDraft(); renderPreview(); });
+      }, 30);
+      function place(lat, lng, z) { W.d.lat = lat; W.d.lng = lng; W.d.located = true; if (W.map) { W.pin.setLatLng([lat, lng]); W.map.setView([lat, lng], z || 17); } $('#wPinNote').textContent = 'Confira se o pino está na porta da barbearia. Arraste para ajustar.'; saveDraft(); renderPreview(); }
+      $('#wGeo').addEventListener('click', function () {
+        collect(); var a = W.d.address, b = this; if (!a.city) { toast('Preencha pelo menos a cidade.'); $('#wCity').focus(); return; }
+        b.classList.add('loading');
+        CB.geocode([a.street, a.district, a.city, a.uf].filter(Boolean).join(', ')).catch(function () { return CB.geocode(a.city + (a.uf ? ', ' + a.uf : '')); })
+          .then(function (g) { place(g.lat, g.lng, /,\s*\d/.test(a.street) ? 17 : 14); }).catch(function (er) { toast(er.message); }).then(function () { b.classList.remove('loading'); });
+      });
+      $('#wHere').addEventListener('click', function () { var b = this; b.classList.add('loading'); CB.myPosition().then(function (p) { place(p.lat, p.lng, 18); }).catch(function (er) { toast(er.message); }).then(function () { b.classList.remove('loading'); }); });
+    }
+    if (W.step === 2) {
+      form.addEventListener('change', function (e) {
+        var inp = e.target.closest('[data-up]'); if (!inp || !inp.files.length) return;
+        var kind = inp.dataset.up, files = Array.prototype.slice.call(inp.files);
+        var size = kind === 'logo' ? [400, 400, .86] : kind === 'cover' ? [1600, 1000, .78] : [1200, 900, .74];
+        if (kind === 'gallery') files = files.slice(0, 6 - (W.d.gallery || []).length);
+        Promise.all(files.map(function (fl) { return CB.shrinkImage(fl, size[0], size[1], size[2]); })).then(function (urls) {
+          if (kind === 'gallery') W.d.gallery = (W.d.gallery || []).concat(urls); else W.d[kind] = urls[0];
+          saveDraft(); renderStep(); renderPreview();
+        }).catch(function (er) { toast(er.message); });
+      });
+      form.addEventListener('click', function (e) { var b = e.target.closest('[data-delgal]'); if (b) { W.d.gallery.splice(+b.dataset.delgal, 1); saveDraft(); renderStep(); renderPreview(); } });
+    }
+    if (W.step === 3) {
+      $('#addSvc').addEventListener('click', function () { collect(); W.d.services.push({ id: 's' + Date.now().toString(36), name: '', cat: 'Corte', duration: 30, price: '' }); renderStep(); var l = $$('.svc-edit [data-k="name"]'); l[l.length - 1].focus(); });
+      form.addEventListener('click', function (e) { var b = e.target.closest('[data-del]'); if (b) { b.closest('.svc-edit').remove(); collect(); } });
+    }
+    if (W.step === 4) { form.addEventListener('change', function (e) { var c = e.target.closest('[data-open]'); if (c) c.closest('.h-row').classList.toggle('closed', !c.checked); collect(); }); }
+    if (W.step === 5) {
+      $('#addBarber').addEventListener('click', function () { collect(); W.d.barbers.push({ id: 'b' + Date.now().toString(36), name: '', role: '' }); renderStep(); var l = $$('.team-edit [data-k="name"]'); l[l.length - 1].focus(); });
+      form.addEventListener('click', function (e) { var b = e.target.closest('[data-del]'); if (b) { b.closest('.team-edit').remove(); collect(); } });
+    }
+  }
+  function onSubmit(e) {
+    e.preventDefault();
+    if (!validate()) return;
+    if (W.step < stepsList().length - 1) { W.step++; renderStep(); $('#wzSteps').scrollIntoView({ block: 'nearest' }); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+    publish($('#wNext'));
+  }
+  function shopPayload() {
+    var d = W.d, s = {
+      id: d.id, slug: d.slug || CB.slugify(d.name), name: d.name, tagline: d.tagline, about: d.about, since: d.since, phone: d.phone, whatsapp: d.whatsapp, instagram: d.instagram,
+      address: d.address, lat: d.lat, lng: d.lng, logo: d.logo || CB.monogram(d.name), cover: d.cover, gallery: d.gallery || [],
+      services: d.services.filter(function (x) { return x.name; }), hours: d.hours, barbers: d.barbers.filter(function (x) { return x.name; }), amenities: d.amenities || [], reviews: d.reviews || []
+    };
+    if (!s.cover && s.gallery.length) s.cover = s.gallery[0];
+    if (!s.cover) s.cover = 'assets/img/capas/c5.webp';
+    if (!s.gallery.length) s.gallery = [s.cover];
+    return s;
+  }
+  function publish(btn) {
+    btn.classList.add('loading');
+    var p = W.edit ? CB.saveShop(shopPayload()) : CB.register(shopPayload(), W.d.owner);
+    p.then(function (s) { ME = s; LS.del('cb_draft'); toast(W.edit ? 'Alterações salvas.' : 'Barbearia publicada! Ela já aparece no mapa.'); location.hash = '#painel'; })
+      .catch(function (er) { toast(er.message); }).then(function () { btn.classList.remove('loading'); });
+  }
+
+  /* ---------------- prévia ao vivo ---------------- */
+  function renderPreview() {
+    var d = W.d; if (!d) return;
+    var s = CB.enrich(shopPayload(), CB.getCenter());
+    var addr = [d.address && d.address.district, d.address && d.address.street].filter(Boolean).join(' · ');
+    $('#pvCard').innerHTML = '<div class="shop-card"><div class="sc-media' + (d.cover || (d.gallery || []).length ? '' : ' empty-img') + '" style="' + (d.cover || (d.gallery || []).length ? 'background-image:' + esc(css(s.cover)) : '') + '">' + (d.cover || (d.gallery || []).length ? '' : 'Sua foto de capa aparece aqui') + '<span class="sc-status' + (s.status.open ? ' open' : '') + '">' + esc(s.status.text) + '</span>' + (s.dist != null ? '<span class="sc-dist">' + CB.km(s.dist) + '</span>' : '') + '</div>' +
+      '<div class="sc-body"><img class="sc-logo" src="' + esc(s.logo) + '" alt=""><h3 class="sc-name">' + esc(d.name || 'Nome da barbearia') + '</h3><p class="sc-rating">' + (s.rating ? '★ ' + String(s.rating).replace('.', ',') : 'Nova na rede') + '</p><p class="sc-addr">' + esc(addr || 'Bairro · rua') + '</p><p class="sc-tags">' + esc(s.cats.slice(0, 4).join(' · ')) + '</p>' +
+      '<div class="sc-foot"><span class="sc-price">a partir de<b>' + CB.brl(s.priceFrom) + '</b></span><span class="fake-btn">Agendar</span></div></div></div>';
+    if (!W.pvMap) { W.pvMap = CB.makeMap($('#pvMap'), { center: [d.lat, d.lng], zoom: 15, zoomControl: false, dragging: false, scrollWheelZoom: false, doubleClickZoom: false, touchZoom: false, keyboard: false }); if (W.pvMap) W.pvPin = L.marker([d.lat, d.lng], { icon: L.divIcon({ className: '', html: '<div class="pin"><b>novo</b></div>', iconSize: [46, 52], iconAnchor: [23, 50] }), keyboard: false }).addTo(W.pvMap); }
+    else { W.pvPin.setLatLng([d.lat, d.lng]); W.pvMap.setView([d.lat, d.lng], W.pvMap.getZoom()); W.pvMap.invalidateSize(); }
+  }
+  function debounce(fn, ms) { var t; return function () { var a = arguments, c = this; clearTimeout(t); t = setTimeout(function () { fn.apply(c, a); }, ms); }; }
+
+  /* ==================================================================
+     PAINEL
+     ================================================================== */
+  var DSTATE = { tab: 'agenda', date: CB.isoDate(new Date()), mode: 'day' };
+  function openDash() {
+    show('painel');
+    $('#dHead').innerHTML = '<div class="skeleton" style="height:76px"></div>';
+    Promise.all([CB.session(), CB.ownerBookings()]).then(function (r) {
+      if (!r[0]) { ME = null; location.hash = '#entrar'; return; }
+      ME = CB.enrich(r[0], null); BOOKINGS = r[1] || [];
+      renderNav(); renderDash();
+    }).catch(function (e) { toast(e.message); });
+  }
+  function renderDash() {
+    var s = ME, today = CB.isoDate(new Date()), wk = CB.isoDate(new Date(Date.now() + 7 * 864e5));
+    var live = BOOKINGS.filter(function (b) { return b.status !== 'cancelado'; });
+    var todayN = live.filter(function (b) { return b.date === today; }).length;
+    var next7 = live.filter(function (b) { return b.date >= today && b.date < wk; });
+    var money = next7.filter(function (b) { return b.status === 'confirmado'; }).reduce(function (a, b) { return a + (+b.total || 0); }, 0);
+    var link = new URL('index.html#b-' + s.slug, location.href).href;
+    $('#dHead').innerHTML = '<img src="' + esc(s.logo) + '" alt=""><div><p class="kicker" style="margin-bottom:6px">Painel da barbearia</p><h1 class="display">' + esc(s.name) + '</h1><div class="meta"><span>' + esc([s.address && s.address.district, s.address && s.address.city].filter(Boolean).join(' · ')) + '</span><span>' + esc(s.status.text) + '</span>' + (CB.ownerLocal() ? '<span>Modo demonstração</span>' : '') + '</div></div>' +
+      '<div class="dash-actions"><a class="btn btn-ghost btn-sm" href="' + esc(link) + '" target="_blank" rel="noopener">' + ico('ext') + 'Ver minha página</a><a class="btn btn-red btn-sm" href="#editar">Editar barbearia</a></div>';
+    $('#dKpis').innerHTML = kpi('Hoje', todayN, todayN === 1 ? 'agendamento' : 'agendamentos') + kpi('Próximos 7 dias', next7.length, 'agendamentos') + kpi('Previsto em 7 dias', CB.brl(money), 'pagamento no local') + kpi('Nota média', s.rating ? String(s.rating).replace('.', ',') : '—', s.reviewsCount + (s.reviewsCount === 1 ? ' avaliação' : ' avaliações'));
+    $$('.tabs [data-tab]').forEach(function (t) { t.setAttribute('aria-selected', String(t.dataset.tab === DSTATE.tab)); });
+    if (DSTATE.tab === 'agenda') renderAgenda(link); else renderReviews();
+  }
+  function kpi(l, v, sub) { return '<div class="kpi"><span>' + l + '</span><b>' + v + '</b><small>' + sub + '</small></div>'; }
+  $$('.tabs [data-tab]').forEach(function (t) { t.addEventListener('click', function () { DSTATE.tab = t.dataset.tab; renderDash(); }); });
+  function renderAgenda(link) {
+    var d = CB.parseISO(DSTATE.date), today = CB.isoDate(new Date());
+    var list = DSTATE.mode === 'day' ? BOOKINGS.filter(function (b) { return b.date === DSTATE.date; }) : BOOKINGS.filter(function (b) { return b.date >= today && b.status !== 'cancelado'; });
+    list.sort(function (a, b) { return (a.date + a.time).localeCompare(b.date + b.time); });
+    var label = DSTATE.mode === 'day' ? (DSTATE.date === today ? 'Hoje · ' : '') + CB.DAY_LABEL[CB.DAYS[d.getDay()]] + ', ' + d.getDate() + '/' + CB.pad(d.getMonth() + 1) : 'Todos os próximos';
+    var html = '<div class="day-nav">' + (DSTATE.mode === 'day' ? '<button class="icon-btn" type="button" data-dnav="-1" aria-label="Dia anterior">' + ico('left') + '</button><span class="cur">' + label + '</span><button class="icon-btn" type="button" data-dnav="1" aria-label="Próximo dia">' + ico('right') + '</button>' + (DSTATE.date !== today ? '<button class="btn btn-ghost btn-sm" type="button" data-dnav="0">Hoje</button>' : '') : '<span class="cur" style="text-align:left">' + label + '</span>') +
+      '<div class="seg" role="group" aria-label="Visualização"><button type="button" data-mode="day" aria-pressed="' + (DSTATE.mode === 'day') + '">Por dia</button><button type="button" data-mode="all" aria-pressed="' + (DSTATE.mode === 'all') + '">Próximos</button></div></div>';
+    if (!list.length) {
+      html += '<div class="empty"><h3>Nenhum horário ' + (DSTATE.mode === 'day' ? 'neste dia' : 'marcado') + '</h3><p>Divulgue sua página para os clientes agendarem.</p><div class="share"><input readonly value="' + esc(link) + '" aria-label="Link da sua página" id="shareLink"><button class="btn btn-solid btn-sm" type="button" id="copyLink">Copiar link</button></div></div>';
+    } else {
+      html += '<div class="agenda">' + list.map(function (b) {
+        var wa = CB.phoneDigits(b.client && b.client.phone);
+        var acts = b.status === 'confirmado' ? '<button class="btn btn-ghost btn-sm" type="button" data-st="concluido">Concluído</button><button class="btn btn-ghost btn-sm" type="button" data-st="faltou">Não veio</button><button class="btn btn-ghost btn-sm" type="button" data-st="cancelado">Cancelar</button>' : '<button class="btn btn-ghost btn-sm" type="button" data-st="confirmado">Reabrir</button>';
+        return '<article class="appt ' + esc(b.status) + '" data-id="' + esc(b.id) + '"><div class="when">' + esc(b.time) + '<small>' + (DSTATE.mode === 'all' ? esc(CB.DAY_SHORT[CB.DAYS[CB.parseISO(b.date).getDay()]] + ' ' + b.date.split('-').reverse().slice(0, 2).join('/')) + ' · ' : '') + esc(dur(b.duration)) + '</small></div>' +
+          '<div><h3>' + esc(b.client && b.client.name) + '</h3><p>' + esc((b.services || []).map(function (x) { return x.name; }).join(' + ')) + ' · ' + CB.brl(b.total) + '</p><p>' + (b.barberName ? 'Com ' + esc(b.barberName) + ' · ' : '') + (wa ? '<a class="wa" href="https://wa.me/55' + wa + '" target="_blank" rel="noopener">' + esc(b.client.phone) + '</a>' : '') + ' · código ' + esc(b.code) + '</p>' + (b.notes ? '<p>“' + esc(b.notes) + '”</p>' : '') + '</div>' +
+          '<div class="appt-side"><span class="st ' + esc(b.status) + '">' + ({ confirmado: 'Confirmado', concluido: 'Concluído', cancelado: 'Cancelado', faltou: 'Não veio' }[b.status] || esc(b.status)) + '</span><div class="appt-actions">' + acts + '</div></div></article>';
+      }).join('') + '</div>';
+    }
+    $('#dTab').innerHTML = html;
+    var cp = $('#copyLink'); if (cp) cp.addEventListener('click', function () { var i = $('#shareLink'); (navigator.clipboard ? navigator.clipboard.writeText(i.value) : Promise.reject()).then(function () { toast('Link copiado.'); }).catch(function () { i.select(); toast('Selecione e copie o link.'); }); });
+  }
+  function dur(m) { m = +m || 30; return m >= 60 ? Math.floor(m / 60) + 'h' + (m % 60 ? CB.pad(m % 60) : '') : m + ' min'; }
+  $('#dTab').addEventListener('click', function (e) {
+    var n = e.target.closest('[data-dnav]'); if (n) { var v = +n.dataset.dnav; DSTATE.date = v === 0 ? CB.isoDate(new Date()) : CB.isoDate(new Date(CB.parseISO(DSTATE.date).getTime() + v * 864e5 + 3600e3)); renderDash(); return; }
+    var m = e.target.closest('[data-mode]'); if (m) { DSTATE.mode = m.dataset.mode; renderDash(); return; }
+    var st = e.target.closest('[data-st]'); if (st) {
+      var card = st.closest('.appt'), id = card.dataset.id, status = st.dataset.st;
+      if (status === 'cancelado' && !card.dataset.confirm) { card.dataset.confirm = '1'; st.textContent = 'Confirmar cancelamento'; st.classList.add('btn-red'); return; }
+      CB.setStatus(id, status).then(function () { BOOKINGS.forEach(function (b) { if (b.id === id) b.status = status; }); toast({ concluido: 'Marcado como concluído.', faltou: 'Marcado como falta.', cancelado: 'Horário cancelado.', confirmado: 'Horário reaberto.' }[status]); renderDash(); }).catch(function (er) { toast(er.message); });
+    }
+  });
+  function renderReviews() {
+    var rv = ME.reviewsAll || [];
+    $('#dTab').innerHTML = rv.length ? '<div style="padding:10px 0 80px">' + rv.map(function (r) { return '<article class="rv"><p><b>' + esc(r.name) + '</b> · <span class="stars"><i style="width:' + (r.stars * 20) + '%"></i></span> · <span class="note">' + esc(new Date(r.date + 'T12:00').toLocaleDateString('pt-BR')) + '</span></p><p>' + esc(r.text) + '</p></article>'; }).join('') + '</div>'
+      : '<div class="empty" style="margin:24px 0 80px"><h3>Sem avaliações ainda</h3><p>Depois do atendimento, o cliente pode avaliar pelo app com o código do agendamento.</p></div>';
+  }
+
+  /* ---------------- início ---------------- */
+  CB.init().then(function () { return CB.session(); }).then(function (s) { ME = s; route(); }).catch(function () { route(); });
+})();
+</script>
+</body>
+</html>
