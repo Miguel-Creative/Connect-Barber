@@ -2,7 +2,7 @@
 
 Site de barbearia do sistema **Connect Barber** (multi-tenancy).
 
-Etapa 1: reconstrução visual a partir da estrutura do site da Barbearia Corleone, com a identidade Connect Barber (preto + cromo do logo oficial). Próximas etapas: elementos interativos inspirados em outras barbearias e o painel multi-tenant.
+Etapa 1: reconstrução fiel do visual do site da Barbearia Corleone (Oswald + Inter, barra de barber pole vermelha/azul, fotos em tela cheia), com o logo e o banner oficiais da Connect Barber. A seção "Trabalhe Conosco" mantém o cromo da primeira versão. Próximas etapas: elementos interativos inspirados em outras barbearias e o painel multi-tenant.
 
 ## Como está organizado
 
@@ -10,8 +10,10 @@ Etapa 1: reconstrução visual a partir da estrutura do site da Barbearia Corleo
 index.html            página completa (HTML + CSS + JS em um arquivo, padrão Criazzo)
 assets/img/
   banner.webp         banner oficial (logo horizontal)
+  banner-dark.webp    banner em versão escura, para fundo claro (seção Agende)
   simbolo.webp        símbolo oficial (tesoura + bigode)
   favicon.png         ícone da aba
+  fotos/              fotos de demonstração (Unsplash, licença livre para uso comercial)
 ```
 
 ## Multi-tenancy
@@ -22,9 +24,13 @@ nome, WhatsApp, Instagram, textos, serviços, unidades (endereço, telefone, hor
 No sistema, o PHP vai injetar ali o JSON da barbearia certa (ex.: `data/tenants/<slug>.json`). O HTML não muda de uma barbearia para outra.
 
 - `"demo": true` deixa os botões de agenda/app como demonstração e o WhatsApp abre sem número fixo. Em produção use `false`.
-- `"photos"` e `"units[].photo"`: deixe vazio para usar a arte cromada, ou informe a URL da foto da barbearia.
-- `"hours"`: horário por dia (`"10:00-21:00"` ou `null` para fechado). O card da unidade mostra "Aberto agora" pelo fuso de `"timezone"`.
+- `"photos"`, `"units[].photo"` e `"instagram.phone/collage"`: caminho ou URL das fotos da barbearia. As de demonstração estão em `assets/img/fotos/`.
+- `"hours"`: texto do horário de cada unidade, como aparece no card.
 
 ## Seções
 
-Barra de marca cromada · cabeçalho fixo com menu mobile · hero com brilho no logo · faixa de promoção · Nossa Marca (barber pole animado) · letreiro contínuo · Barba & Cabelo · faixa "em movimento" · grade de serviços · Agende (online, app, WhatsApp/telefone) · Instagram (mockup de celular) · Trabalhe conosco · Unidades com status de funcionamento · Avaliações · Contato · rodapé · WhatsApp flutuante.
+Barra de barber pole · cabeçalho fixo com menu mobile · hero com foto da fachada · faixa de promoção · Nossa Marca · letreiro contínuo · Barba & Cabelo · faixa "em movimento" · grade de serviços · Agende (online, app, WhatsApp/telefone) · Instagram (celular + colagem) · Trabalhe conosco · Unidades · Avaliações · Contato · rodapé · WhatsApp flutuante.
+
+## Créditos das fotos
+
+Fotos de demonstração do [Unsplash](https://unsplash.com) (Unsplash License). Substitua pelas fotos reais de cada barbearia.
