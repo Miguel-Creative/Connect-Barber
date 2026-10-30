@@ -17,7 +17,7 @@ Padrão Criazzo: páginas HTML + PHP + arquivos JSON. Sem banco de dados, sem Co
 
 1. Baixe o projeto (botão verde **Code** → **Download ZIP** no GitHub).
 2. No gerenciador de arquivos da hospedagem, entre em `public_html` e envie o ZIP.
-3. Clique com o botão direito no ZIP → **Extrair**.
+3. Clique com o botão direito no ZIP → **Extrair**. O ZIP do GitHub cria a pasta `Connect-Barber-main`: entre nela, selecione tudo e mova para `public_html`.
 4. Abra o seu domínio. Pronto: o site detecta o `api.php` sozinho e passa a salvar tudo no servidor.
 
 As pastas `data/` (dados) e `uploads/` (fotos enviadas pelas barbearias) são criadas e protegidas automaticamente no primeiro acesso. Faça backup dessas duas pastas de vez em quando.
