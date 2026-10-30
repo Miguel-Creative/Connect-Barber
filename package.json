@@ -1,3 +1,14 @@
-status=executed tier=confirmacao (arquivo: /home/linkou/agent-workspaces/Connect-Barber/package.json)
-stdout:
-{"content":"{\n  \"name\": \"connect-barber\",\n  \"version\": \"0.1.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"scripts\": {\n    \"dev\": \"vite --host 0.0.0.0\",\n    \"build\": \"vite build\",\n    \"preview\": \"vite preview --host 0.0.0.0\"\n  },\n  \"devDependencies\": {\n    \"vite\": \"^6.4.1\"\n  }\n}","encoding":"utf-8","truncated":false}
+{
+  "name": "connect-barber",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0"
+  },
+  "devDependencies": {
+    "vite": "^6.4.1"
+  }
+}
